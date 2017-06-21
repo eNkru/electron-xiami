@@ -1,0 +1,20 @@
+{
+  "name": "electron-xiami",
+  "version": "1.0.0",
+  "description": "Xiami Electron desktop application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "Xiami",
+    "Online music player"
+  ],
+  "author": "Howard Ju",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "~1.6.2"
+  }
+}
