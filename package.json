@@ -2,14 +2,16 @@
   "name": "electron-xiami",
   "version": "1.0.0",
   "description": "Xiami Electron desktop application",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/eNkru/electron-xiami",
   "keywords": [
     "Electron",
     "Xiami",
+    "虾米",
+    "虾米播放器",
     "Online music player"
   ],
   "author": "Howard Ju",
