@@ -1,5 +1,6 @@
 const { app } = require('electron');
 const PlayerWindow = require('./window/controller/player');
+const AppTray = require('./window/controller/app-tray');
 
 class ElectronXiami {
 
@@ -32,6 +33,7 @@ class ElectronXiami {
         // Some APIs can only be used after this event occurs.
         app.on('ready', () => {
             this.createPlayerWindow();
+            this.createTrayWindow();
         });
 
         // Quit when all windows are closed.
@@ -56,6 +58,10 @@ class ElectronXiami {
 
     createPlayerWindow() {
         this.playerWindow = new PlayerWindow();
+    }
+
+    createTrayWindow() {
+        this.tray = new AppTray(this.playerWindow);
     }
 }
 

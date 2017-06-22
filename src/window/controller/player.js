@@ -24,6 +24,13 @@ class XiamiPlayer {
 
         this.playerWindow.loadURL(this.playerUrl);
 
+        this.playerWindow.on('close', (e) => {
+            if (this.playerWindow.isVisible()) {
+                e.preventDefault();
+                this.playerWindow.hide();
+            }
+        });
+
         this.playerWindow.on('closed', () => {
             this.playerWindow = null;
         });
