@@ -1,4 +1,4 @@
-<img src="assets/icon.png" alt="logo" height="38" align="right" />
+<img src="assets/icon.png" alt="logo" height="80" align="right" />
 
 # electron-xiami
 

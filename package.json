@@ -4,7 +4,9 @@
   "description": "Xiami Electron desktop application",
   "main": "src/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron src/main.js",
+    "build": "./scripts/build-all.sh",
+    "build:linux": "./scripts/build.sh linux x64"
   },
   "repository": "https://github.com/eNkru/electron-xiami",
   "keywords": [
