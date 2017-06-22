@@ -7,6 +7,7 @@ Linux下的虾米客户端，使用[Electron](https://electron.atom.io)构建。
 A [xiami](http://www.xiami.com/) desktop application for Linux.
 Supported by [Electron](https://electron.atom.io/).
 
+*This is not the official desktop client. It's released under open source. If you are facing any issue, please use [this link](https://github.com/eNkru/electron-xiami/issues) to report.*
 
 ## Feature
 * Play Xiami online music on Linux platform.
