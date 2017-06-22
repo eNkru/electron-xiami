@@ -10,7 +10,7 @@ class AppTray {
     init() {
 
         //initial the tray
-        let trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../../assets/icon.png'));
+        let trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../../assets/icon_white.png'));
         trayIcon.setTemplateImage(true);
         this.tray = new Tray(trayIcon);
         this.tray.setToolTip('Xiami Music');
