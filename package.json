@@ -21,5 +21,9 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "~1.6.2"
+  },
+  "dependencies": {
+    "electron-fetch": "^1.0.0",
+    "electron-json-storage": "^3.0.5"
   }
 }
