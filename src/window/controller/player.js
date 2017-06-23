@@ -40,6 +40,14 @@ class XiamiPlayer {
         this.playerWindow.show();
         this.playerWindow.focus();
     }
+
+    hide() {
+        this.playerWindow.hide();
+    }
+
+    isVisible() {
+        return this.playerWindow.isVisible();
+    }
 }
 
 module.exports = XiamiPlayer;

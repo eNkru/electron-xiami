@@ -23,7 +23,15 @@ class AppTray {
 
         this.tray.setContextMenu(context);
 
-        this.tray.on('click', () => this.playerWindow.show());
+        this.tray.on('click', () => this.togglePlayerWindow());
+    }
+
+    togglePlayerWindow() {
+        if (this.playerWindow.isVisible()) {
+            this.playerWindow.hide()
+        } else {
+            this.playerWindow.show();
+        }
     }
 }
 
