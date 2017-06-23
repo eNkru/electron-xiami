@@ -2,7 +2,7 @@
 
 # electron-xiami
 
-Linux下的虾米客户端，使用[Electron](https://electron.atom.io)构建。
+Linux下的虾米客户端 (虾米播放器)，使用[Electron](https://electron.atom.io)构建。
 
 A [xiami](http://www.xiami.com/) desktop application for Linux.
 Supported by [Electron](https://electron.atom.io/).
