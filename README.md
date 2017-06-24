@@ -31,6 +31,7 @@ npm start
 Build the application 
 ```
 npm run build:linux
+npm run build:osx
 ```
 
 ## Download
