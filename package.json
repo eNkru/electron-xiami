@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "electron-fetch": "^1.0.0",
-    "electron-json-storage": "^3.0.5"
+    "electron-json-storage": "^3.0.5",
+    "node-notifier": "^5.1.2"
   }
 }
