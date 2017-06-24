@@ -10,7 +10,12 @@ class AppTray {
     init() {
 
         //initial the tray
-        let trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../../assets/icon_white.png'));
+        let trayIcon;
+        if (process.platform === 'linux' || process.platform === 'win32') {
+            trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../../assets/icon_white.png'));
+        } else {
+            trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../../assets/icon_black_macos.png'))
+        }
         trayIcon.setTemplateImage(true);
         this.tray = new Tray(trayIcon);
         this.tray.setToolTip('Xiami Music');
