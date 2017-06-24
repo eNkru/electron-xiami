@@ -6,7 +6,11 @@
   "scripts": {
     "start": "electron src/main.js",
     "build": "./scripts/build-all.sh",
-    "build:linux": "./scripts/build.sh linux x64"
+    "build:osx": "./scripts/build.sh darwin x64",
+    "build:osx64": "./scripts/build.sh darwin x64",
+    "build:linux32": "./scripts/build.sh linux ia32",
+    "build:linux": "./scripts/build.sh linux x64",
+    "build:linux64": "./scripts/build.sh linux x64"
   },
   "repository": "https://github.com/eNkru/electron-xiami",
   "keywords": [
@@ -24,6 +28,7 @@
   },
   "dependencies": {
     "electron-fetch": "^1.0.0",
-    "electron-json-storage": "^3.0.5"
+    "electron-json-storage": "^3.0.5",
+    "node-notifier": "^5.1.2"
   }
 }

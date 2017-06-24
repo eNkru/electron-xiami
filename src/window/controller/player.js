@@ -3,6 +3,7 @@ const urlLib = require('url');
 const path = require('path');
 const fetch = require('electron-fetch');
 const storage = require('electron-json-storage');
+const notifier = require('node-notifier');
 
 const playlistUrl = 'http://www.xiami.com/song/playlist';
 const getSongUrl = 'http://www.xiami.com/song/gethqsong';
@@ -45,7 +46,12 @@ class XiamiPlayer {
             this.playerWindow = null;
         });
 
-        this.playerWindow.webContents.on('did-get-response-details', ((status, newURL, originalURL) => this.registerResponseFilters(originalURL)));
+        this.playerWindow.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.registerResponseFilters(originalURL)));
+
+        // let session = this.playerWindow.webContents.session;
+        // session.cookies.get({ url : 'http://www.xiami.com' }, (error, cookies) => {
+        //     console.log(cookies);
+        // });
     }
 
     // display and focus the player window.
@@ -74,20 +80,23 @@ class XiamiPlayer {
             let urlWithPath = urlLib.parse(requestUrl, false);
             delete urlWithPath.search;
             console.log('Retrieve the playlist from url ' + urlLib.format(urlWithPath));
-            fetch(urlLib.format(urlWithPath)).then(res => res.json()).then(json => {
-                // clear the local storage.
-                storage.clear((error) => {
-                    if (error) console.log(error);
-                });
 
-                // refresh the local storage.
-                json.data.trackList.forEach(track => {
-                    storage.set(track.songId, track, (error) => {
-                        if (error) console.log(error);
+            // get the cookie, make call with the cookie
+            let session = this.playerWindow.webContents.session;
+            session.cookies.get({ url : 'http://www.xiami.com' }, (error, cookies) => {
+                let cookieString =cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
+                fetch(urlLib.format(urlWithPath), {headers: {'Cookie': cookieString}}).then(res => res.json()).then(json => {
+
+                    // refresh the local storage.
+                    json.data.trackList.forEach(track => {
+                        console.log(track.songName);
+                        storage.set(track.songId, track, (error) => {
+                            if (error) console.log(error);
+                        });
                     });
+                }).catch((error) => {
+                    console.log(error);
                 });
-            }).catch((error) => {
-                console.log(error);
             });
         }
     }
@@ -95,7 +104,17 @@ class XiamiPlayer {
     changeTrackListener(requestUrl) {
         if (requestUrl.startsWith(getSongUrl)) {
             let pathname = urlLib.parse(requestUrl).pathname;
-            console.log(path.parse(pathname).base);
+            let songId = path.parse(pathname).base;
+
+            storage.get(songId, (error, trackInfo) => {
+                if (error) throw error;
+                console.log(trackInfo);
+                notifier.notify({
+                    'title': `歌曲：${trackInfo.songName}`,
+                    'message': `演唱者：${trackInfo.artist_name}
+专辑：${trackInfo.album_name}`
+                });
+            });
         }
     }
 }
