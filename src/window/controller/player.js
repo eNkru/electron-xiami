@@ -47,11 +47,6 @@ class XiamiPlayer {
         });
 
         this.playerWindow.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.registerResponseFilters(originalURL)));
-
-        // let session = this.playerWindow.webContents.session;
-        // session.cookies.get({ url : 'http://www.xiami.com' }, (error, cookies) => {
-        //     console.log(cookies);
-        // });
     }
 
     // display and focus the player window.
@@ -79,7 +74,7 @@ class XiamiPlayer {
         if (requestUrl.startsWith(playlistUrl)) {
             let urlWithPath = urlLib.parse(requestUrl, false);
             delete urlWithPath.search;
-            console.log('Retrieve the playlist from url ' + urlLib.format(urlWithPath));
+            // console.log('Retrieve the playlist from url ' + urlLib.format(urlWithPath));
 
             // get the cookie, make call with the cookie
             let session = this.playerWindow.webContents.session;
@@ -89,7 +84,7 @@ class XiamiPlayer {
 
                     // refresh the local storage.
                     json.data.trackList.forEach(track => {
-                        console.log(track.songName);
+                        // console.log(track.songName);
                         storage.set(track.songId, track, (error) => {
                             if (error) console.log(error);
                         });
@@ -108,12 +103,14 @@ class XiamiPlayer {
 
             storage.get(songId, (error, trackInfo) => {
                 if (error) throw error;
-                console.log(trackInfo);
-                notifier.notify({
-                    'title': `歌曲：${trackInfo.songName}`,
-                    'message': `演唱者：${trackInfo.artist_name}
+                
+                if (Object.keys(trackInfo).length) {
+                    notifier.notify({
+                        'title': `歌曲：${trackInfo.songName}`,
+                        'message': `演唱者：${trackInfo.artist_name}
 专辑：${trackInfo.album_name}`
-                });
+                  });
+                }
             });
         }
     }
