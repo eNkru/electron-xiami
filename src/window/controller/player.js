@@ -110,9 +110,9 @@ class XiamiPlayer {
                 if (error) throw error;
                 console.log(trackInfo);
                 notifier.notify({
-                    'title': `歌曲：${trackInfo.songName}`,
-                    'message': `演唱者：${trackInfo.artist_name}
-专辑：${trackInfo.album_name}`
+                    'title': `Track: ${trackInfo.songName}`,
+                    'message': `Artist: ${trackInfo.artist_name}
+Album${trackInfo.album_name}`
                 });
             });
         }

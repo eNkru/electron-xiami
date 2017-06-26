@@ -4,7 +4,7 @@ const { app, Menu, nativeImage, Tray, ipcMain } = require('electron');
 class AppTray {
     constructor(playerWindow) {
         this.playerWindow = playerWindow;
-        this.init()
+        this.init();
     }
 
     init() {
@@ -33,7 +33,7 @@ class AppTray {
 
     togglePlayerWindow() {
         if (this.playerWindow.isVisible()) {
-            this.playerWindow.hide()
+            this.playerWindow.hide();
         } else {
             this.playerWindow.show();
         }
