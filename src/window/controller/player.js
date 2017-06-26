@@ -5,14 +5,14 @@ const fetch = require('electron-fetch');
 const storage = require('electron-json-storage');
 const notifier = require('node-notifier');
 
+const playerUrl = 'http://www.xiami.com/play';
 const playlistUrl = 'http://www.xiami.com/song/playlist';
 const getSongUrl = 'http://www.xiami.com/song/gethqsong';
 
 class XiamiPlayer {
     constructor() {
-        this.playerWindow = null;
-        this.playerUrl = 'http://www.xiami.com/play';
         this.init();
+        this.isPlaying = true;
     }
 
     init() {
@@ -31,7 +31,7 @@ class XiamiPlayer {
         });
 
         // load xiami player page.
-        this.playerWindow.loadURL(this.playerUrl);
+        this.playerWindow.loadURL(playerUrl);
 
         // triggering when user try to close the play window.
         this.playerWindow.on('close', (e) => {
@@ -46,12 +46,8 @@ class XiamiPlayer {
             this.playerWindow = null;
         });
 
+        // intercept the ajax call response
         this.playerWindow.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.registerResponseFilters(originalURL)));
-
-        // let session = this.playerWindow.webContents.session;
-        // session.cookies.get({ url : 'http://www.xiami.com' }, (error, cookies) => {
-        //     console.log(cookies);
-        // });
     }
 
     // display and focus the player window.
@@ -70,6 +66,26 @@ class XiamiPlayer {
         return this.playerWindow.isVisible();
     }
 
+    pause() {
+        this.playerWindow.webContents.executeJavaScript("document.querySelector('.pause-btn').dispatchEvent(new MouseEvent('click'));");
+        this.isPlaying = false;
+    }
+
+    play() {
+        this.playerWindow.webContents.executeJavaScript("document.querySelector('.play-btn').dispatchEvent(new MouseEvent('click'));");
+        this.isPlaying = true;
+    }
+
+    next() {
+        this.playerWindow.webContents.executeJavaScript("document.querySelector('.next-btn').dispatchEvent(new MouseEvent('click'));");
+        this.isPlaying = true;
+    }
+
+    previous() {
+        this.playerWindow.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
+        this.isPlaying = true;
+    }
+
     registerResponseFilters(requestUrl) {
         this.updatePlaylistListener(requestUrl);
         this.changeTrackListener(requestUrl);
@@ -79,7 +95,7 @@ class XiamiPlayer {
         if (requestUrl.startsWith(playlistUrl)) {
             let urlWithPath = urlLib.parse(requestUrl, false);
             delete urlWithPath.search;
-            console.log('Retrieve the playlist from url ' + urlLib.format(urlWithPath));
+            // console.log('Retrieve the playlist from url ' + urlLib.format(urlWithPath));
 
             // get the cookie, make call with the cookie
             let session = this.playerWindow.webContents.session;
@@ -89,7 +105,7 @@ class XiamiPlayer {
 
                     // refresh the local storage.
                     json.data.trackList.forEach(track => {
-                        console.log(track.songName);
+                        // console.log(track.songName);
                         storage.set(track.songId, track, (error) => {
                             if (error) console.log(error);
                         });
@@ -108,7 +124,7 @@ class XiamiPlayer {
 
             storage.get(songId, (error, trackInfo) => {
                 if (error) throw error;
-                console.log(trackInfo);
+                // console.log(trackInfo);
                 notifier.notify({
                     'title': `Track: ${trackInfo.songName}`,
                     'message': `Artist: ${trackInfo.artist_name}

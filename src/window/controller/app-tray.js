@@ -22,7 +22,10 @@ class AppTray {
 
         //set the context menu
         const context = Menu.buildFromTemplate([
-            {label: 'Show Player', click: () => this.playerWindow.show()},
+            {label: 'Show', click: () => this.playerWindow.show()},
+            {label: 'Play | Pause', click: () => this.playerWindow.isPlaying ? this.playerWindow.pause() : this.playerWindow.play()},
+            {label: 'Next', click: () => this.playerWindow.next()},
+            {label: 'Previous', click: () => this.playerWindow.previous()},
             {label: 'Exit', click: () => app.exit(0)},
         ]);
 
