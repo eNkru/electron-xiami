@@ -1,5 +1,6 @@
 const path = require('path');
 const { app, Menu, nativeImage, Tray, ipcMain } = require('electron');
+const storage = require('electron-json-storage');
 
 class AppTray {
     constructor(player) {
@@ -26,7 +27,7 @@ class AppTray {
             {label: 'Play | Pause', click: () => this.togglePlay()},
             {label: 'Next', click: () => this.player.next()},
             {label: 'Previous', click: () => this.player.previous()},
-            {label: 'Exit', click: () => app.exit(0)},
+            {label: 'Exit', click: () => this.cleanupAndExit()},
         ]);
 
         this.tray.setContextMenu(context);
@@ -46,6 +47,14 @@ class AppTray {
         } else {
             this.player.show();
         }
+    }
+
+    cleanupAndExit() {
+        storage.clear((error) => {
+            if (error) throw error;
+            console.log(app.getPath('userData'));
+            app.exit(0);
+        });
     }
 }
 
