@@ -124,12 +124,14 @@ class XiamiPlayer {
             storage.get(songId, (error, trackInfo) => {
                 if (error) throw error;
                 // console.log(trackInfo);
-                notifier.notify({
-                    'icon': path.join(__dirname, '../../../assets/icon.png'),
-                    'title': `Track: ${trackInfo.songName}`,
-                    'message': `Artist: ${trackInfo.artist_name}
+                if (Object.keys(trackInfo).length > 0) {
+                    notifier.notify({
+                        'icon': path.join(__dirname, '../../../assets/icon.png'),
+                        'title': `Track: ${trackInfo.songName}`,
+                        'message': `Artist: ${trackInfo.artist_name}
 Album: ${trackInfo.album_name}`
-                });
+                    });
+                }
             });
         }
     }
