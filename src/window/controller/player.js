@@ -124,7 +124,6 @@ class XiamiPlayer {
             storage.get(songId, (error, trackInfo) => {
                 if (error) throw error;
                 // console.log(trackInfo);
-                notifier.emit
                 notifier.notify({
                     'title': `Track: ${trackInfo.songName}`,
                     'message': `Artist: ${trackInfo.artist_name}
