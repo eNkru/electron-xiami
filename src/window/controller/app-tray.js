@@ -24,9 +24,11 @@ class AppTray {
         //set the context menu
         const context = Menu.buildFromTemplate([
             {label: 'Show', click: () => this.player.show()},
-            {label: 'Play | Pause', click: () => this.togglePlay()},
-            {label: 'Next', click: () => this.player.next()},
-            {label: 'Previous', click: () => this.player.previous()},
+            {label: 'Play | Pause', icon: path.join(__dirname, '../../../assets/icon_play.png'), click: () => this.togglePlay()},
+            {label: 'Next', icon: path.join(__dirname, '../../../assets/icon_next.png'), click: () => this.player.next()},
+            {label: 'Previous', icon: path.join(__dirname, '../../../assets/icon_previous.png'), click: () => this.player.previous()},
+            {label: 'Separator', type: 'separator'},
+            {label: 'Setting', icon: path.join(__dirname, '../../../assets/icon_settings.png'), click: () => console.log("Open setting window")},
             {label: 'Exit', click: () => this.cleanupAndExit()},
         ]);
 
