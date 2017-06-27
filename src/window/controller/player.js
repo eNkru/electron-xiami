@@ -12,7 +12,6 @@ const getSongUrl = 'http://www.xiami.com/song/gethqsong';
 class XiamiPlayer {
     constructor() {
         this.init();
-        this.isPlaying = true;
     }
 
     init() {
@@ -68,22 +67,22 @@ class XiamiPlayer {
 
     pause() {
         this.playerWindow.webContents.executeJavaScript("document.querySelector('.pause-btn').dispatchEvent(new MouseEvent('click'));");
-        this.isPlaying = false;
     }
 
     play() {
         this.playerWindow.webContents.executeJavaScript("document.querySelector('.play-btn').dispatchEvent(new MouseEvent('click'));");
-        this.isPlaying = true;
     }
 
     next() {
         this.playerWindow.webContents.executeJavaScript("document.querySelector('.next-btn').dispatchEvent(new MouseEvent('click'));");
-        this.isPlaying = true;
     }
 
     previous() {
         this.playerWindow.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
-        this.isPlaying = true;
+    }
+
+    getWebContents() {
+        return this.playerWindow.webContents;
     }
 
     registerResponseFilters(requestUrl) {
@@ -125,6 +124,7 @@ class XiamiPlayer {
             storage.get(songId, (error, trackInfo) => {
                 if (error) throw error;
                 // console.log(trackInfo);
+                notifier.emit
                 notifier.notify({
                     'title': `Track: ${trackInfo.songName}`,
                     'message': `Artist: ${trackInfo.artist_name}

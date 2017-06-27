@@ -2,8 +2,8 @@ const path = require('path');
 const { app, Menu, nativeImage, Tray, ipcMain } = require('electron');
 
 class AppTray {
-    constructor(playerWindow) {
-        this.playerWindow = playerWindow;
+    constructor(player) {
+        this.player = player;
         this.init();
     }
 
@@ -22,10 +22,10 @@ class AppTray {
 
         //set the context menu
         const context = Menu.buildFromTemplate([
-            {label: 'Show', click: () => this.playerWindow.show()},
-            {label: 'Play | Pause', click: () => this.playerWindow.isPlaying ? this.playerWindow.pause() : this.playerWindow.play()},
-            {label: 'Next', click: () => this.playerWindow.next()},
-            {label: 'Previous', click: () => this.playerWindow.previous()},
+            {label: 'Show', click: () => this.player.show()},
+            {label: 'Play | Pause', click: () => this.togglePlay()},
+            {label: 'Next', click: () => this.player.next()},
+            {label: 'Previous', click: () => this.player.previous()},
             {label: 'Exit', click: () => app.exit(0)},
         ]);
 
@@ -34,11 +34,17 @@ class AppTray {
         this.tray.on('click', () => this.togglePlayerWindow());
     }
 
+    togglePlay() {
+        this.player.getWebContents().executeJavaScript("document.querySelector('.pause-btn')", (result) => {
+            result ? this.player.pause() : this.player.play();
+        });
+    }
+
     togglePlayerWindow() {
-        if (this.playerWindow.isVisible()) {
-            this.playerWindow.hide();
+        if (this.player.isVisible()) {
+            this.player.hide();
         } else {
-            this.playerWindow.show();
+            this.player.show();
         }
     }
 }
