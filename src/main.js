@@ -1,7 +1,7 @@
 const { app } = require('electron');
-const PlayerWindow = require('./window/controller/player-controller');
-const SettingsWindow = require('./window/controller/settings-controller');
-const AppTray = require('./window/controller/app-tray-controller');
+const PlayerWindow = require('./controller/player-controller');
+const SettingsWindow = require('./controller/settings-controller');
+const AppTray = require('./controller/app-tray-controller');
 
 class ElectronXiami {
 

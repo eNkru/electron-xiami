@@ -126,7 +126,7 @@ class XiamiPlayer {
                 // console.log(trackInfo);
                 if (Object.keys(trackInfo).length > 0) {
                     notifier.notify({
-                        'icon': path.join(__dirname, '../../../assets/icon.png'),
+                        'icon': path.join(__dirname, '../../assets/icon.png'),
                         'title': `Track: ${trackInfo.songName}`,
                         'message': `Artist: ${trackInfo.artist_name}
 Album: ${trackInfo.album_name}`

@@ -14,9 +14,9 @@ class AppTray {
         //initial the tray
         let trayIcon;
         if (process.platform === 'linux' || process.platform === 'win32') {
-            trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../../assets/icon_white.png'));
+            trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_white.png'));
         } else {
-            trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../../assets/icon_black_macos.png'))
+            trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_black_macos.png'))
         }
         trayIcon.setTemplateImage(true);
         this.tray = new Tray(trayIcon);
@@ -24,11 +24,11 @@ class AppTray {
 
         //set the context menu
         const context = Menu.buildFromTemplate([
-            {label: 'Play | Pause', icon: path.join(__dirname, '../../../assets/icon_play.png'), click: () => this.togglePlay()},
-            {label: 'Next', icon: path.join(__dirname, '../../../assets/icon_next.png'), click: () => this.player.next()},
-            {label: 'Previous', icon: path.join(__dirname, '../../../assets/icon_previous.png'), click: () => this.player.previous()},
+            {label: 'Play | Pause', icon: path.join(__dirname, '../../assets/icon_play.png'), click: () => this.togglePlay()},
+            {label: 'Next', icon: path.join(__dirname, '../../assets/icon_next.png'), click: () => this.player.next()},
+            {label: 'Previous', icon: path.join(__dirname, '../../assets/icon_previous.png'), click: () => this.player.previous()},
             {label: 'Separator', type: 'separator'},
-            {label: 'Setting', icon: path.join(__dirname, '../../../assets/icon_settings.png'), click: () => this.openSettings()},
+            {label: 'Setting', icon: path.join(__dirname, '../../assets/icon_settings.png'), click: () => this.openSettings()},
             {label: 'Exit', click: () => this.cleanupAndExit()},
         ]);
 
