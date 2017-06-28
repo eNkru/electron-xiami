@@ -4,10 +4,14 @@ const path = require('path');
 const fetch = require('electron-fetch');
 const storage = require('electron-json-storage');
 const notifier = require('node-notifier');
+const settings = require('electron-settings');
 
 const playerUrl = 'http://www.xiami.com/play';
 const playlistUrl = 'http://www.xiami.com/song/playlist';
 const getSongUrl = 'http://www.xiami.com/song/gethqsong';
+
+const language = settings.get('language', 'en');
+const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class XiamiPlayer {
     constructor() {
@@ -127,9 +131,9 @@ class XiamiPlayer {
                 if (Object.keys(trackInfo).length > 0) {
                     notifier.notify({
                         'icon': path.join(__dirname, '../../assets/icon.png'),
-                        'title': `Track: ${trackInfo.songName}`,
-                        'message': `Artist: ${trackInfo.artist_name}
-Album: ${trackInfo.album_name}`
+                        'title': `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+                        'message': `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`
                     });
                 }
             });

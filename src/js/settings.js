@@ -1,10 +1,24 @@
 require('../../resources/semantic.min.js');
 const settings = require('electron-settings');
 
-$('#language').dropdown('set selected', 'sc');
+const language = settings.get('language', 'en');
+const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+
+setLocale();
+
+
+$('#language').dropdown('set selected', language);
 
 $('#language').dropdown({
   onChange: (value) => {
     settings.set('language', value);
   }
 });
+
+function setLocale() {
+  $(() => {
+    document.title = Locale.SETTINGS_SETTINGS_TITLE;
+    $('#setting-header').text(Locale.SETTINGS_SETTINGS);
+    $('#language-title').text(Locale.SETTINGS_LANGUAGE);
+  });
+}
