@@ -28,11 +28,11 @@ class AppTray {
 
         //set the context menu
         const context = Menu.buildFromTemplate([
-            {label: Locale.TRAY_PLAY_PAUSE, icon: path.join(__dirname, '../../assets/icon_play.png'), click: () => this.togglePlay()},
-            {label: Locale.TRAY_NEXT, icon: path.join(__dirname, '../../assets/icon_next.png'), click: () => this.playerController.next()},
-            {label: Locale.TRAY_PREVIOUS, icon: path.join(__dirname, '../../assets/icon_previous.png'), click: () => this.playerController.previous()},
+            {label: Locale.TRAY_PLAY_PAUSE, click: () => this.togglePlay()},
+            {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
+            {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
             {label: 'Separator', type: 'separator'},
-            {label: Locale.TRAY_SETTINGS, icon: path.join(__dirname, '../../assets/icon_settings.png'), click: () => this.openSettings()},
+            {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
             {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
         ]);
 
