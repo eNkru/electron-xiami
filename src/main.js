@@ -1,12 +1,14 @@
 const { app } = require('electron');
-const PlayerWindow = require('./window/controller/player');
-const AppTray = require('./window/controller/app-tray');
+const PlayerWindow = require('./window/controller/player-controller');
+const SettingsWindow = require('./window/controller/settings-controller');
+const AppTray = require('./window/controller/app-tray-controller');
 
 class ElectronXiami {
 
     // constructor.
     constructor() {
         this.playerWindow = null;
+        this.settingsWindow = null;
         this.tray = null;
     }
 
@@ -33,6 +35,7 @@ class ElectronXiami {
         // Some APIs can only be used after this event occurs.
         app.on('ready', () => {
             this.createPlayerWindow();
+            this.createSettingsWindow();
             this.createTrayWindow();
         });
 
@@ -60,8 +63,12 @@ class ElectronXiami {
         this.playerWindow = new PlayerWindow();
     }
 
+    createSettingsWindow() {
+        this.settingsWindow = new SettingsWindow();
+    }
+
     createTrayWindow() {
-        this.tray = new AppTray(this.playerWindow);
+        this.tray = new AppTray(this.playerWindow, this.settingsWindow);
     }
 }
 

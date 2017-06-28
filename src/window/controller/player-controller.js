@@ -15,7 +15,7 @@ class XiamiPlayer {
     }
 
     init() {
-        this.playerWindow = new BrowserWindow({
+        this.window = new BrowserWindow({
             height: 768,
             width: 1024,
             resizable: true,
@@ -30,59 +30,59 @@ class XiamiPlayer {
         });
 
         // load xiami player page.
-        this.playerWindow.loadURL(playerUrl);
+        this.window.loadURL(playerUrl);
 
         // triggering when user try to close the play window.
-        this.playerWindow.on('close', (e) => {
-            if (this.playerWindow.isVisible()) {
+        this.window.on('close', (e) => {
+            if (this.window.isVisible()) {
                 e.preventDefault();
-                this.playerWindow.hide();
+                this.window.hide();
             }
         });
 
         // triggering after the play window closed.
-        this.playerWindow.on('closed', () => {
-            this.playerWindow = null;
+        this.window.on('closed', () => {
+            this.window = null;
         });
 
         // intercept the ajax call response
-        this.playerWindow.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.registerResponseFilters(originalURL)));
+        this.window.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.registerResponseFilters(originalURL)));
     }
 
     // display and focus the player window.
     show() {
-        this.playerWindow.show();
-        this.playerWindow.focus();
+        this.window.show();
+        this.window.focus();
     }
 
     // hide the play window.
     hide() {
-        this.playerWindow.hide();
+        this.window.hide();
     }
 
     // return a boolean to indicate if the window is visible or not
     isVisible() {
-        return this.playerWindow.isVisible();
+        return this.window.isVisible();
     }
 
     pause() {
-        this.playerWindow.webContents.executeJavaScript("document.querySelector('.pause-btn').dispatchEvent(new MouseEvent('click'));");
+        this.window.webContents.executeJavaScript("document.querySelector('.pause-btn').dispatchEvent(new MouseEvent('click'));");
     }
 
     play() {
-        this.playerWindow.webContents.executeJavaScript("document.querySelector('.play-btn').dispatchEvent(new MouseEvent('click'));");
+        this.window.webContents.executeJavaScript("document.querySelector('.play-btn').dispatchEvent(new MouseEvent('click'));");
     }
 
     next() {
-        this.playerWindow.webContents.executeJavaScript("document.querySelector('.next-btn').dispatchEvent(new MouseEvent('click'));");
+        this.window.webContents.executeJavaScript("document.querySelector('.next-btn').dispatchEvent(new MouseEvent('click'));");
     }
 
     previous() {
-        this.playerWindow.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
+        this.window.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
     }
 
     getWebContents() {
-        return this.playerWindow.webContents;
+        return this.window.webContents;
     }
 
     registerResponseFilters(requestUrl) {
@@ -97,7 +97,7 @@ class XiamiPlayer {
             // console.log('Retrieve the playlist from url ' + urlLib.format(urlWithPath));
 
             // get the cookie, make call with the cookie
-            let session = this.playerWindow.webContents.session;
+            let session = this.window.webContents.session;
             session.cookies.get({ url : 'http://www.xiami.com' }, (error, cookies) => {
                 let cookieString =cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
                 fetch(urlLib.format(urlWithPath), {headers: {'Cookie': cookieString}}).then(res => res.json()).then(json => {

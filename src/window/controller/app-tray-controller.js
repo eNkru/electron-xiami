@@ -3,8 +3,9 @@ const { app, Menu, nativeImage, Tray, ipcMain } = require('electron');
 const storage = require('electron-json-storage');
 
 class AppTray {
-    constructor(player) {
+    constructor(player, settings) {
         this.player = player;
+        this.settings = settings;
         this.init();
     }
 
@@ -23,12 +24,11 @@ class AppTray {
 
         //set the context menu
         const context = Menu.buildFromTemplate([
-            {label: 'Show', click: () => this.player.show()},
             {label: 'Play | Pause', icon: path.join(__dirname, '../../../assets/icon_play.png'), click: () => this.togglePlay()},
             {label: 'Next', icon: path.join(__dirname, '../../../assets/icon_next.png'), click: () => this.player.next()},
             {label: 'Previous', icon: path.join(__dirname, '../../../assets/icon_previous.png'), click: () => this.player.previous()},
             {label: 'Separator', type: 'separator'},
-            {label: 'Setting', icon: path.join(__dirname, '../../../assets/icon_settings.png'), click: () => console.log("Open setting window")},
+            {label: 'Setting', icon: path.join(__dirname, '../../../assets/icon_settings.png'), click: () => this.openSettings()},
             {label: 'Exit', click: () => this.cleanupAndExit()},
         ]);
 
@@ -49,6 +49,10 @@ class AppTray {
         } else {
             this.player.show();
         }
+    }
+
+    openSettings() {
+        this.settings.show();
     }
 
     cleanupAndExit() {
