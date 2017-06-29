@@ -5,12 +5,9 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron src/main.js",
-    "build": "./scripts/build-all.sh",
-    "build:osx": "./scripts/build.sh darwin x64",
-    "build:osx64": "./scripts/build.sh darwin x64",
-    "build:linux32": "./scripts/build.sh linux ia32",
-    "build:linux": "./scripts/build.sh linux x64",
-    "build:linux64": "./scripts/build.sh linux x64"
+    "pack": "electron-builder --dir",
+    "dist:linux": "electron-builder --linux deb tar.xz",
+    "postinstall": "electron-builder install-app-deps"
   },
   "repository": "https://github.com/eNkru/electron-xiami",
   "keywords": [
@@ -21,15 +18,19 @@
     "虾米客户端",
     "Online music player"
   ],
-  "author": "Howard Ju",
+  "author": "Howard Ju <howard.ju@outlook.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron": "~1.6.2"
+    "electron": "~1.6.2",
+    "electron-builder": "^19.8.0"
   },
   "dependencies": {
     "electron-fetch": "^1.0.0",
     "electron-json-storage": "^3.0.5",
     "electron-settings": "^3.1.1",
     "node-notifier": "^5.1.2"
+  },
+  "build": {
+    "appId": "com.electron.${name}"
   }
 }
