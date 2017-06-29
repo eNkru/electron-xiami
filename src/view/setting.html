@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Settings</title>
+  <link href="../../resources/semantic.min.css" rel="stylesheet">
+  <link href="../css/settings.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="ui main text container">
+    <div class="ui green inverted tertiary segment">
+      <h2 id="setting-header" class="ui header">Manage your preferences</h2>
+    </div>
+
+    <div class="ui red segment">
+      <h3 id="language-title">Language</h3>
+      <div id="language" class="ui fluid selection dropdown">
+        <div class="default text"></div>
+      </div>
+    </div>
+
+    <div class="ui orange segment">
+      <h3 id="tray-title">Tray Settings</h3>
+      <div id="tray-click-title" class="ui horizontal divider">Click Tray Icon</div>
+      <div id="tray-click" class="ui fluid selection dropdown">
+        <div class="default text"></div>
+      </div>
+    </div>
+
+    <!--<div class="ui yellow segment">
+
+    </div>-->
+  </div>
+
+  <script>window.$ = window.jQuery = require('../../resources/jquery-3.2.1.min.js');</script>
+  <script>
+    require('../js/settings.js');
+  </script>
+</body>
+</html>

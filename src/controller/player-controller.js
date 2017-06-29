@@ -4,19 +4,22 @@ const path = require('path');
 const fetch = require('electron-fetch');
 const storage = require('electron-json-storage');
 const notifier = require('node-notifier');
+const settings = require('electron-settings');
 
+const playerUrl = 'http://www.xiami.com/play';
 const playlistUrl = 'http://www.xiami.com/song/playlist';
 const getSongUrl = 'http://www.xiami.com/song/gethqsong';
 
+const language = settings.get('language', 'en');
+const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+
 class XiamiPlayer {
     constructor() {
-        this.playerWindow = null;
-        this.playerUrl = 'http://www.xiami.com/play';
         this.init();
     }
 
     init() {
-        this.playerWindow = new BrowserWindow({
+        this.window = new BrowserWindow({
             height: 768,
             width: 1024,
             resizable: true,
@@ -31,38 +34,59 @@ class XiamiPlayer {
         });
 
         // load xiami player page.
-        this.playerWindow.loadURL(this.playerUrl);
+        this.window.loadURL(playerUrl);
 
         // triggering when user try to close the play window.
-        this.playerWindow.on('close', (e) => {
-            if (this.playerWindow.isVisible()) {
+        this.window.on('close', (e) => {
+            if (this.window.isVisible()) {
                 e.preventDefault();
-                this.playerWindow.hide();
+                this.window.hide();
             }
         });
 
         // triggering after the play window closed.
-        this.playerWindow.on('closed', () => {
-            this.playerWindow = null;
+        this.window.on('closed', () => {
+            this.window = null;
         });
 
-        this.playerWindow.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.registerResponseFilters(originalURL)));
+        // intercept the ajax call response
+        this.window.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.registerResponseFilters(originalURL)));
     }
 
     // display and focus the player window.
     show() {
-        this.playerWindow.show();
-        this.playerWindow.focus();
+        this.window.show();
+        this.window.focus();
     }
 
     // hide the play window.
     hide() {
-        this.playerWindow.hide();
+        this.window.hide();
     }
 
     // return a boolean to indicate if the window is visible or not
     isVisible() {
-        return this.playerWindow.isVisible();
+        return this.window.isVisible();
+    }
+
+    pause() {
+        this.window.webContents.executeJavaScript("document.querySelector('.pause-btn').dispatchEvent(new MouseEvent('click'));");
+    }
+
+    play() {
+        this.window.webContents.executeJavaScript("document.querySelector('.play-btn').dispatchEvent(new MouseEvent('click'));");
+    }
+
+    next() {
+        this.window.webContents.executeJavaScript("document.querySelector('.next-btn').dispatchEvent(new MouseEvent('click'));");
+    }
+
+    previous() {
+        this.window.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
+    }
+
+    getWebContents() {
+        return this.window.webContents;
     }
 
     registerResponseFilters(requestUrl) {
@@ -77,13 +101,20 @@ class XiamiPlayer {
             // console.log('Retrieve the playlist from url ' + urlLib.format(urlWithPath));
 
             // get the cookie, make call with the cookie
-            let session = this.playerWindow.webContents.session;
+            let session = this.window.webContents.session;
             session.cookies.get({ url : 'http://www.xiami.com' }, (error, cookies) => {
                 let cookieString =cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
                 fetch(urlLib.format(urlWithPath), {headers: {'Cookie': cookieString}}).then(res => res.json()).then(json => {
 
+                    let tracks = json.data.trackList;
+                    // set the first track as current playing
+                    // this will avoid the current playing tack is not available because the switch song start early then this callback return.
+                    storage.set('currentTrackInfo', tracks[0], (error) => {
+                        if(error) throw error;
+                    });
+
                     // refresh the local storage.
-                    json.data.trackList.forEach(track => {
+                    tracks.forEach(track => {
                         // console.log(track.songName);
                         storage.set(track.songId, track, (error) => {
                             if (error) console.log(error);
@@ -103,13 +134,19 @@ class XiamiPlayer {
 
             storage.get(songId, (error, trackInfo) => {
                 if (error) throw error;
-                
-                if (Object.keys(trackInfo).length) {
+                // update the current playing track
+                storage.set('currentTrackInfo', trackInfo, (error) => {
+                    if (error) console.log(error);
+                })
+
+                // notify the current playing track
+                if (Object.keys(trackInfo).length > 0) {
                     notifier.notify({
-                        'title': `歌曲：${trackInfo.songName}`,
-                        'message': `演唱者：${trackInfo.artist_name}
-专辑：${trackInfo.album_name}`
-                  });
+                        'icon': path.join(__dirname, '../../assets/icon.png'),
+                        'title': `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+                        'message': `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`
+                    });
                 }
             });
         }
