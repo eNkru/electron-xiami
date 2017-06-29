@@ -106,8 +106,15 @@ class XiamiPlayer {
                 let cookieString =cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
                 fetch(urlLib.format(urlWithPath), {headers: {'Cookie': cookieString}}).then(res => res.json()).then(json => {
 
+                    let tracks = json.data.trackList;
+                    // set the first track as current playing
+                    // this will avoid the current playing tack is not available because the switch song start early then this callback return.
+                    storage.set('currentTrackInfo', tracks[0], (error) => {
+                        if(error) throw error;
+                    });
+
                     // refresh the local storage.
-                    json.data.trackList.forEach(track => {
+                    tracks.forEach(track => {
                         // console.log(track.songName);
                         storage.set(track.songId, track, (error) => {
                             if (error) console.log(error);
