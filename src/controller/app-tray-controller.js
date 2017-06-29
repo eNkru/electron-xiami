@@ -2,8 +2,10 @@ const path = require('path');
 const { app, Menu, nativeImage, Tray, ipcMain } = require('electron');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
+const notifier = require('node-notifier');
 
 const language = settings.get('language', 'en');
+const trayClickEvent = settings.get('trayClickEvent', 'showMain');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class AppTray {
@@ -28,6 +30,7 @@ class AppTray {
 
         //set the context menu
         const context = Menu.buildFromTemplate([
+            {label: Locale.TRAY_SHOW_MAIN, click: () => this.playerController.show()},
             {label: Locale.TRAY_PLAY_PAUSE, click: () => this.togglePlay()},
             {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
             {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
@@ -38,12 +41,36 @@ class AppTray {
 
         this.tray.setContextMenu(context);
 
-        this.tray.on('click', () => this.togglePlayerWindow());
+        this.tray.on('click', () => this.fireClickTrayEvent());
     }
 
     togglePlay() {
         this.playerController.getWebContents().executeJavaScript("document.querySelector('.pause-btn')", (result) => {
             result ? this.playerController.pause() : this.playerController.play();
+        });
+    }
+
+    fireClickTrayEvent() {
+        if(trayClickEvent === 'showMain') {
+            this.togglePlayerWindow();
+        } else {
+            this.notifyTrackInfo();
+        }
+    }
+
+    notifyTrackInfo() {
+        storage.get('currentTrackInfo', (error, trackInfo) => {
+            if (error) throw error;
+
+            // notify the current playing track
+                if (Object.keys(trackInfo).length > 0) {
+                    notifier.notify({
+                        'icon': path.join(__dirname, '../../assets/icon.png'),
+                        'title': `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+                        'message': `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`
+                    });
+                }
         });
     }
 

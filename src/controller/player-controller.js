@@ -127,7 +127,12 @@ class XiamiPlayer {
 
             storage.get(songId, (error, trackInfo) => {
                 if (error) throw error;
-                // console.log(trackInfo);
+                // update the current playing track
+                storage.set('currentTrackInfo', trackInfo, (error) => {
+                    if (error) console.log(error);
+                })
+
+                // notify the current playing track
                 if (Object.keys(trackInfo).length > 0) {
                     notifier.notify({
                         'icon': path.join(__dirname, '../../assets/icon.png'),
