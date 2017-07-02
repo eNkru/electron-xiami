@@ -1,41 +1,42 @@
 <img src="assets/icon.png" alt="logo" height="80" align="right" />
 
-# electron-xiami
+# Electron Xiami
 
-Linux下的虾米客户端 (虾米播放器)，使用[Electron](https://electron.atom.io)构建。
+[English README](README.en.md)
 
-A [xiami](http://www.xiami.com/) desktop application for Linux.
-Supported by [Electron](https://electron.atom.io/).
+Linux和macOS下的虾米客户端 (虾米播放器)，使用[Electron](https://electron.atom.io)构建。
 
 ![screenshot_linux](https://user-images.githubusercontent.com/13460738/27520616-63b696e4-5a63-11e7-873b-c4229a12a47a.jpg)
 
-*This is not the official desktop client. It's released under open source. If you are facing any issue, please use [this link](https://github.com/eNkru/electron-xiami/issues) to report.*
+*请注意：这个项目不是虾米音乐的官方客户端。如果有任何问题请反馈到[这个链接](https://github.com/eNkru/electron-xiami/issues)。*
 
-## Feature
-* Play Xiami online music on Linux platform.
-* Close to minimise.
-* Dock tray support.
+## 功能
+* 虾米音乐在线
+* 支持最小化到托盘
+* 支持播放控制
+* 支持用户配置
+* 多语言支持
 
-## Pre-Request
+## 安装需求
 * GIT
 * NPM
 
-## Build & Install
-Clone the repository and run in development mode.
+## 编译和安装
+本地编译运行
 ```
 git clone https://github.com/eNkru/electron-xiami.git
 cd electron-xiami
 npm install
 npm start
 ```
-Build the application 
+编译打包版本
 ```
 npm run build:linux
 npm run build:osx
 ```
 
-## Download
-The released application can be downloaded [here](https://github.com/eNkru/electron-xiami/releases).
+## 下载
+预打包版本请点击[这个链接](https://github.com/eNkru/electron-xiami/releases)下载。
 
-## License
+## 授权协议
 [MIT](https://github.com/eNkru/electron-xiami/blob/master/LICENSE)
