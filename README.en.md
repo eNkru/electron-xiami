@@ -20,8 +20,8 @@ Supported by [Electron](https://electron.atom.io/).
 * Multi-language support
 
 ## Pre-Request
-* GIT
-* NPM
+* [GIT](https://git-scm.com/)
+* [NPM](https://www.npmjs.com/)
 
 ## Build & Install
 Clone the repository and run in development mode.
@@ -33,8 +33,7 @@ npm start
 ```
 Build the application 
 ```
-npm run build:linux
-npm run build:osx
+npm run dist:linux
 ```
 
 ## Download

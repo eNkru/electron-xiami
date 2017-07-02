@@ -18,8 +18,8 @@ Linux和macOS下的虾米客户端 (虾米播放器)，使用[Electron](https://
 * 多语言支持
 
 ## 安装需求
-* GIT
-* NPM
+* [GIT](https://git-scm.com/)
+* [NPM](https://www.npmjs.com/)
 
 ## 编译和安装
 本地编译运行
@@ -31,8 +31,7 @@ npm start
 ```
 编译打包版本
 ```
-npm run build:linux
-npm run build:osx
+npm run dist:linux
 ```
 
 ## 下载
