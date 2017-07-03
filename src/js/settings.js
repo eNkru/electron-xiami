@@ -15,27 +15,42 @@ function setLocale() {
   $('#language-title').text(Locale.SETTINGS_LANGUAGE);
   $('#tray-title').text(Locale.SETTINGS_TRAY);
   $('#tray-click-title').text(Locale.SETTINGS_TRAY_CLICK);
+  $('#custom-layout-title').text(Locale.SETTINGS_LAYOUT);
 }
 
 function loadSettings() {
   // language setting
-  $('#language').dropdown('setup menu', {values: Locale.SETTINGS_LANGUAGE_OPTIONS});
-  $('#language').dropdown('set selected', language);
+  const $language = $('#language');
+  $language.dropdown('setup menu', {values: Locale.SETTINGS_LANGUAGE_OPTIONS});
+  $language.dropdown('set selected', language);
 
-  $('#language').dropdown({
+  $language.dropdown({
     onChange: (value) => {
       settings.set('language', value);
     }
   });
 
   // tray click setting
-  let trayClick = settings.get('trayClickEvent', 'showMain');
-  $('#tray-click').dropdown('setup menu', {values: Locale.SETTINGS_TRAY_CLICK_OPTIONS});
-  $('#tray-click').dropdown('set selected', trayClick);
+  const trayClick = settings.get('trayClickEvent', 'showMain');
+  const $trayClick = $('#tray-click');
+  $trayClick.dropdown('setup menu', {values: Locale.SETTINGS_TRAY_CLICK_OPTIONS});
+  $trayClick.dropdown('set selected', trayClick);
 
-    $('#tray-click').dropdown({
+  $trayClick.dropdown({
     onChange: (value) => {
       settings.set('trayClickEvent', value);
+    }
+  });
+
+  // custom layout setting
+  const customLayout = settings.get('customLayout', 'default');
+  const $customLayout = $('#custom-layout');
+  $customLayout.dropdown('setup menu', {values: Locale.SETTINGS_LAYOUT_OPTIONS});
+  $customLayout.dropdown('set selected', customLayout);
+
+  $customLayout.dropdown({
+    onChange: (value) => {
+      settings.set('customLayout', value);
     }
   });
 }
