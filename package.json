@@ -7,6 +7,7 @@
     "start": "electron src/main.js",
     "pack": "electron-builder --dir",
     "dist:linux": "electron-builder --linux deb tar.xz",
+    "dist:macOS": "electron-builder --mac",
     "postinstall": "electron-builder install-app-deps"
   },
   "repository": "https://github.com/eNkru/electron-xiami",
