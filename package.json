@@ -32,6 +32,9 @@
     "node-notifier": "^5.1.2"
   },
   "build": {
-    "appId": "com.electron.${name}"
+    "appId": "nz.co.enkru.${name}",
+    "linux": {
+      "category": "Audio"
+    }
   }
 }
