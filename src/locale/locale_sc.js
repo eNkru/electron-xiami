@@ -5,6 +5,7 @@ Locale.TRAY_SHOW_MAIN = '显示播放器';
 Locale.TRAY_PLAY_PAUSE = '播放 | 暂停';
 Locale.TRAY_NEXT = '下一首';
 Locale.TRAY_PREVIOUS = '上一首';
+Locale.TRAY_RELOAD_PLAYER = '重置播放界面';
 Locale.TRAY_SETTINGS = '设置';
 Locale.TRAY_EXIT = '退出';
 

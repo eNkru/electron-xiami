@@ -105,6 +105,10 @@ class XiamiPlayer {
     this.window.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
   }
 
+  reload() {
+    this.window.reload();
+  }
+
   getWebContents() {
     return this.window.webContents;
   }

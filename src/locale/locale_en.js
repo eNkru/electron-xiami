@@ -7,6 +7,7 @@ Locale.TRAY_SHOW_MAIN = 'Show Player';
 Locale.TRAY_PLAY_PAUSE = 'Play | Pause';
 Locale.TRAY_NEXT = 'Next';
 Locale.TRAY_PREVIOUS = 'Previous';
+Locale.TRAY_RELOAD_PLAYER = 'Reload Player Window';
 Locale.TRAY_SETTINGS = 'Settings';
 Locale.TRAY_EXIT = 'Exit';
 
