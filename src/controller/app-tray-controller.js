@@ -9,90 +9,92 @@ const trayClickEvent = settings.get('trayClickEvent', 'showMain');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class AppTray {
-    constructor(playerController, settingsController) {
-        this.playerController = playerController;
-        this.settingsController = settingsController;
-        this.init();
+  constructor(playerController, settingsController) {
+    this.playerController = playerController;
+    this.settingsController = settingsController;
+    this.init();
+  }
+
+  init() {
+
+    //initial the tray
+    let trayIcon;
+    if (process.platform === 'linux' || process.platform === 'win32') {
+      trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_white.png'));
+    } else {
+      trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_black_macos.png'))
     }
+    trayIcon.setTemplateImage(true);
+    this.tray = new Tray(trayIcon);
+    this.tray.setToolTip(Locale.TRAY_TOOLTIP);
 
-    init() {
+    //set the context menu
+    const context = Menu.buildFromTemplate([
+      {label: Locale.TRAY_SHOW_MAIN, click: () => this.playerController.show()},
+      {label: Locale.TRAY_PLAY_PAUSE, click: () => this.togglePlay()},
+      {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
+      {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
+      {label: 'Separator', type: 'separator'},
+      {label: Locale.TRAY_RELOAD_PLAYER, click: () => this.playerController.reload()},
+      {label: 'Separator', type: 'separator'},
+      {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
+      {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
+    ]);
 
-        //initial the tray
-        let trayIcon;
-        if (process.platform === 'linux' || process.platform === 'win32') {
-            trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_white.png'));
-        } else {
-            trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_black_macos.png'))
-        }
-        trayIcon.setTemplateImage(true);
-        this.tray = new Tray(trayIcon);
-        this.tray.setToolTip(Locale.TRAY_TOOLTIP);
+    this.tray.setContextMenu(context);
 
-        //set the context menu
-        const context = Menu.buildFromTemplate([
-            {label: Locale.TRAY_SHOW_MAIN, click: () => this.playerController.show()},
-            {label: Locale.TRAY_PLAY_PAUSE, click: () => this.togglePlay()},
-            {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
-            {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
-            {label: 'Separator', type: 'separator'},
-            {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
-            {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
-        ]);
+    this.tray.on('click', () => this.fireClickTrayEvent());
+  }
 
-        this.tray.setContextMenu(context);
+  togglePlay() {
+    this.playerController.getWebContents().executeJavaScript("document.querySelector('.pause-btn')", (result) => {
+      result ? this.playerController.pause() : this.playerController.play();
+    });
+  }
 
-        this.tray.on('click', () => this.fireClickTrayEvent());
+  fireClickTrayEvent() {
+    if(trayClickEvent === 'showMain') {
+      this.togglePlayerWindow();
+    } else {
+      this.notifyTrackInfo();
     }
+  }
 
-    togglePlay() {
-        this.playerController.getWebContents().executeJavaScript("document.querySelector('.pause-btn')", (result) => {
-            result ? this.playerController.pause() : this.playerController.play();
-        });
-    }
+  notifyTrackInfo() {
+    storage.get('currentTrackInfo', (error, trackInfo) => {
+      if (error) throw error;
 
-    fireClickTrayEvent() {
-        if(trayClickEvent === 'showMain') {
-            this.togglePlayerWindow();
-        } else {
-            this.notifyTrackInfo();
-        }
-    }
-
-    notifyTrackInfo() {
-        storage.get('currentTrackInfo', (error, trackInfo) => {
-            if (error) throw error;
-
-            // notify the current playing track
-                if (Object.keys(trackInfo).length > 0) {
-                    notifier.notify({
-                        'icon': path.join(__dirname, '../../assets/icon.png'),
-                        'title': `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-                        'message': `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+      // notify the current playing track
+      if (Object.keys(trackInfo).length > 0) {
+        notifier.notify({
+          'icon': path.join(__dirname, '../../assets/icon.png'),
+          'title': `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+          'message': `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
 ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`
-                    });
-                }
         });
-    }
+      }
+    });
+  }
 
-    togglePlayerWindow() {
-        if (this.playerController.isVisible()) {
-            this.playerController.hide();
-        } else {
-            this.playerController.show();
-        }
+  togglePlayerWindow() {
+    if (this.playerController.isVisible()) {
+      this.playerController.hide();
+    } else {
+      this.playerController.show();
     }
+  }
 
-    openSettings() {
-        this.settingsController.show();
-    }
+  openSettings() {
+    this.settingsController.show();
+  }
 
-    cleanupAndExit() {
-        storage.clear((error) => {
-            if (error) throw error;
-            console.log(app.getPath('userData'));
-            app.exit(0);
-        });
-    }
+  cleanupAndExit() {
+    storage.clear((error) => {
+      if (error) throw error;
+      console.log(app.getPath('userData'));
+      app.exit(0);
+    });
+  }
 }
 
 module.exports = AppTray;
