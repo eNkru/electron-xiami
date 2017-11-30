@@ -36,6 +36,14 @@ Build the application
 npm run dist:linux
 ```
 
+## Release
+```
+npm version (new release version)
+git push origin master
+git push origin --tags
+npm publish
+```
+
 ## Download
 The released application can be downloaded [here](https://github.com/eNkru/electron-xiami/releases).
 

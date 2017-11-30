@@ -34,6 +34,14 @@ npm start
 npm run dist:linux
 ```
 
+## 发布
+```
+npm version (new release version)
+git push origin master
+git push origin --tags
+npm publish
+```
+
 ## 下载
 预打包版本请点击[这个链接](https://github.com/eNkru/electron-xiami/releases)下载。
 
