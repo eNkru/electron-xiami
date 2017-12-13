@@ -9,7 +9,7 @@ const CssInjector = require('../js/css-injector');
 
 const playerUrl = 'http://www.xiami.com/play';
 const playlistUrl = 'http://www.xiami.com/song/playlist';
-const getSongUrl = 'http://www.xiami.com/song/gethqsong';
+const getLyricUrl = 'http://img.xiami.net/lyric/';
 
 const language = settings.get('language', 'en');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
@@ -131,7 +131,8 @@ class XiamiPlayer {
 
         http.get({hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
           'Referer': playerUrl,
-          'Cookie': cookieString
+          'Cookie': cookieString,
+          'User-Agent': this.window.webContents.getUserAgent()
         }}, (response) => {
           let playlistData = '';
 
@@ -149,7 +150,7 @@ class XiamiPlayer {
 
             // refresh the local storage.
             tracks.forEach(track => {
-              // console.log(track.songName);
+              // console.log(track);
               storage.set(track.songId, track, (error) => {
                 if (error) console.log(error);
               });
@@ -161,9 +162,10 @@ class XiamiPlayer {
   }
 
   changeTrackListener(requestUrl) {
-    if (requestUrl.startsWith(getSongUrl)) {
-      let pathname = urlLib.parse(requestUrl).pathname;
-      let songId = path.parse(pathname).base;
+    if (requestUrl.startsWith(getLyricUrl)) {
+      const lyricPath = urlLib.parse(requestUrl).pathname;
+      const songId = lyricPath.match(/\/(\d*)_/)[1];
+      // console.log(songId);
 
       storage.get(songId, (error, trackInfo) => {
         if (error) throw error;
