@@ -1,7 +1,7 @@
 const { BrowserWindow } = require('electron');
 const urlLib = require('url');
+const http = require('http');
 const path = require('path');
-const fetch = require('electron-fetch');
 const storage = require('electron-json-storage');
 const notifier = require('node-notifier');
 const settings = require('electron-settings');
@@ -128,24 +128,33 @@ class XiamiPlayer {
       let session = this.window.webContents.session;
       session.cookies.get({ url : 'http://www.xiami.com' }, (error, cookies) => {
         let cookieString =cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
-        fetch(urlLib.format(urlWithPath), {headers: {'Cookie': cookieString}}).then(res => res.json()).then(json => {
 
-          let tracks = json.data.trackList;
-          // set the first track as current playing
-          // this will avoid the current playing tack is not available because the switch song start early then this callback return.
-          storage.set('currentTrackInfo', tracks[0], (error) => {
-            if(error) throw error;
+        http.get({hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
+          'Referer': playerUrl,
+          'Cookie': cookieString
+        }}, (response) => {
+          let playlistData = '';
+
+          response.on('data', (chunk) =>{
+            playlistData += chunk;
           });
 
-          // refresh the local storage.
-          tracks.forEach(track => {
-            // console.log(track.songName);
-            storage.set(track.songId, track, (error) => {
-              if (error) console.log(error);
+          response.on('end', () =>{
+            let tracks = JSON.parse(playlistData).data.trackList;
+            // set the first track as current playing
+            // this will avoid the current playing tack is not available because the switch song start early then this callback return.
+            storage.set('currentTrackInfo', tracks[0], (error) => {
+              if(error) throw error;
+            });
+
+            // refresh the local storage.
+            tracks.forEach(track => {
+              // console.log(track.songName);
+              storage.set(track.songId, track, (error) => {
+                if (error) console.log(error);
+              });
             });
           });
-        }).catch((error) => {
-          console.log(error);
         });
       });
     }

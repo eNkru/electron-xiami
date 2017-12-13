@@ -22,12 +22,11 @@
   "author": "Howard Ju <howard.ju@outlook.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron": "~1.6.2",
+    "electron": "~1.7.9",
     "electron-builder": "^19.8.0"
   },
   "dependencies": {
-    "electron-fetch": "^1.0.0",
-    "electron-json-storage": "^3.0.5",
+    "electron-json-storage": "^4.0.2",
     "electron-settings": "^3.1.1",
     "node-notifier": "^5.1.2"
   },
