@@ -1,4 +1,4 @@
-const { BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const urlLib = require('url');
 const http = require('http');
 const path = require('path');
@@ -6,6 +6,7 @@ const storage = require('electron-json-storage');
 const notifier = require('node-notifier');
 const settings = require('electron-settings');
 const CssInjector = require('../js/css-injector');
+const { download } = require('electron-dl');
 
 const playerUrl = 'http://www.xiami.com/play';
 const playlistUrl = 'http://www.xiami.com/song/playlist';
@@ -176,12 +177,18 @@ class XiamiPlayer {
 
         // notify the current playing track
         if (Object.keys(trackInfo).length > 0) {
-          notifier.notify({
-            'icon': path.join(__dirname, '../../assets/icon.png'),
-            'title': `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-            'message': `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+
+          // download the covers
+          download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
+            .then(dl => {
+              notifier.notify({
+                icon: dl.getSavePath(),
+                title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+                contentImage: dl.getSavePath(),
+                message: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
 ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`
-          });
+              });
+            }).catch(console.error);
         }
       });
     }
