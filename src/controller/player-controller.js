@@ -115,8 +115,11 @@ class XiamiPlayer {
   }
 
   registerResponseFilters(requestUrl) {
-    this.updatePlaylistListener(requestUrl);
-    this.changeTrackListener(requestUrl);
+    const showNotification = settings.get('showNotification', 'check');
+    if ('check' === showNotification) {
+      this.updatePlaylistListener(requestUrl);
+      this.changeTrackListener(requestUrl);
+    }
   }
 
   updatePlaylistListener(requestUrl) {

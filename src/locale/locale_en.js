@@ -31,4 +31,6 @@ Locale.SETTINGS_LAYOUT_OPTIONS = [
   {value: 'hideLyrics', text: 'Hide Lyrics Panel', name: 'Hide Lyrics Panel'},
   {value: 'songListOnly', text: 'Playlist Only', name: 'Playlist Only'}];
 
+Locale.SETTINGS_NOTIFICATION = 'Show Notification';
+
 module.exports = Locale;

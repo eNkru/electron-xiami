@@ -29,4 +29,6 @@ Locale.SETTINGS_LAYOUT_OPTIONS = [
   {value: 'hideLyrics', text: '隐藏歌词面板', name: '隐藏歌词面板'},
   {value: 'songListOnly', text: '只显示歌曲列表', name: '只显示歌曲列表'}];
 
+Locale.SETTINGS_NOTIFICATION = '显示通知';
+
 module.exports = Locale;
