@@ -1,4 +1,5 @@
 const { app } = require('electron');
+const fsx = require('node-fs-extra')
 const PlayerWindow = require('./controller/player-controller');
 const SettingsWindow = require('./controller/settings-controller');
 const AppTray = require('./controller/app-tray-controller');
@@ -46,6 +47,17 @@ class ElectronXiami {
             if (process.platform !== 'darwin') {
                 app.quit()
             }
+        });
+
+        app.on('quit', () => {
+            // empty cover cache folder before exit.
+            fsx.remove(`${app.getPath('userData')}/covers`)
+                .then(() => {
+                    console.log('Cover cache has been emptied.')
+                })
+                .catch(err => {
+                    console.error(err)
+                });
         });
 
         app.on('activate', () => {
