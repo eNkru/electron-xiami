@@ -22,11 +22,12 @@ class XiamiPlayer {
 
   init() {
     this.window = new BrowserWindow({
-      height: 768,
-      width: 1024,
-      resizable: true,
-      frame: true,
-      autoHideMenuBar: true,
+      width: 1000,
+      height: 670,
+      minWidth: 1000,
+      minHeight: 670,
+      titleBarStyle: 'hidden-inset',
+      center: true,
       webPreferences: {
         javascript: true,
         plugins: true,
@@ -40,6 +41,7 @@ class XiamiPlayer {
 
     // inject the custom layout.
     this.window.webContents.on('dom-ready', () => {
+      this.window.webContents.insertCSS(CssInjector.all);
       const customLayout = settings.get('customLayout', 'default');
       switch (customLayout) {
         case 'hideSidebar':
@@ -183,15 +185,15 @@ class XiamiPlayer {
 
           // download the covers
           download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
-            .then(dl => {
-              notifier.notify({
-                icon: dl.getSavePath(),
-                title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-                contentImage: dl.getSavePath(),
-                message: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+              .then(dl => {
+                notifier.notify({
+                  icon: dl.getSavePath(),
+                  title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+                  contentImage: dl.getSavePath(),
+                  message: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
 ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`
-              });
-            }).catch(console.error);
+                });
+              }).catch(console.error);
         }
       });
     }

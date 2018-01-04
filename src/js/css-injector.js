@@ -1,5 +1,20 @@
 class CssInjector {}
 
+CssInjector.all = `
+  #top {
+    -webkit-app-region: drag;
+  }
+  #J_header .logo {
+    padding-left: 100px !important;
+  }
+  .search-result {
+    left: 300px !important;
+  }
+  .search-wrap {
+    left: 300px !important;
+  }
+`;
+
 CssInjector.hideSidebar = `
   .main-wrap {
     padding-left: 0 !important;
