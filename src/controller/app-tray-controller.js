@@ -1,8 +1,7 @@
 const path = require('path');
-const { app, Menu, nativeImage, Tray, ipcMain } = require('electron');
+const { app, Menu, nativeImage, Tray, ipcMain, Notification } = require('electron');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
-const notifier = require('node-notifier');
 
 const language = settings.get('language', 'en');
 const trayClickEvent = settings.get('trayClickEvent', 'showMain');
@@ -66,12 +65,17 @@ class AppTray {
 
       // notify the current playing track
       if (Object.keys(trackInfo).length > 0) {
-        notifier.notify({
-          'icon': path.join(__dirname, '../../assets/icon.png'),
-          'title': `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-          'message': `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
-${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`
-        });
+          // download the covers
+          download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
+          .then(dl => {
+            new Notification({
+              title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+              body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
+              silent: true,
+              icon: dl.getSavePath()
+            }).show();
+          }).catch(console.error);
       }
     });
   }

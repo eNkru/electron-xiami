@@ -22,15 +22,14 @@
   "author": "Howard Ju <howard.ju@outlook.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron": "~1.7.9",
+    "electron": "~1.7.10",
     "electron-builder": "^19.8.0"
   },
   "dependencies": {
     "electron-dl": "^1.10.0",
     "electron-json-storage": "^4.0.2",
     "electron-settings": "^3.1.1",
-    "node-fs-extra": "^0.8.2",
-    "node-notifier": "^5.1.2"
+    "node-fs-extra": "^0.8.2"
   },
   "build": {
     "appId": "nz.co.enkru.${name}",

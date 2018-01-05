@@ -1,9 +1,8 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Notification } = require('electron');
 const urlLib = require('url');
 const http = require('http');
 const path = require('path');
 const storage = require('electron-json-storage');
-const notifier = require('node-notifier');
 const settings = require('electron-settings');
 const CssInjector = require('../js/css-injector');
 const { download } = require('electron-dl');
@@ -208,13 +207,13 @@ class XiamiPlayer {
           // download the covers
           download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
               .then(dl => {
-                notifier.notify({
-                  icon: dl.getSavePath(),
+                new Notification({
                   title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-                  contentImage: dl.getSavePath(),
-                  message: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
-${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`
-                });
+                  body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
+                  silent: true,
+                  icon: dl.getSavePath()
+                }).show();
               }).catch(console.error);
         }
       });
