@@ -1,6 +1,6 @@
 class CssInjector {}
 
-CssInjector.all = `
+CssInjector.macos = `
   #top {
     -webkit-app-region: drag;
   }

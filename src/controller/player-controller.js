@@ -21,27 +21,49 @@ class XiamiPlayer {
   }
 
   init() {
-    this.window = new BrowserWindow({
-      width: 1000,
-      height: 670,
-      minWidth: 1000,
-      minHeight: 670,
-      titleBarStyle: 'hidden-inset',
-      center: true,
-      webPreferences: {
-        javascript: true,
-        plugins: true,
-        webSecurity: false,
-        nodeIntegration: false
-      }
-    });
+    if (process.platform == 'darwin') {
+      this.window = new BrowserWindow({
+        width: 1000,
+        height: 670,
+        minWidth: 1000,
+        minHeight: 670,
+        titleBarStyle: 'hidden-inset',
+        center: true,
+        webPreferences: {
+          javascript: true,
+          plugins: true,
+          webSecurity: false,
+          nodeIntegration: false
+        }
+      });
+    } else {
+      this.window = new BrowserWindow({
+        width: 1000,
+        height: 670,
+        minWidth: 1000,
+        minHeight: 670,
+        frame: true,
+        autoHideMenuBar: true,
+        center: true,
+        webPreferences: {
+          javascript: true,
+          plugins: true,
+          webSecurity: false,
+          nodeIntegration: false
+        }
+      });
+    }
+
 
     // load xiami player page.
     this.window.loadURL(playerUrl);
 
     // inject the custom layout.
     this.window.webContents.on('dom-ready', () => {
-      this.window.webContents.insertCSS(CssInjector.all);
+      if (process.platform == 'darwin') {
+        this.window.webContents.insertCSS(CssInjector.macos);
+      }
+
       const customLayout = settings.get('customLayout', 'default');
       switch (customLayout) {
         case 'hideSidebar':
