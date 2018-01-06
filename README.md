@@ -6,6 +6,8 @@
 
 Linux和macOS下的虾米客户端 (虾米播放器)，使用[Electron](https://electron.atom.io)构建。
 
+![screenshot_macos](https://user-images.githubusercontent.com/13460738/34644583-38a2a2b6-f39e-11e7-8831-e21475427ccb.jpg)
+
 ![screenshot_linux](https://user-images.githubusercontent.com/13460738/27520616-63b696e4-5a63-11e7-873b-c4229a12a47a.jpg)
 
 *请注意：这个项目不是虾米音乐的官方客户端。如果有任何问题请反馈到[这个链接](https://github.com/eNkru/electron-xiami/issues)。*

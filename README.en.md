@@ -7,6 +7,8 @@
 A [xiami](http://www.xiami.com/) desktop application for Linux.
 Supported by [Electron](https://electron.atom.io/).
 
+![screenshot_macos](https://user-images.githubusercontent.com/13460738/34644583-38a2a2b6-f39e-11e7-8831-e21475427ccb.jpg)
+
 ![screenshot_linux](https://user-images.githubusercontent.com/13460738/27520616-63b696e4-5a63-11e7-873b-c4229a12a47a.jpg)
 
 *This is not the official desktop client. It's released under open source. If you are facing any issue, please use [this link](https://github.com/eNkru/electron-xiami/issues) to report.*
