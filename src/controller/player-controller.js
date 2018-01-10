@@ -207,13 +207,16 @@ class XiamiPlayer {
           // download the covers
           download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
               .then(dl => {
-                new Notification({
+                const notification = new Notification({
                   title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
                   body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
 ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
                   silent: true,
                   icon: dl.getSavePath()
-                }).show();
+                });
+
+                notification.on("click", () => this.show());
+                notification.show();
               }).catch(console.error);
         }
       });
