@@ -22,6 +22,7 @@ class XiamiPlayer {
   init() {
     if (process.platform == 'darwin') {
       this.window = new BrowserWindow({
+        show: false,
         width: 1000,
         height: 670,
         minWidth: 1000,
@@ -37,6 +38,7 @@ class XiamiPlayer {
       });
     } else {
       this.window = new BrowserWindow({
+        show: false,
         width: 1000,
         height: 670,
         minWidth: 1000,
@@ -53,6 +55,9 @@ class XiamiPlayer {
       });
     }
 
+    this.window.once('ready-to-show', () => {
+      this.window.show();
+    });
 
     // load xiami player page.
     this.window.loadURL(playerUrl);
