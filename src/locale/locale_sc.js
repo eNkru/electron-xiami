@@ -18,7 +18,7 @@ Locale.SETTINGS_SETTINGS = '管理设置面板';
 Locale.SETTINGS_LANGUAGE = '语言（重启生效）';
 Locale.SETTINGS_LANGUAGE_OPTIONS = [{value: 'en', text: '英文', name: '英文'}, {value: 'sc', text: '简体中文', name: '简体中文'}];
 
-Locale.SETTINGS_TRAY = '系统托盘（重启生效）';
+Locale.SETTINGS_TRAY = '系统托盘';
 Locale.SETTINGS_TRAY_CLICK = '左键单击托盘图标';
 Locale.SETTINGS_TRAY_CLICK_OPTIONS = [{value: 'showMain', text: '显示播放器界面', name: '显示播放器界面'}, {value: 'showTrackInfo', text: '显示播放信息', name: '显示播放信息'}];
 
