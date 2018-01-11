@@ -64,9 +64,38 @@ CssInjector.mini = `
     min-width: 0px !important;
     min-height: 0px !important;
   }
-  #player-main #top, #player-main #middle {
+  
+  #player-main #top{
     display: none;
   }
+
+  #middle .main-sidebar, #middle .main-body, #J_lyricScrollWrap{
+    display: none !important;
+  }
+  #middle {
+    top: 0 !important;
+    background-color: transparent !important;
+  }
+  .main-wrap{
+    padding: 0 !important;
+  }
+  #J_lrcWrap {
+    top: 0 !important;
+    left: 0 !important;
+  }
+  .ui-album-cover {
+    padding: 10px 0 0 20px !important;
+    width: 130px !important;
+    height: 130px !important;
+  }
+  .ui-album-img {
+    width: 130px !important;
+    height: 130px !important;
+  }
+  .ui-album-img img {
+    border: 5px solid #FFF
+  }
+
   #bottom {
     height: 100% !important;
     width: 100% !important;
