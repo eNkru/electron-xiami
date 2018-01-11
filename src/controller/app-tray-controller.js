@@ -2,9 +2,9 @@ const path = require('path');
 const { app, Menu, nativeImage, Tray, ipcMain, Notification } = require('electron');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
+const { download } = require('electron-dl');
 
 const language = settings.get('language', 'en');
-const trayClickEvent = settings.get('trayClickEvent', 'showMain');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class AppTray {
@@ -52,7 +52,7 @@ class AppTray {
   }
 
   fireClickTrayEvent() {
-    if(trayClickEvent === 'showMain') {
+    if(settings.get('trayClickEvent', 'showMain') === 'showMain') {
       this.togglePlayerWindow();
     } else {
       this.notifyTrackInfo();
@@ -66,7 +66,7 @@ class AppTray {
       // notify the current playing track
       if (Object.keys(trackInfo).length > 0) {
           // download the covers
-          download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
+          download(this.playerController.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
           .then(dl => {
             new Notification({
               title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
