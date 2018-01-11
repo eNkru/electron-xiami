@@ -117,7 +117,7 @@ CssInjector.mini = `
       right: 0 !important;
       top: 80px !important;
   }
-  .player-volume #J_playerHQ {
+  .player-volume #J_playerHQ, .player-volume #J_translate {
     display: none !important;
   }
   .player-volume #volume {
