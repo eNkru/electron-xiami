@@ -25,8 +25,6 @@ class XiamiPlayer {
         show: false,
         width: 1000,
         height: 670,
-        minWidth: 1000,
-        minHeight: 670,
         titleBarStyle: 'hidden-inset',
         center: true,
         webPreferences: {
@@ -41,8 +39,6 @@ class XiamiPlayer {
         show: false,
         width: 1000,
         height: 670,
-        minWidth: 1000,
-        minHeight: 670,
         frame: true,
         autoHideMenuBar: true,
         center: true,
@@ -73,16 +69,24 @@ class XiamiPlayer {
       const customLayout = settings.get('customLayout', 'default');
       switch (customLayout) {
         case 'hideSidebar':
+          this.window.setSize(1000, 670);
           this.window.webContents.insertCSS(CssInjector.hideSidebar);
           break;
         case 'hideLyrics':
+          this.window.setSize(1000, 670);
           this.window.webContents.insertCSS(CssInjector.hideLyrics);
           break;
         case 'songListOnly':
+          this.window.setSize(1000, 670);
           this.window.webContents.insertCSS(CssInjector.songListOnly);
+          break;
+        case 'mini':
+          this.window.setSize(520, 160);
+          this.window.webContents.insertCSS(CssInjector.mini);
           break;
         default:
           // using the default layout from the xiami play
+          this.window.setSize(1000, 670);
           break;
       }
     });

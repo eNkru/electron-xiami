@@ -29,7 +29,9 @@ Locale.SETTINGS_LAYOUT_OPTIONS = [
   {value: 'default', text: 'Default', name: 'Default'},
   {value: 'hideSidebar', text: 'Hide Side Panel', name: 'Hide Side Panel'},
   {value: 'hideLyrics', text: 'Hide Lyrics Panel', name: 'Hide Lyrics Panel'},
-  {value: 'songListOnly', text: 'Playlist Only', name: 'Playlist Only'}];
+  {value: 'songListOnly', text: 'Playlist Only', name: 'Playlist Only'},
+  {value: 'mini', text: 'Mini Player', name: 'Mini Player'}
+];
 
 Locale.SETTINGS_NOTIFICATION = 'Show Notification';
 
