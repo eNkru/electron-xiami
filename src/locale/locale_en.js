@@ -7,7 +7,19 @@ Locale.TRAY_SHOW_MAIN = 'Show Player';
 Locale.TRAY_PLAY_PAUSE = 'Play | Pause';
 Locale.TRAY_NEXT = 'Next';
 Locale.TRAY_PREVIOUS = 'Previous';
-Locale.TRAY_RELOAD_PLAYER = 'Reload Player Window';
+
+Locale.TRAY_PLAYER_MODE = 'Player Mode';
+Locale.TRAY_PLAYER_MODE_DEFAULT = 'Default';
+Locale.TRAY_PLAYER_MODE_DEFAULT_VALUE = 'default';
+Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR = 'Hide Side Panel';
+Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR_VALUE = 'hideSidebar';
+Locale.TRAY_PLAYER_MODE_HIDE_LYRICS = 'Hide Lyrics Panel';
+Locale.TRAY_PLAYER_MODE_HIDE_LYRICS_VALUE = 'hideLyrics';
+Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY = 'Playlist Only';
+Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE = 'songListOnly';
+Locale.TRAY_PLAYER_MODE_MINI = 'Mini Player';
+Locale.TRAY_PLAYER_MODE_MINI_VALUE = 'mini';
+
 Locale.TRAY_SETTINGS = 'Settings';
 Locale.TRAY_EXIT = 'Exit';
 
@@ -23,15 +35,6 @@ Locale.SETTINGS_LANGUAGE_OPTIONS = [{value: 'en', text: 'English', name: 'Englis
 Locale.SETTINGS_TRAY = 'Tray';
 Locale.SETTINGS_TRAY_CLICK = 'Click Tray Icon';
 Locale.SETTINGS_TRAY_CLICK_OPTIONS = [{value: 'showMain', text: 'Show Main Player', name: 'Show Main Player'}, {value: 'showTrackInfo', text: 'Show Track Info', name: 'Show Track Info'}];
-
-Locale.SETTINGS_LAYOUT = 'Custom Layout';
-Locale.SETTINGS_LAYOUT_OPTIONS = [
-  {value: 'default', text: 'Default', name: 'Default'},
-  {value: 'hideSidebar', text: 'Hide Side Panel', name: 'Hide Side Panel'},
-  {value: 'hideLyrics', text: 'Hide Lyrics Panel', name: 'Hide Lyrics Panel'},
-  {value: 'songListOnly', text: 'Playlist Only', name: 'Playlist Only'},
-  {value: 'mini', text: 'Mini Player', name: 'Mini Player'}
-];
 
 Locale.SETTINGS_NOTIFICATION = 'Show Notification';
 

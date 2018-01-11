@@ -34,10 +34,13 @@ class AppTray {
       {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
       {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
       {label: 'Separator', type: 'separator'},
-      {label: Locale.TRAY_RELOAD_PLAYER, click: () => {
-        this.playerController.window.close();
-        this.playerController.init();
-      }},
+      {label: Locale.TRAY_PLAYER_MODE, submenu: [
+        {label: Locale.TRAY_PLAYER_MODE_DEFAULT, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_DEFAULT_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_HIDE_LYRICS, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_HIDE_LYRICS_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_MINI, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
+      ]},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
       {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
@@ -89,6 +92,12 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
     } else {
       this.playerController.show();
     }
+  }
+
+  changePlayerMode(mode) {
+    settings.set('customLayout', mode);
+    this.playerController.window.close();
+    this.playerController.init();
   }
 
   openSettings() {
