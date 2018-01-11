@@ -1,5 +1,11 @@
 class CssInjector {}
 
+CssInjector.main = `
+  #playInAppWrap, .tip-twitter {
+    display: none !important;
+  }
+`;
+
 CssInjector.macos = `
   #top {
     -webkit-app-region: drag;

@@ -64,6 +64,8 @@ class XiamiPlayer {
 
     // inject the custom layout.
     this.window.webContents.on('dom-ready', () => {
+      this.window.webContents.insertCSS(CssInjector.main);
+      
       if (process.platform == 'darwin') {
         this.window.webContents.insertCSS(CssInjector.macos);
       }
