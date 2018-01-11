@@ -63,6 +63,7 @@ CssInjector.mini = `
     width: 520px !important;
     min-width: 0px !important;
     min-height: 0px !important;
+    -webkit-app-region: drag;
   }
   
   #player-main #top{
@@ -112,6 +113,12 @@ CssInjector.mini = `
   .player-info .player-length {
     top: 53px !important;
   }
+  .track-info {
+    -webkit-app-region: no-drag;
+  }
+  .player-progress {
+    -webkit-app-region: no-drag;
+  }
   #J_trackShare, #J_trackComment, #J_trackMore {
     display: none !important;
   }
@@ -125,6 +132,9 @@ CssInjector.mini = `
     position: absolute !important;
     top: 80px !important;
     left: 200px !important;
+  }
+  #J_prevBtn, #J_playBtn, #J_nextBtn, .player-mode {
+    -webkit-app-region: no-drag;
   }
   #J_prevBtn {
     left: 0px !important;
@@ -155,6 +165,7 @@ CssInjector.mini = `
       right: 20px !important;
       width: 110px !important;
       height: 18px !important;
+      -webkit-app-region: no-drag;
   }
 `;
 

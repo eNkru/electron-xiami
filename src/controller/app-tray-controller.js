@@ -34,7 +34,10 @@ class AppTray {
       {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
       {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
       {label: 'Separator', type: 'separator'},
-      {label: Locale.TRAY_RELOAD_PLAYER, click: () => this.playerController.reload()},
+      {label: Locale.TRAY_RELOAD_PLAYER, click: () => {
+        this.playerController.window.close();
+        this.playerController.init();
+      }},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
       {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
@@ -46,7 +49,7 @@ class AppTray {
   }
 
   togglePlay() {
-    this.playerController.getWebContents().executeJavaScript("document.querySelector('.pause-btn')", (result) => {
+    this.playerController.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
       result ? this.playerController.pause() : this.playerController.play();
     });
   }
@@ -82,7 +85,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
 
   togglePlayerWindow() {
     if (this.playerController.isVisible()) {
-      this.playerController.hide();
+      this.playerController.window.hide();
     } else {
       this.playerController.show();
     }
