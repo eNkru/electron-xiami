@@ -2,9 +2,9 @@ const path = require('path');
 const { app, Menu, nativeImage, Tray, ipcMain, Notification } = require('electron');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
+const { download } = require('electron-dl');
 
 const language = settings.get('language', 'en');
-const trayClickEvent = settings.get('trayClickEvent', 'showMain');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class AppTray {
@@ -34,7 +34,13 @@ class AppTray {
       {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
       {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
       {label: 'Separator', type: 'separator'},
-      {label: Locale.TRAY_RELOAD_PLAYER, click: () => this.playerController.reload()},
+      {label: Locale.TRAY_PLAYER_MODE, submenu: [
+        {label: Locale.TRAY_PLAYER_MODE_DEFAULT, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_DEFAULT_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_HIDE_LYRICS, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_HIDE_LYRICS_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_MINI, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
+      ]},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
       {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
@@ -46,13 +52,13 @@ class AppTray {
   }
 
   togglePlay() {
-    this.playerController.getWebContents().executeJavaScript("document.querySelector('.pause-btn')", (result) => {
+    this.playerController.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
       result ? this.playerController.pause() : this.playerController.play();
     });
   }
 
   fireClickTrayEvent() {
-    if(trayClickEvent === 'showMain') {
+    if(settings.get('trayClickEvent', 'showMain') === 'showMain') {
       this.togglePlayerWindow();
     } else {
       this.notifyTrackInfo();
@@ -66,7 +72,7 @@ class AppTray {
       // notify the current playing track
       if (Object.keys(trackInfo).length > 0) {
           // download the covers
-          download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
+          download(this.playerController.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
           .then(dl => {
             new Notification({
               title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
@@ -82,10 +88,16 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
 
   togglePlayerWindow() {
     if (this.playerController.isVisible()) {
-      this.playerController.hide();
+      this.playerController.window.hide();
     } else {
       this.playerController.show();
     }
+  }
+
+  changePlayerMode(mode) {
+    settings.set('customLayout', mode);
+    this.playerController.window.close();
+    this.playerController.init();
   }
 
   openSettings() {

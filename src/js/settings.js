@@ -43,18 +43,6 @@ function loadSettings() {
     }
   });
 
-  // custom layout setting
-  const customLayout = settings.get('customLayout', 'default');
-  const $customLayout = $('#custom-layout');
-  $customLayout.dropdown('setup menu', {values: Locale.SETTINGS_LAYOUT_OPTIONS});
-  $customLayout.dropdown('set selected', customLayout);
-
-  $customLayout.dropdown({
-    onChange: (value) => {
-      settings.set('customLayout', value);
-    }
-  });
-
   // show notification
   const showNotification = settings.get('showNotification', 'check');
   const $showNotification = $('#show-notification');

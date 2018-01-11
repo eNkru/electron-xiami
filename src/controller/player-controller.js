@@ -20,57 +20,33 @@ class XiamiPlayer {
   }
 
   init() {
-    if (process.platform == 'darwin') {
-      this.window = new BrowserWindow({
-        show: false,
-        width: 1000,
-        height: 670,
-        minWidth: 1000,
-        minHeight: 670,
-        titleBarStyle: 'hidden-inset',
-        center: true,
-        webPreferences: {
-          javascript: true,
-          plugins: true,
-          webSecurity: false,
-          nodeIntegration: false
-        }
-      });
-    } else {
-      this.window = new BrowserWindow({
-        show: false,
-        width: 1000,
-        height: 670,
-        minWidth: 1000,
-        minHeight: 670,
-        frame: true,
-        autoHideMenuBar: true,
-        center: true,
-        webPreferences: {
-          javascript: true,
-          plugins: true,
-          webSecurity: false,
-          nodeIntegration: false
-        }
-      });
-    }
+    const customLayout = settings.get('customLayout', 'default');
 
-    this.window.once('ready-to-show', () => {
-      this.window.show();
-    });
+    if(customLayout === 'mini') {
+      this.window = new BrowserWindow({show: false, width: 520, height: 160, frame: false, autoHideMenuBar: true, fullscreenable: false,
+        webPreferences: {javascript: true, plugins: true, webSecurity: false, nodeIntegration: false}});
+    } else {
+      if (process.platform === 'darwin') {
+        this.window = new BrowserWindow({show: false, width: 1000, height: 670, titleBarStyle: 'hiddenInset',
+          webPreferences: {javascript: true, plugins: true, webSecurity: false, nodeIntegration: false}});
+      } else {
+        this.window = new BrowserWindow({show: false, width: 1000, height: 670, frame: true, autoHideMenuBar: true,
+          webPreferences: {javascript: true, plugins: true, webSecurity: false, nodeIntegration: false}});
+      }
+    }
 
     // load xiami player page.
     this.window.loadURL(playerUrl);
 
     // inject the custom layout.
     this.window.webContents.on('dom-ready', () => {
+
       this.window.webContents.insertCSS(CssInjector.main);
       
       if (process.platform == 'darwin') {
         this.window.webContents.insertCSS(CssInjector.macos);
       }
 
-      const customLayout = settings.get('customLayout', 'default');
       switch (customLayout) {
         case 'hideSidebar':
           this.window.webContents.insertCSS(CssInjector.hideSidebar);
@@ -81,10 +57,15 @@ class XiamiPlayer {
         case 'songListOnly':
           this.window.webContents.insertCSS(CssInjector.songListOnly);
           break;
+        case 'mini':
+          this.window.webContents.insertCSS(CssInjector.mini);
+          break;
         default:
           // using the default layout from the xiami play
           break;
       }
+
+      this.window.show();
     });
 
     // triggering when user try to close the play window.
@@ -110,11 +91,6 @@ class XiamiPlayer {
     this.window.focus();
   }
 
-  // hide the play window.
-  hide() {
-    this.window.hide();
-  }
-
   // return a boolean to indicate if the window is visible or not
   isVisible() {
     return this.window.isVisible();
@@ -134,14 +110,6 @@ class XiamiPlayer {
 
   previous() {
     this.window.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
-  }
-
-  reload() {
-    this.window.reload();
-  }
-
-  getWebContents() {
-    return this.window.webContents;
   }
 
   registerResponseFilters(requestUrl) {
