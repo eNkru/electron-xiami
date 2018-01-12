@@ -23,7 +23,7 @@ class XiamiPlayer {
     const customLayout = settings.get('customLayout', 'default');
 
     if(customLayout === 'mini') {
-      this.window = new BrowserWindow({show: false, width: 520, height: 160, frame: false, autoHideMenuBar: true, fullscreenable: false,
+      this.window = new BrowserWindow({show: false, width: 520, height: 160, frame: false, autoHideMenuBar: true, fullscreenable: false, resizable: false,
         webPreferences: {javascript: true, plugins: true, webSecurity: false, nodeIntegration: false}});
     } else {
       if (process.platform === 'darwin') {
