@@ -96,7 +96,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
 
   changePlayerMode(mode) {
     settings.set('customLayout', mode);
-    this.playerController.window.close();
+    this.playerController.window.destroy();
     this.playerController.init();
   }
 
