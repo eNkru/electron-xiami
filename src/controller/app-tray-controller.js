@@ -107,7 +107,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
   cleanupAndExit() {
     storage.clear((error) => {
       if (error) throw error;
-      console.log(app.getPath('userData'));
+      // console.log(app.getPath('userData'));
       app.exit(0);
     });
   }

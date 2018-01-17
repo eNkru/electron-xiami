@@ -1,4 +1,6 @@
-const { app, BrowserWindow, Notification } = require('electron');
+const electron = require('electron');
+const ipc = electron.ipcMain;
+const { app, BrowserWindow, Notification, ipcMain } = require('electron');
 const urlLib = require('url');
 const http = require('http');
 const path = require('path');
@@ -22,16 +24,22 @@ class XiamiPlayer {
   init() {
     const customLayout = settings.get('customLayout', 'default');
 
-    if(customLayout === 'mini') {
-      this.window = new BrowserWindow({show: false, width: 520, height: 160, frame: false, autoHideMenuBar: true, fullscreenable: false, resizable: false,
-        webPreferences: {javascript: true, plugins: true, webSecurity: false, nodeIntegration: false}});
+    if (customLayout === 'mini') {
+      this.window = new BrowserWindow({
+        show: false, width: 520, height: 160, frame: false, autoHideMenuBar: true, fullscreenable: false, resizable: false,
+        webPreferences: { javascript: true, plugins: true, webSecurity: false, nodeIntegration: false, preload: path.join(__dirname, 'preload.js') }
+      });
     } else {
       if (process.platform === 'darwin') {
-        this.window = new BrowserWindow({show: false, width: 1000, height: 670, titleBarStyle: 'hiddenInset',
-          webPreferences: {javascript: true, plugins: true, webSecurity: false, nodeIntegration: false}});
+        this.window = new BrowserWindow({
+          show: false, width: 1000, height: 670, titleBarStyle: 'hiddenInset',
+          webPreferences: { javascript: true, plugins: true, webSecurity: false, nodeIntegration: false, preload: path.join(__dirname, 'preload.js') }
+        });
       } else {
-        this.window = new BrowserWindow({show: false, width: 1000, height: 670, frame: true, autoHideMenuBar: true,
-          webPreferences: {javascript: true, plugins: true, webSecurity: false, nodeIntegration: false}});
+        this.window = new BrowserWindow({
+          show: false, width: 1000, height: 670, frame: true, autoHideMenuBar: true,
+          webPreferences: { javascript: true, plugins: true, webSecurity: false, nodeIntegration: false, preload: path.join(__dirname, 'preload.js') }
+        });
       }
     }
 
@@ -42,7 +50,7 @@ class XiamiPlayer {
     this.window.webContents.on('dom-ready', () => {
 
       this.window.webContents.insertCSS(CssInjector.main);
-      
+
       if (process.platform == 'darwin') {
         this.window.webContents.insertCSS(CssInjector.macos);
       }
@@ -65,6 +73,7 @@ class XiamiPlayer {
           break;
       }
 
+      this.addPlaytimeObserver();
       this.window.show();
     });
 
@@ -82,7 +91,11 @@ class XiamiPlayer {
     });
 
     // intercept the ajax call response
-    this.window.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.registerResponseFilters(originalURL)));
+    this.window.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.handleResponse(originalURL)));
+
+    ipcMain.on('playtime', (event, value) => {
+      console.log(value);
+    });
   }
 
   // display and focus the player window.
@@ -112,15 +125,48 @@ class XiamiPlayer {
     this.window.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
   }
 
-  registerResponseFilters(requestUrl) {
+  /**
+   * Add the listener to monitor the play time.
+   */
+  addPlaytimeObserver() {
+    this.window.webContents.executeJavaScript(`
+        let playtime = document.querySelector('.player-position');
+        let observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                ipc.send('playtime', playtime.innerHTML);
+            });
+        });
+    
+        observer.observe(playtime, {childList: true});
+    `)
+  }
+
+  /**
+   * Remove the listener to monitor the play time.
+   */
+  removePlaytimeObserver() {
+    this.window.webContents.executeJavaScript(`
+      observer.disconnect();
+    `)
+  }
+
+  /**
+   * Handle the received response after the web content make a request.
+   * @param {*} requestUrl the request URL for the event
+   */
+  handleResponse(requestUrl) {
     const showNotification = settings.get('showNotification', 'check');
     if ('check' === showNotification) {
-      this.updatePlaylistListener(requestUrl);
-      this.changeTrackListener(requestUrl);
+      this.updatePlaylist(requestUrl);
+      this.changeTrack(requestUrl);
     }
   }
 
-  updatePlaylistListener(requestUrl) {
+  /**
+   * Update the playlist if the request URL is for playlist update.
+   * @param {*} requestUrl the request URL for the event
+   */
+  updatePlaylist(requestUrl) {
     if (requestUrl.startsWith(playlistUrl)) {
       let urlWithPath = urlLib.parse(requestUrl, false);
       delete urlWithPath.search;
@@ -128,26 +174,28 @@ class XiamiPlayer {
 
       // get the cookie, make call with the cookie
       let session = this.window.webContents.session;
-      session.cookies.get({ url : 'http://www.xiami.com' }, (error, cookies) => {
-        let cookieString =cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
+      session.cookies.get({ url: 'http://www.xiami.com' }, (error, cookies) => {
+        let cookieString = cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
 
-        http.get({hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
-          'Referer': playerUrl,
-          'Cookie': cookieString,
-          'User-Agent': this.window.webContents.getUserAgent()
-        }}, (response) => {
+        http.get({
+          hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
+            'Referer': playerUrl,
+            'Cookie': cookieString,
+            'User-Agent': this.window.webContents.getUserAgent()
+          }
+        }, (response) => {
           let playlistData = '';
 
-          response.on('data', (chunk) =>{
+          response.on('data', (chunk) => {
             playlistData += chunk;
           });
 
-          response.on('end', () =>{
+          response.on('end', () => {
             let tracks = JSON.parse(playlistData).data.trackList;
             // set the first track as current playing
             // this will avoid the current playing tack is not available because the switch song start early then this callback return.
             storage.set('currentTrackInfo', tracks[0], (error) => {
-              if(error) throw error;
+              if (error) throw error;
             });
 
             // refresh the local storage.
@@ -163,7 +211,11 @@ class XiamiPlayer {
     }
   }
 
-  changeTrackListener(requestUrl) {
+  /**
+   * Handle the track changed.
+   * @param {*} requestUrl the request URL for the event
+   */
+  changeTrack(requestUrl) {
     if (requestUrl.startsWith(getLyricUrl)) {
       const lyricPath = urlLib.parse(requestUrl).pathname;
       const songId = lyricPath.match(/\/(\d*)_/)[1];
@@ -180,19 +232,19 @@ class XiamiPlayer {
         if (Object.keys(trackInfo).length > 0) {
 
           // download the covers
-          download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
-              .then(dl => {
-                const notification = new Notification({
-                  title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-                  body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+          download(this.window, trackInfo.pic, { directory: `${app.getPath('userData')}/covers` })
+            .then(dl => {
+              const notification = new Notification({
+                title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+                body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
 ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
-                  silent: true,
-                  icon: dl.getSavePath()
-                });
+                silent: true,
+                icon: dl.getSavePath()
+              });
 
-                notification.on("click", () => this.show());
-                notification.show();
-              }).catch(console.error);
+              notification.on("click", () => this.show());
+              notification.show();
+            }).catch(console.error);
         }
       });
     }
