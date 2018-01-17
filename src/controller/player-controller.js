@@ -87,6 +87,7 @@ class XiamiPlayer {
 
     // triggering after the play window closed.
     this.window.on('closed', () => {
+      ipcMain.removeAllListeners('playtime');
       this.window = null;
     });
 
@@ -215,7 +216,6 @@ class XiamiPlayer {
    */
   changeTrack(songId) {
     storage.get(songId, (error, trackInfo) => {
-      console.log('change track');
 
       if (error) throw error;
 
@@ -226,7 +226,6 @@ class XiamiPlayer {
           if (error) console.log(error);
         })
 
-        console.log('download cover')
         // download the covers
         download(this.window, trackInfo.pic, { directory: `${app.getPath('userData')}/covers` })
           .then(dl => {
@@ -242,7 +241,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
             notification.show();
           }).catch(console.error);
       } else {
-        setTimeout(() => this.changeTrack(songId), 500);
+        setTimeout(() => this.changeTrack(songId), 1000);
       }
     });
   }

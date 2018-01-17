@@ -3,6 +3,7 @@ const fsx = require('node-fs-extra')
 const PlayerWindow = require('./controller/player-controller');
 const SettingsWindow = require('./controller/settings-controller');
 const AppTray = require('./controller/app-tray-controller');
+const LyricsWindow = require('./controller/lyrics-controller');
 
 class ElectronXiami {
 
@@ -11,6 +12,7 @@ class ElectronXiami {
         this.playerWindow = null;
         this.settingsWindow = null;
         this.tray = null;
+        this.lyricsWindow = null;
     }
 
     // init method, the entry point of the app.
@@ -37,6 +39,7 @@ class ElectronXiami {
         app.on('ready', () => {
             this.createPlayerWindow();
             this.createSettingsWindow();
+            this.createLyricsWindow();
             this.createTrayWindow();
         });
 
@@ -79,8 +82,12 @@ class ElectronXiami {
         this.settingsWindow = new SettingsWindow();
     }
 
+    createLyricsWindow() {
+        this.lyricsWindow = new LyricsWindow();
+    }
+
     createTrayWindow() {
-        this.tray = new AppTray(this.playerWindow, this.settingsWindow);
+        this.tray = new AppTray(this.playerWindow, this.settingsWindow, this.lyricsWindow);
     }
 }
 

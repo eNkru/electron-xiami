@@ -8,9 +8,10 @@ const language = settings.get('language', 'en');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class AppTray {
-  constructor(playerController, settingsController) {
+  constructor(playerController, settingsController, lyricsController) {
     this.playerController = playerController;
     this.settingsController = settingsController;
+    this.lyricsController = lyricsController;
     this.init();
   }
 
@@ -41,6 +42,7 @@ class AppTray {
         {label: Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE)},
         {label: Locale.TRAY_PLAYER_MODE_MINI, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
       ]},
+      {label: "歌词开/关", click: () => this.lyricsController.toggle()},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
       {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
