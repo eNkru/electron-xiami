@@ -156,9 +156,15 @@ class XiamiPlayer {
    */
   handleResponse(requestUrl) {
     const showNotification = settings.get('showNotification', 'check');
+
     if ('check' === showNotification) {
-      this.updatePlaylist(requestUrl);
-      this.changeTrack(requestUrl);
+      requestUrl.startsWith(playlistUrl) && this.updatePlaylist(requestUrl);
+
+      if (requestUrl.startsWith(getLyricUrl)) {
+        const lyricPath = urlLib.parse(requestUrl).pathname;
+        const songId = lyricPath.match(/\/(\d*)_/)[1];
+        this.changeTrack(songId);
+      }
     }
   }
 
@@ -167,87 +173,78 @@ class XiamiPlayer {
    * @param {*} requestUrl the request URL for the event
    */
   updatePlaylist(requestUrl) {
-    if (requestUrl.startsWith(playlistUrl)) {
-      let urlWithPath = urlLib.parse(requestUrl, false);
-      delete urlWithPath.search;
-      // console.log('Retrieve the playlist from url ' + urlLib.format(urlWithPath));
+    let urlWithPath = urlLib.parse(requestUrl, false);
+    delete urlWithPath.search;
+    // console.log('Retrieve the playlist from url ' + urlLib.format(urlWithPath));
 
-      // get the cookie, make call with the cookie
-      let session = this.window.webContents.session;
-      session.cookies.get({ url: 'http://www.xiami.com' }, (error, cookies) => {
-        let cookieString = cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
+    // get the cookie, make call with the cookie
+    let session = this.window.webContents.session;
+    session.cookies.get({ url: 'http://www.xiami.com' }, (error, cookies) => {
+      let cookieString = cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
 
-        http.get({
-          hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
-            'Referer': playerUrl,
-            'Cookie': cookieString,
-            'User-Agent': this.window.webContents.getUserAgent()
-          }
-        }, (response) => {
-          let playlistData = '';
+      http.get({
+        hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
+          'Referer': playerUrl,
+          'Cookie': cookieString,
+          'User-Agent': this.window.webContents.getUserAgent()
+        }
+      }, (response) => {
+        let playlistData = '';
 
-          response.on('data', (chunk) => {
-            playlistData += chunk;
-          });
+        response.on('data', (chunk) => {
+          playlistData += chunk;
+        });
 
-          response.on('end', () => {
-            let tracks = JSON.parse(playlistData).data.trackList;
-            // set the first track as current playing
-            // this will avoid the current playing tack is not available because the switch song start early then this callback return.
-            storage.set('currentTrackInfo', tracks[0], (error) => {
-              if (error) throw error;
-            });
-
-            // refresh the local storage.
-            tracks.forEach(track => {
-              // console.log(track);
-              storage.set(track.songId, track, (error) => {
-                if (error) console.log(error);
-              });
+        response.on('end', () => {
+          let tracks = JSON.parse(playlistData).data.trackList;
+          // refresh the local storage.
+          tracks.forEach(track => {
+            // console.log(track);
+            storage.set(track.songId, track, (error) => {
+              if (error) console.log(error);
             });
           });
         });
       });
-    }
+    });
   }
 
   /**
    * Handle the track changed.
-   * @param {*} requestUrl the request URL for the event
+   * @param {*} songId the changed song ID
    */
-  changeTrack(requestUrl) {
-    if (requestUrl.startsWith(getLyricUrl)) {
-      const lyricPath = urlLib.parse(requestUrl).pathname;
-      const songId = lyricPath.match(/\/(\d*)_/)[1];
-      // console.log(songId);
+  changeTrack(songId) {
+    storage.get(songId, (error, trackInfo) => {
+      console.log('change track');
 
-      storage.get(songId, (error, trackInfo) => {
-        if (error) throw error;
+      if (error) throw error;
+
+      // notify the current playing track
+      if (Object.keys(trackInfo).length > 0) {
         // update the current playing track
         storage.set('currentTrackInfo', trackInfo, (error) => {
           if (error) console.log(error);
         })
 
-        // notify the current playing track
-        if (Object.keys(trackInfo).length > 0) {
-
-          // download the covers
-          download(this.window, trackInfo.pic, { directory: `${app.getPath('userData')}/covers` })
-            .then(dl => {
-              const notification = new Notification({
-                title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-                body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+        console.log('download cover')
+        // download the covers
+        download(this.window, trackInfo.pic, { directory: `${app.getPath('userData')}/covers` })
+          .then(dl => {
+            const notification = new Notification({
+              title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+              body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
 ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
-                silent: true,
-                icon: dl.getSavePath()
-              });
+              silent: true,
+              icon: dl.getSavePath()
+            });
 
-              notification.on("click", () => this.show());
-              notification.show();
-            }).catch(console.error);
-        }
-      });
-    }
+            notification.on("click", () => this.show());
+            notification.show();
+          }).catch(console.error);
+      } else {
+        setTimeout(() => this.changeTrack(songId), 500);
+      }
+    });
   }
 }
 
