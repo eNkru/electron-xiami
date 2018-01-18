@@ -9,6 +9,7 @@ class ElectronXiami {
 
     // constructor.
     constructor() {
+        app.disableHardwareAcceleration();
         this.playerWindow = null;
         this.settingsWindow = null;
         this.tray = null;
