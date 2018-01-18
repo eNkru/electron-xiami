@@ -73,7 +73,6 @@ class XiamiPlayer {
           break;
       }
 
-      this.addPlaytimeObserver();
       this.window.show();
     });
 

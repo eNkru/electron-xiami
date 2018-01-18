@@ -42,7 +42,7 @@ class AppTray {
         {label: Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE)},
         {label: Locale.TRAY_PLAYER_MODE_MINI, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
       ]},
-      {label: "歌词开/关", click: () => this.lyricsController.toggle()},
+      {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
       {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
@@ -57,6 +57,15 @@ class AppTray {
     this.playerController.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
       result ? this.playerController.pause() : this.playerController.play();
     });
+  }
+
+  toggleLyrics() {
+    if (this.lyricsController.window.isVisible()) {
+      this.playerController.removePlaytimeObserver();
+    } else {
+      this.playerController.addPlaytimeObserver();
+    }
+    this.lyricsController.toggle();
   }
 
   fireClickTrayEvent() {

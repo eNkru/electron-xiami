@@ -20,6 +20,8 @@ Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE = 'songListOnly';
 Locale.TRAY_PLAYER_MODE_MINI = 'Mini Player';
 Locale.TRAY_PLAYER_MODE_MINI_VALUE = 'mini';
 
+Locale.TRAY_LYRICS_TOGGLE = 'Goggle Lyrics Window'
+
 Locale.TRAY_SETTINGS = 'Settings';
 Locale.TRAY_EXIT = 'Exit';
 
