@@ -1,13 +1,13 @@
 const electron = require('electron');
 const ipc = electron.ipcMain;
-const { app, BrowserWindow, Notification, ipcMain } = require('electron');
+const {app, BrowserWindow, Notification, ipcMain} = require('electron');
 const urlLib = require('url');
 const http = require('http');
 const path = require('path');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
 const CssInjector = require('../js/css-injector');
-const { download } = require('electron-dl');
+const {download} = require('electron-dl');
 
 const playerUrl = 'http://www.xiami.com/play';
 const playlistUrl = 'http://www.xiami.com/song/playlist';
@@ -26,19 +26,43 @@ class XiamiPlayer {
 
     if (customLayout === 'mini') {
       this.window = new BrowserWindow({
-        show: false, width: 520, height: 160, frame: false, autoHideMenuBar: true, fullscreenable: false, resizable: false,
-        webPreferences: { javascript: true, plugins: true, webSecurity: false, nodeIntegration: false, preload: path.join(__dirname, 'preload.js') }
+        show: false,
+        width: 520,
+        height: 160,
+        frame: false,
+        autoHideMenuBar: true,
+        fullscreenable: false,
+        resizable: false,
+        webPreferences: {
+          javascript: true,
+          plugins: true,
+          webSecurity: false,
+          nodeIntegration: false,
+          preload: path.join(__dirname, 'preload.js')
+        }
       });
     } else {
       if (process.platform === 'darwin') {
         this.window = new BrowserWindow({
           show: false, width: 1000, height: 670, titleBarStyle: 'hiddenInset',
-          webPreferences: { javascript: true, plugins: true, webSecurity: false, nodeIntegration: false, preload: path.join(__dirname, 'preload.js') }
+          webPreferences: {
+            javascript: true,
+            plugins: true,
+            webSecurity: false,
+            nodeIntegration: false,
+            preload: path.join(__dirname, 'preload.js')
+          }
         });
       } else {
         this.window = new BrowserWindow({
           show: false, width: 1000, height: 670, frame: true, autoHideMenuBar: true,
-          webPreferences: { javascript: true, plugins: true, webSecurity: false, nodeIntegration: false, preload: path.join(__dirname, 'preload.js') }
+          webPreferences: {
+            javascript: true,
+            plugins: true,
+            webSecurity: false,
+            nodeIntegration: false,
+            preload: path.join(__dirname, 'preload.js')
+          }
         });
       }
     }
@@ -161,9 +185,12 @@ class XiamiPlayer {
       requestUrl.startsWith(playlistUrl) && this.updatePlaylist(requestUrl);
 
       if (requestUrl.startsWith(getLyricUrl)) {
-        const lyricPath = urlLib.parse(requestUrl).pathname;
-        const songId = lyricPath.match(/\/(\d*)_/)[1];
-        this.changeTrack(songId);
+
+        this.loadLyrics(requestUrl).then(() => {
+          const lyricPath = urlLib.parse(requestUrl).pathname;
+          const songId = lyricPath.match(/\/(\d*)_/)[1];
+          this.changeTrack(songId);
+        }).catch(console.error);
       }
     }
   }
@@ -179,7 +206,7 @@ class XiamiPlayer {
 
     // get the cookie, make call with the cookie
     let session = this.window.webContents.session;
-    session.cookies.get({ url: 'http://www.xiami.com' }, (error, cookies) => {
+    session.cookies.get({url: 'http://www.xiami.com'}, (error, cookies) => {
       let cookieString = cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
 
       http.get({
@@ -226,23 +253,30 @@ class XiamiPlayer {
         })
 
         // download the covers
-        download(this.window, trackInfo.pic, { directory: `${app.getPath('userData')}/covers` })
-          .then(dl => {
-            const notification = new Notification({
-              title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-              body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+        return download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
+            .then(dl => {
+              const notification = new Notification({
+                title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+                body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
 ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
-              silent: true,
-              icon: dl.getSavePath()
-            });
+                silent: true,
+                icon: dl.getSavePath()
+              });
 
-            notification.on("click", () => this.show());
-            notification.show();
-          }).catch(console.error);
+              notification.on("click", () => this.show());
+              notification.show();
+            });
       } else {
         setTimeout(() => this.changeTrack(songId), 1000);
       }
     });
+  }
+
+  loadLyrics(url) {
+    return download(this.window, url, {directory: `${app.getPath('userData')}/lyrics`})
+        .then(dl => {
+          console.log(dl.getSavePath());
+        });
   }
 }
 
