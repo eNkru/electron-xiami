@@ -1,5 +1,5 @@
 const {app} = require('electron');
-const fsx = require('node-fs-extra')
+const fs = require('fs-extra')
 const PlayerWindow = require('./controller/player-controller');
 const SettingsWindow = require('./controller/settings-controller');
 const AppTray = require('./controller/app-tray-controller');
@@ -55,21 +55,9 @@ class ElectronXiami {
 
     app.on('quit', () => {
       // empty cover cache folder before exit.
-      fsx.remove(`${app.getPath('userData')}/covers`)
-          .then(() => {
-            console.log('Cover cache has been emptied.')
-          })
-          .catch(err => {
-            console.error(err)
-          });
+      fs.remove(`${app.getPath('userData')}/covers`);
       // empty lyrics cache
-      fsx.remove(`${app.getPath('userData')}/lyrics`)
-          .then(() => {
-            console.log('Lyrics cache has been emptied.')
-          })
-          .catch(err => {
-            console.error(err)
-          });
+      fs.remove(`${app.getPath('userData')}/lyrics`);
     });
 
     app.on('activate', () => {

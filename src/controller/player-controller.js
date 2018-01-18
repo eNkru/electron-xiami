@@ -1,5 +1,3 @@
-const electron = require('electron');
-const ipc = electron.ipcMain;
 const {app, BrowserWindow, Notification, ipcMain} = require('electron');
 const urlLib = require('url');
 const http = require('http');
@@ -8,6 +6,9 @@ const storage = require('electron-json-storage');
 const settings = require('electron-settings');
 const CssInjector = require('../js/css-injector');
 const {download} = require('electron-dl');
+const Lyrics = require('lyrics.js/lyrics');
+const fs = require('fs-extra');
+const timeFormat = require('hh-mm-ss');
 
 const playerUrl = 'http://www.xiami.com/play';
 const playlistUrl = 'http://www.xiami.com/song/playlist';
@@ -22,6 +23,7 @@ class XiamiPlayer {
   }
 
   init() {
+    this.lyrics = new Lyrics('');
     const customLayout = settings.get('customLayout', 'default');
 
     if (customLayout === 'mini') {
@@ -118,7 +120,11 @@ class XiamiPlayer {
     this.window.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.handleResponse(originalURL)));
 
     ipcMain.on('playtime', (event, value) => {
-      console.log(value);
+      let timeline = this.lyrics.select(timeFormat.toS(value));
+      if(timeline !== this.previousTime) {
+        console.log(this.lyrics.getLyric(timeline));
+        this.previousTime = timeline;
+      }
     });
   }
 
@@ -275,7 +281,9 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
   loadLyrics(url) {
     return download(this.window, url, {directory: `${app.getPath('userData')}/lyrics`})
         .then(dl => {
-          console.log(dl.getSavePath());
+          fs.readFile(dl.getSavePath(), 'utf8', (error, data) => {
+            this.lyrics.load(data);
+          });
         });
   }
 }
