@@ -1,19 +1,19 @@
 const {app} = require('electron');
 const fs = require('fs-extra')
-const PlayerWindow = require('./controller/player-controller');
-const SettingsWindow = require('./controller/settings-controller');
+const PlayerController = require('./controller/player-controller');
+const SettingsController = require('./controller/settings-controller');
 const AppTray = require('./controller/app-tray-controller');
-const LyricsWindow = require('./controller/lyrics-controller');
+const LyricsController = require('./controller/lyrics-controller');
 
 class ElectronXiami {
 
   // constructor.
   constructor() {
     app.disableHardwareAcceleration();
-    this.playerWindow = null;
-    this.settingsWindow = null;
+    this.lyricsController = null;
+    this.settingsController = null;
+    this.playerController = null;
     this.tray = null;
-    this.lyricsWindow = null;
   }
 
   // init method, the entry point of the app.
@@ -28,7 +28,7 @@ class ElectronXiami {
   // check if the app is already running. return true if already launched, otherwise return false.
   isRunning() {
     return app.makeSingleInstance(() => {
-      if (this.playerWindow) this.playerWindow.show();
+      if (this.playerController) this.playerController.show();
     });
   }
 
@@ -38,10 +38,10 @@ class ElectronXiami {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', () => {
-      this.createPlayerWindow();
-      this.createSettingsWindow();
-      this.createLyricsWindow();
-      this.createTrayWindow();
+      this.createLyrics();
+      this.createSettings();
+      this.createPlayer(this.lyricsController);
+      this.createTray(this.settingsController, this.lyricsController, this.playerController);
     });
 
     // Quit when all windows are closed.
@@ -63,28 +63,28 @@ class ElectronXiami {
     app.on('activate', () => {
       // On OS X it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
-      if (this.playerWindow === null) {
-        this.createPlayerWindow();
+      if (this.playerController === null) {
+        this.createPlayer();
       } else {
-        this.playerWindow.show();
+        this.playerController.show();
       }
     });
   }
 
-  createPlayerWindow() {
-    this.playerWindow = new PlayerWindow();
+  createSettings() {
+    this.settingsController = new SettingsController();
   }
 
-  createSettingsWindow() {
-    this.settingsWindow = new SettingsWindow();
+  createLyrics() {
+    this.lyricsController = new LyricsController();
   }
 
-  createLyricsWindow() {
-    this.lyricsWindow = new LyricsWindow();
+  createPlayer(lyricsController) {
+    this.playerController = new PlayerController(lyricsController);
   }
 
-  createTrayWindow() {
-    this.tray = new AppTray(this.playerWindow, this.settingsWindow, this.lyricsWindow);
+  createTray(settingController, lyricsController, playerController) {
+    this.tray = new AppTray(playerController, settingController, lyricsController);
   }
 }
 

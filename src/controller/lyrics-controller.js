@@ -10,13 +10,16 @@ class LyricsWindow {
   init() {
     protocol.unregisterProtocol('', () => {
       this.window = new BrowserWindow({
-        width: 650,
+        width: 850,
         height: 50,
         transparent: true,
         frame: false,
         autoHideMenuBar: true,
+        x: 300,
+        y: 800,
         show: false
       });
+
       this.window.loadURL(`file://${path.join(__dirname, '../view/lyrics.html')}`);
       this.window.on('close', (e) => {
         if (this.window.isVisible()) {
@@ -24,6 +27,8 @@ class LyricsWindow {
           this.window.hide();
         }
       });
+
+      setInterval(() => {this.window.setAlwaysOnTop(true, "floating");}, 1000);
     })
   }
 

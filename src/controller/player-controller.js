@@ -6,7 +6,7 @@ const storage = require('electron-json-storage');
 const settings = require('electron-settings');
 const CssInjector = require('../js/css-injector');
 const {download} = require('electron-dl');
-const Lyrics = require('lyrics.js/lyrics');
+const Lyrics = require('../js/lib/lyrics');
 const fs = require('fs-extra');
 const timeFormat = require('hh-mm-ss');
 
@@ -18,7 +18,8 @@ const language = settings.get('language', 'en');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class XiamiPlayer {
-  constructor() {
+  constructor(lyricsController) {
+    this.lyricsController = lyricsController;
     this.init();
   }
 
@@ -120,10 +121,14 @@ class XiamiPlayer {
     this.window.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.handleResponse(originalURL)));
 
     ipcMain.on('playtime', (event, value) => {
-      let timeline = this.lyrics.select(timeFormat.toS(value));
-      if(timeline !== this.previousTime) {
-        console.log(this.lyrics.getLyric(timeline));
+      const timeline = this.lyrics.select(timeFormat.toS(value));
+      if (timeline !== this.previousTime) {
         this.previousTime = timeline;
+        let lyric = this.lyrics.getLyric(timeline);
+        if (lyric) {
+          let text = lyric.text;
+          this.lyricsController.window.webContents.send('lyricsChange', this.prettyLyric(text));
+        }
       }
     });
   }
@@ -178,6 +183,10 @@ class XiamiPlayer {
     this.window.webContents.executeJavaScript(`
       observer.disconnect();
     `)
+  }
+
+  prettyLyric(lyric) {
+    return lyric.replace(/<\d*>/g, '');
   }
 
   /**

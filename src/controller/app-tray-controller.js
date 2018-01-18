@@ -60,9 +60,7 @@ class AppTray {
   }
 
   toggleLyrics() {
-    if (this.lyricsController.window.isVisible()) {
-      this.playerController.removePlaytimeObserver();
-    } else {
+    if (!this.lyricsController.window.isVisible()) {
       this.playerController.addPlaytimeObserver();
     }
     this.lyricsController.toggle();
