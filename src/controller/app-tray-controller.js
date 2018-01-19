@@ -105,6 +105,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
 
   changePlayerMode(mode) {
     settings.set('customLayout', mode);
+    this.lyricsController.window.isVisible() && this.lyricsController.window.hide();
     this.playerController.window.destroy();
     this.playerController.init();
   }
