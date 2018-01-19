@@ -18,6 +18,8 @@ Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE = 'songListOnly';
 Locale.TRAY_PLAYER_MODE_MINI = '迷你模式';
 Locale.TRAY_PLAYER_MODE_MINI_VALUE = 'mini';
 
+Locale.TRAY_LYRICS_TOGGLE = '切换歌词窗口（测试版）'
+
 Locale.TRAY_SETTINGS = '设置';
 Locale.TRAY_EXIT = '退出';
 

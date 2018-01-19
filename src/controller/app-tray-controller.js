@@ -8,9 +8,10 @@ const language = settings.get('language', 'en');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class AppTray {
-  constructor(playerController, settingsController) {
+  constructor(playerController, settingsController, lyricsController) {
     this.playerController = playerController;
     this.settingsController = settingsController;
+    this.lyricsController = lyricsController;
     this.init();
   }
 
@@ -41,6 +42,7 @@ class AppTray {
         {label: Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE)},
         {label: Locale.TRAY_PLAYER_MODE_MINI, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
       ]},
+      {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
       {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
@@ -55,6 +57,13 @@ class AppTray {
     this.playerController.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
       result ? this.playerController.pause() : this.playerController.play();
     });
+  }
+
+  toggleLyrics() {
+    if (!this.lyricsController.window.isVisible()) {
+      this.playerController.addPlaytimeObserver();
+    }
+    this.lyricsController.toggle();
   }
 
   fireClickTrayEvent() {
@@ -96,6 +105,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
 
   changePlayerMode(mode) {
     settings.set('customLayout', mode);
+    this.lyricsController.window.isVisible() && this.lyricsController.window.hide();
     this.playerController.window.destroy();
     this.playerController.init();
   }
@@ -107,7 +117,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
   cleanupAndExit() {
     storage.clear((error) => {
       if (error) throw error;
-      console.log(app.getPath('userData'));
+      // console.log(app.getPath('userData'));
       app.exit(0);
     });
   }
