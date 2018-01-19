@@ -1,17 +1,17 @@
 const path = require('path');
-const { app, Menu, nativeImage, Tray, ipcMain } = require('electron');
+const { app, Menu, nativeImage, Tray, ipcMain, Notification } = require('electron');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
-const notifier = require('node-notifier');
+const { download } = require('electron-dl');
 
 const language = settings.get('language', 'en');
-const trayClickEvent = settings.get('trayClickEvent', 'showMain');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class AppTray {
-  constructor(playerController, settingsController) {
+  constructor(playerController, settingsController, lyricsController) {
     this.playerController = playerController;
     this.settingsController = settingsController;
+    this.lyricsController = lyricsController;
     this.init();
   }
 
@@ -35,7 +35,14 @@ class AppTray {
       {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
       {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
       {label: 'Separator', type: 'separator'},
-      {label: Locale.TRAY_RELOAD_PLAYER, click: () => this.playerController.reload()},
+      {label: Locale.TRAY_PLAYER_MODE, submenu: [
+        {label: Locale.TRAY_PLAYER_MODE_DEFAULT, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_DEFAULT_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_HIDE_LYRICS, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_HIDE_LYRICS_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_MINI, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
+      ]},
+      {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
       {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
@@ -47,13 +54,20 @@ class AppTray {
   }
 
   togglePlay() {
-    this.playerController.getWebContents().executeJavaScript("document.querySelector('.pause-btn')", (result) => {
+    this.playerController.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
       result ? this.playerController.pause() : this.playerController.play();
     });
   }
 
+  toggleLyrics() {
+    if (!this.lyricsController.window.isVisible()) {
+      this.playerController.addPlaytimeObserver();
+    }
+    this.lyricsController.toggle();
+  }
+
   fireClickTrayEvent() {
-    if(trayClickEvent === 'showMain') {
+    if(settings.get('trayClickEvent', 'showMain') === 'showMain') {
       this.togglePlayerWindow();
     } else {
       this.notifyTrackInfo();
@@ -66,22 +80,34 @@ class AppTray {
 
       // notify the current playing track
       if (Object.keys(trackInfo).length > 0) {
-        notifier.notify({
-          'icon': path.join(__dirname, '../../assets/icon.png'),
-          'title': `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-          'message': `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
-${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`
-        });
+          // download the covers
+          download(this.playerController.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
+          .then(dl => {
+            new Notification({
+              title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
+              body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
+              silent: true,
+              icon: dl.getSavePath()
+            }).show();
+          }).catch(console.error);
       }
     });
   }
 
   togglePlayerWindow() {
     if (this.playerController.isVisible()) {
-      this.playerController.hide();
+      this.playerController.window.hide();
     } else {
       this.playerController.show();
     }
+  }
+
+  changePlayerMode(mode) {
+    settings.set('customLayout', mode);
+    this.lyricsController.window.isVisible() && this.lyricsController.window.hide();
+    this.playerController.window.destroy();
+    this.playerController.init();
   }
 
   openSettings() {
@@ -91,7 +117,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`
   cleanupAndExit() {
     storage.clear((error) => {
       if (error) throw error;
-      console.log(app.getPath('userData'));
+      // console.log(app.getPath('userData'));
       app.exit(0);
     });
   }

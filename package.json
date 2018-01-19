@@ -1,6 +1,6 @@
 {
   "name": "electron-xiami",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Xiami Electron desktop application",
   "main": "src/main.js",
   "scripts": {
@@ -22,16 +22,21 @@
   "author": "Howard Ju <howard.ju@outlook.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron": "~1.6.2",
+    "electron": "~1.7.10",
     "electron-builder": "^19.8.0"
   },
   "dependencies": {
-    "electron-fetch": "^1.0.0",
-    "electron-json-storage": "^3.0.5",
+    "electron-dl": "^1.10.0",
+    "electron-json-storage": "^4.0.2",
     "electron-settings": "^3.1.1",
-    "node-notifier": "^5.1.2"
+    "fs-extra": "^5.0.0",
+    "hh-mm-ss": "^1.2.0",
+    "lyrics.js": "^0.3.5"
   },
   "build": {
-    "appId": "com.electron.${name}"
+    "appId": "nz.co.enkru.${name}",
+    "linux": {
+      "category": "Audio"
+    }
   }
 }

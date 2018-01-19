@@ -16,6 +16,7 @@ function setLocale() {
   $('#tray-title').text(Locale.SETTINGS_TRAY);
   $('#tray-click-title').text(Locale.SETTINGS_TRAY_CLICK);
   $('#custom-layout-title').text(Locale.SETTINGS_LAYOUT);
+  $('#show-notification-title').text(Locale.SETTINGS_NOTIFICATION);
 }
 
 function loadSettings() {
@@ -42,15 +43,16 @@ function loadSettings() {
     }
   });
 
-  // custom layout setting
-  const customLayout = settings.get('customLayout', 'default');
-  const $customLayout = $('#custom-layout');
-  $customLayout.dropdown('setup menu', {values: Locale.SETTINGS_LAYOUT_OPTIONS});
-  $customLayout.dropdown('set selected', customLayout);
-
-  $customLayout.dropdown({
-    onChange: (value) => {
-      settings.set('customLayout', value);
+  // show notification
+  const showNotification = settings.get('showNotification', 'check');
+  const $showNotification = $('#show-notification');
+  $showNotification.checkbox(showNotification);
+  $showNotification.checkbox({
+    onChecked: () => {
+      settings.set('showNotification', 'check');
+    },
+    onUnchecked: () => {
+      settings.set('showNotification', 'uncheck');
     }
   });
 }
