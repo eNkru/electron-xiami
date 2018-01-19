@@ -124,10 +124,14 @@ class XiamiPlayer {
       const timeline = this.lyrics.select(timeFormat.toS(value));
       if (timeline !== this.previousTime) {
         this.previousTime = timeline;
-        let lyric = this.lyrics.getLyric(timeline);
-        if (lyric) {
-          let text = lyric.text;
-          this.lyricsController.window.webContents.send('lyricsChange', this.prettyLyric(text));
+        if (timeline >= 0) {
+          let lyric = this.lyrics.getLyric(timeline);
+          if (lyric) {
+            let text = lyric.text;
+            this.lyricsController.window.webContents.send('lyricsChange', this.prettyLyric(text));
+          }
+        } else {
+          this.lyricsController.window.webContents.send('lyricsChange', '这首没有歌词 (-_-!)');
         }
       }
     });

@@ -128,7 +128,7 @@
 			}
 			var timestamp = Number(ts) + timestamp_offset + 0.95;
 			var i = 0;
-			if (timestamp < lyrics_all[0].timestamp) {
+			if (!lyrics_all || timestamp < lyrics_all[0].timestamp) {
 				return -1;
 			}
 			for (i = 0; i < (lyrics_all.length - 1); i++) {
