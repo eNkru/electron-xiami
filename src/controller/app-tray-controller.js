@@ -67,10 +67,13 @@ class AppTray {
   }
 
   fireClickTrayEvent() {
-    if(settings.get('trayClickEvent', 'showMain') === 'showMain') {
+    const option = settings.get('trayClickEvent', 'showMain');
+    if( option === 'showMain') {
       this.togglePlayerWindow();
-    } else {
+    } else if (option === 'showTrackInfo') {
       this.notifyTrackInfo();
+    } else {
+      this.togglePlay();
     }
   }
 

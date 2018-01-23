@@ -36,7 +36,11 @@ Locale.SETTINGS_LANGUAGE_OPTIONS = [{value: 'en', text: 'English', name: 'Englis
 
 Locale.SETTINGS_TRAY = 'Tray';
 Locale.SETTINGS_TRAY_CLICK = 'Click Tray Icon';
-Locale.SETTINGS_TRAY_CLICK_OPTIONS = [{value: 'showMain', text: 'Show Main Player', name: 'Show Main Player'}, {value: 'showTrackInfo', text: 'Show Track Info', name: 'Show Track Info'}];
+Locale.SETTINGS_TRAY_CLICK_OPTIONS = [
+    {value: 'showMain', text: 'Show Main Player', name: 'Show Main Player'}, 
+    {value: 'showTrackInfo', text: 'Show Track Info', name: 'Show Track Info'},
+    {value: 'playPause', text: 'Play | Pause the track', name: 'Play | Pause the track'}
+];
 
 Locale.SETTINGS_NOTIFICATION = 'Show Notification';
 
