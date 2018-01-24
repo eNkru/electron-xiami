@@ -1,6 +1,6 @@
 {
   "name": "electron-xiami",
-  "version": "1.2.0",
+  "version": "1.1.2",
   "description": "Xiami Electron desktop application",
   "main": "src/main.js",
   "scripts": {
