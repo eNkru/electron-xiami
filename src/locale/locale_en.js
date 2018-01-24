@@ -1,6 +1,9 @@
-class Locale {
+class Locale {}
 
-}
+Locale.UPDATE_CANCEL_BUTTON = 'Later';
+Locale.UPDATE_OK_BUTTON = 'Upgrade';
+Locale.UPDATE_TITLE = 'Version Upgrade';
+Locale.UPDATE_MESSAGE = 'Upgrade Information';
 
 Locale.TRAY_TOOLTIP = 'Xiami Player';
 Locale.TRAY_SHOW_MAIN = 'Show Player';

@@ -1,5 +1,10 @@
 class Locale {}
 
+Locale.UPDATE_CANCEL_BUTTON = '稍后再说';
+Locale.UPDATE_OK_BUTTON = '马上更新';
+Locale.UPDATE_TITLE = '版本更新';
+Locale.UPDATE_MESSAGE = '更新内容';
+
 Locale.TRAY_TOOLTIP = '虾米播放器';
 Locale.TRAY_SHOW_MAIN = '显示播放器';
 Locale.TRAY_PLAY_PAUSE = '播放 | 暂停';
