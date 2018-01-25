@@ -6,7 +6,7 @@ Locale.UPDATE_TITLE = '版本更新';
 Locale.UPDATE_MESSAGE = '更新内容';
 
 Locale.TRAY_TOOLTIP = '虾米播放器';
-Locale.TRAY_SHOW_MAIN = '显示播放器';
+Locale.TRAY_SHOW_MAIN = '切换播放器窗口';
 Locale.TRAY_PLAY_PAUSE = '播放 | 暂停';
 Locale.TRAY_NEXT = '下一首';
 Locale.TRAY_PREVIOUS = '上一首';

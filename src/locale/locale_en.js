@@ -6,7 +6,7 @@ Locale.UPDATE_TITLE = 'Version Upgrade';
 Locale.UPDATE_MESSAGE = 'Upgrade Information';
 
 Locale.TRAY_TOOLTIP = 'Xiami Player';
-Locale.TRAY_SHOW_MAIN = 'Show Player';
+Locale.TRAY_SHOW_MAIN = 'Toggle Player Window';
 Locale.TRAY_PLAY_PAUSE = 'Play | Pause';
 Locale.TRAY_NEXT = 'Next';
 Locale.TRAY_PREVIOUS = 'Previous';

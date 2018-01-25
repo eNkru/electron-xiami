@@ -22,7 +22,7 @@ class AppTray {
 
     //set the context menu
     const context = Menu.buildFromTemplate([
-      {label: Locale.TRAY_SHOW_MAIN, click: () => this.playerController.show()},
+      {label: Locale.TRAY_SHOW_MAIN, click: () => this.togglePlayerWindow()},
       {label: Locale.TRAY_PLAY_PAUSE, click: () => this.togglePlay()},
       {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
       {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
