@@ -4,11 +4,8 @@ const PlayerController = require('./controller/player-controller');
 const SettingsController = require('./controller/settings-controller');
 const AppTray = require('./controller/app-tray-controller');
 const LyricsController = require('./controller/lyrics-controller');
-const UpdateController = require('./controller/update-controller');
 
 class ElectronXiami {
-
-  // constructor.
   constructor() {
     app.disableHardwareAcceleration();
     this.lyricsController = null;
@@ -43,9 +40,6 @@ class ElectronXiami {
       this.createSettings();
       this.createPlayer(this.lyricsController);
       this.createTray(this.settingsController, this.lyricsController, this.playerController);
-
-      // check update
-      new UpdateController().checkUpdate();
     });
 
     // Quit when all windows are closed.
