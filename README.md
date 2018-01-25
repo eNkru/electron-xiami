@@ -1,4 +1,4 @@
-<img src="assets/icon.png" alt="logo" height="80" align="right" />
+<img src="build/icons/128x128.png" alt="logo" height="80" align="right" />
 
 # Electron Xiami
 
@@ -8,7 +8,9 @@ Linux和macOS下的虾米客户端 (虾米播放器)，使用[Electron](https://
 
 ![screenshot_macos](https://user-images.githubusercontent.com/13460738/34644583-38a2a2b6-f39e-11e7-8831-e21475427ccb.jpg)
 
-![mini_linux](https://user-images.githubusercontent.com/13460738/35129299-db556ea0-fd1f-11e7-877d-4c7d21c9b72f.png)
+![screenshot_gnome](https://user-images.githubusercontent.com/13460738/34747515-6fd6805c-f5fd-11e7-9aed-25f51c2e3b49.jpg)
+
+![mini_mode](https://user-images.githubusercontent.com/13460738/35371056-af3971be-01f6-11e8-8a57-8a8c4b728432.png)
 
 *请注意：这个项目不是虾米音乐的官方客户端。如果有任何问题请反馈到[这个链接](https://github.com/eNkru/electron-xiami/issues)。*
 
