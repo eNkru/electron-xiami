@@ -42,7 +42,8 @@ Locale.SETTINGS_TRAY_CLICK = '左键单击托盘图标';
 Locale.SETTINGS_TRAY_CLICK_OPTIONS = [
     {value: 'showMain', text: '显示播放器界面', name: '显示播放器界面'}, 
     {value: 'showTrackInfo', text: '显示播放信息', name: '显示播放信息'},
-    {value: 'playPause', text: '播放 | 暂停 音乐', name: '播放 | 暂停 音乐'}
+    {value: 'playPause', text: '播放 | 暂停 音乐', name: '播放 | 暂停 音乐'},
+    {value: 'nextTrack', text: '播放下一首音乐', name: '播放下一首音乐'}
 ];
 
 Locale.SETTINGS_NOTIFICATION = '显示通知';

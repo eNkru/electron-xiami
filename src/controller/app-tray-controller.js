@@ -6,6 +6,7 @@ const { download } = require('electron-dl');
 
 const language = settings.get('language', 'en');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+const macOS = process.platform === 'darwin' ? true : false;
 
 class AppTray {
   constructor(playerController, settingsController, lyricsController) {
@@ -16,16 +17,7 @@ class AppTray {
   }
 
   init() {
-
-    //initial the tray
-    let trayIcon;
-    if (process.platform === 'linux' || process.platform === 'win32') {
-      trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_white.png'));
-    } else {
-      trayIcon = nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_black_macos.png'))
-    }
-    trayIcon.setTemplateImage(true);
-    this.tray = new Tray(trayIcon);
+    this.tray = new Tray(this.createTrayIcon(settings.get('trayClickEvent', 'showMain')));
     this.tray.setToolTip(Locale.TRAY_TOOLTIP);
 
     //set the context menu
@@ -51,6 +43,21 @@ class AppTray {
     this.tray.setContextMenu(context);
 
     this.tray.on('click', () => this.fireClickTrayEvent());
+
+    ipcMain.on('trayClickEvent', (event, value) => {
+      this.tray.setImage(this.createTrayIcon(value));
+    });
+  }
+
+  createTrayIcon(trayClickMode) {
+    switch (trayClickMode) {
+      case 'playPause':
+        return macOS ? nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_play_pause_black.png')) : nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_play_pause_white.png'));
+      case 'nextTrack':
+        return macOS ? nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_next_black.png')) : nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_next_white.png'));
+      default:
+        return macOS ? nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_black_macos.png')) : nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_white.png'));
+    }
   }
 
   togglePlay() {
@@ -72,6 +79,8 @@ class AppTray {
       this.togglePlayerWindow();
     } else if (option === 'showTrackInfo') {
       this.notifyTrackInfo();
+    } else if (option === 'nextTrack') {
+      this.playerController.next();
     } else {
       this.togglePlay();
     }

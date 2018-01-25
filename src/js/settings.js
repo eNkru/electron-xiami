@@ -1,5 +1,6 @@
 require('../../resources/semantic.min.js');
 const settings = require('electron-settings');
+const {ipcRenderer} = require('electron');
 
 const language = settings.get('language', 'en');
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
@@ -40,6 +41,7 @@ function loadSettings() {
   $trayClick.dropdown({
     onChange: (value) => {
       settings.set('trayClickEvent', value);
+      ipcRenderer.send('trayClickEvent', value);
     }
   });
 
