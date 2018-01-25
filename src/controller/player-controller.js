@@ -9,7 +9,7 @@ const {download} = require('electron-dl');
 const Lyrics = require('../js/lib/lyrics');
 const fs = require('fs-extra');
 const timeFormat = require('hh-mm-ss');
-const UpdateController = require('./controller/update-controller');
+const UpdateController = require('./update-controller');
 
 const playerUrl = 'http://www.xiami.com/play';
 const playlistUrl = 'http://www.xiami.com/song/playlist';
