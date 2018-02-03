@@ -33,17 +33,22 @@ function loadSettings() {
   });
 
   // tray click setting
-  const trayClick = settings.get('trayClickEvent', 'showMain');
-  const $trayClick = $('#tray-click');
-  $trayClick.dropdown('setup menu', {values: Locale.SETTINGS_TRAY_CLICK_OPTIONS});
-  $trayClick.dropdown('set selected', trayClick);
-
-  $trayClick.dropdown({
-    onChange: (value) => {
-      settings.set('trayClickEvent', value);
-      ipcRenderer.send('trayClickEvent', value);
-    }
-  });
+  
+  if (process.platform === 'darwin') {
+    $('#tray-segment').hide();
+  } else {
+    const trayClick = settings.get('trayClickEvent', 'showMain');
+    const $trayClick = $('#tray-click');
+    $trayClick.dropdown('setup menu', {values: Locale.SETTINGS_TRAY_CLICK_OPTIONS});
+    $trayClick.dropdown('set selected', trayClick);
+  
+    $trayClick.dropdown({
+      onChange: (value) => {
+        settings.set('trayClickEvent', value);
+        ipcRenderer.send('trayClickEvent', value);
+      }
+    });
+  }
 
   // show notification
   const showNotification = settings.get('showNotification', 'check');
