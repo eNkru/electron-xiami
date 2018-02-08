@@ -5,7 +5,7 @@ body {
 
 body .lyrics-line {
     font-family: FZHei-B01, 'Hiragino Kaku Gothic Pro', 'WenQuanYi Zen Hei', '微軟正黑體', '蘋果儷中黑', Helvetica, Arial, sans-serif;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0);
     margin: 0;
     font-size: 36px;
     text-align: center;
@@ -14,4 +14,9 @@ body .lyrics-line {
     line-height: 1.5;
     color: #fff;
     text-shadow: #000 0px 0px 5px, #000 0px 0px 5px;
+}
+
+
+body .lyrics-window {
+    background: rgba(0, 0, 0, 0.2);
 }
