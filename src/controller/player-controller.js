@@ -202,19 +202,18 @@ class XiamiPlayer {
    * @param {*} requestUrl the request URL for the event
    */
   handleResponse(requestUrl) {
-    const showNotification = settings.get('showNotification', 'check');
+    requestUrl.startsWith(playlistUrl) && this.updatePlaylist(requestUrl);
 
-    if ('check' === showNotification) {
-      requestUrl.startsWith(playlistUrl) && this.updatePlaylist(requestUrl);
+    if (requestUrl.startsWith(getLyricUrl)) {
+      this.loadLyrics(requestUrl).then(() => {
 
-      if (requestUrl.startsWith(getLyricUrl)) {
-
-        this.loadLyrics(requestUrl).then(() => {
+        const showNotification = settings.get('showNotification', 'check');
+        if ('check' === showNotification) {
           const lyricPath = urlLib.parse(requestUrl).pathname;
           const songId = lyricPath.match(/\/(\d*)_/)[1];
           this.changeTrack(songId);
-        }).catch(console.error);
-      }
+        }
+      }).catch(console.error);
     }
   }
 
