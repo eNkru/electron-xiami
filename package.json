@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron src/main.js",
     "pack": "electron-builder --dir",
-    "dist:linux": "electron-builder --linux deb tar.xz",
+    "dist:linux": "electron-builder --linux AppImage",
     "dist:macOS": "electron-builder --mac",
     "postinstall": "electron-builder install-app-deps",
     "publish": "build -p always"
@@ -41,9 +41,7 @@
       "category": "Audio",
       "target": [
         "AppImage",
-        "deb",
-        "pacman",
-        "tar.xz"
+        "deb"
       ]
     }
   }
