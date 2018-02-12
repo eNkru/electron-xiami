@@ -15,7 +15,7 @@ const playerUrl = 'http://www.xiami.com/play';
 const playlistUrl = 'http://www.xiami.com/song/playlist';
 const getLyricUrl = 'http://img.xiami.net/lyric/';
 
-const language = settings.get('language', 'en');
+const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class XiamiPlayer {

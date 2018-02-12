@@ -1,10 +1,11 @@
 const path = require('path');
 const { app, Menu, nativeImage, Tray, ipcMain, Notification } = require('electron');
 const storage = require('electron-json-storage');
+const fs = require('fs-extra');
 const settings = require('electron-settings');
 const { download } = require('electron-dl');
 
-const language = settings.get('language', 'en');
+const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 const macOS = process.platform === 'darwin' ? true : false;
 
