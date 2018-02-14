@@ -1,4 +1,5 @@
-const {app, BrowserWindow, Notification, ipcMain} = require('electron');
+const {app, BrowserWindow, Notification, ipcMain, TouchBar, nativeImage} = require('electron');
+const {TouchBarLabel, TouchBarButton} = TouchBar
 const urlLib = require('url');
 const http = require('http');
 const path = require('path');
@@ -73,6 +74,9 @@ class XiamiPlayer {
 
     // load xiami player page.
     this.window.loadURL(playerUrl);
+
+    // set the touch bar.
+    this.window.setTouchBar(this.createTouchBar());
 
     // inject the custom layout.
     this.window.webContents.on('dom-ready', () => {
@@ -160,12 +164,38 @@ class XiamiPlayer {
     this.window.webContents.executeJavaScript("document.querySelector('.play-btn').dispatchEvent(new MouseEvent('click'));");
   }
 
+  toggle() {
+    this.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
+      result ? this.pause() : this.play();
+    });
+  }
+
   next() {
     this.window.webContents.executeJavaScript("document.querySelector('.next-btn').dispatchEvent(new MouseEvent('click'));");
   }
 
   previous() {
     this.window.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
+  }
+
+  /**
+   * Create the touch bar for macOS
+   */
+  createTouchBar() {
+    return new TouchBar([
+      new TouchBarButton({
+        icon: nativeImage.createFromNamedImage('NSTouchBarRewindTemplate', [-1, 0, 1]),
+        click: () => this.previous()
+      }),
+      new TouchBarButton({
+        icon: nativeImage.createFromNamedImage('NSTouchBarPlayPauseTemplate', [-1, 0, 1]),
+        click: () => this.toggle()
+      }),
+      new TouchBarButton({
+        icon: nativeImage.createFromNamedImage('NSTouchBarFastForwardTemplate', [-1, 0, 1]),
+        click: () => this.next()
+      })
+    ]);
   }
 
   /**

@@ -24,7 +24,7 @@ class AppTray {
     //set the context menu
     const context = Menu.buildFromTemplate([
       {label: Locale.TRAY_SHOW_MAIN, click: () => this.togglePlayerWindow()},
-      {label: Locale.TRAY_PLAY_PAUSE, click: () => this.togglePlay()},
+      {label: Locale.TRAY_PLAY_PAUSE, click: () => this.playerController.toggle()},
       {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
       {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
       {label: 'Separator', type: 'separator'},
@@ -59,12 +59,6 @@ class AppTray {
       default:
         return macOS ? nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_black_macos.png')) : nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_white.png'));
     }
-  }
-
-  togglePlay() {
-    this.playerController.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
-      result ? this.playerController.pause() : this.playerController.play();
-    });
   }
 
   toggleLyrics() {
