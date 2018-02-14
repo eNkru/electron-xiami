@@ -55,6 +55,10 @@ class ElectronXiami {
       }
     });
 
+    app.on('before-quit', () => {
+      this.tray.tray.destroy();
+    });
+
     app.on('quit', () => {
       // empty cover cache folder before exit.
       fs.remove(`${app.getPath('userData')}/covers`);

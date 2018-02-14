@@ -21,7 +21,9 @@ class UpdateController {
         detail: `${info.releaseNotes}`
       }, response => {
         if (response) {
-          autoUpdater.downloadUpdate();
+          autoUpdater.downloadUpdate().then(downloads => {
+            autoUpdater.quitAndInstall();
+          });
         }
       });
     });
