@@ -38,7 +38,7 @@ class AppTray {
       {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
-      {label: Locale.TRAY_EXIT, click: () => this.cleanupAndExit()},
+      {label: `${Locale.TRAY_EXIT} (Version: ${app.getVersion()})`, click: () => this.cleanupAndExit()},
     ]);
 
     this.tray.setContextMenu(context);
