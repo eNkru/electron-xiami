@@ -90,26 +90,30 @@ class ElectronXiami {
   }
 
   registerMediaKeys(desktopEnvironment) {
-    const sessionBus = dbus.sessionBus();
-    sessionBus.getService(`org.${desktopEnvironment}.SettingsDaemon.MediaKeys`).getInterface(
-      `/org/${desktopEnvironment}/SettingsDaemon/MediaKeys`, 
-      `org.${desktopEnvironment}.SettingsDaemon.MediaKeys`, (error, mediaKeys) => {
-        if(!error) {
-          mediaKeys.on('MediaPlayerKeyPressed', (n, keyName) => {
-            switch (keyName) {
-              case 'Next': this.playerController.next(); return;
-              case 'Previous': this.playerController.previous(); return;
-              case 'Play': this.playerController.toggle(); return;
-              case 'Stop': this.playerController.pause(); return;
-            }
-          });
-
-          mediaKeys.GrabMediaPlayerKeys('org.gnome.SettingsDaemon.MediaKeys', 0);
-        } else {
-          this.addMediaGlobalShortcut();
+    try {
+      const sessionBus = dbus.sessionBus();
+      sessionBus.getService(`org.${desktopEnvironment}.SettingsDaemon.MediaKeys`).getInterface(
+        `/org/${desktopEnvironment}/SettingsDaemon/MediaKeys`, 
+        `org.${desktopEnvironment}.SettingsDaemon.MediaKeys`, (error, mediaKeys) => {
+          if(!error) {
+            mediaKeys.on('MediaPlayerKeyPressed', (n, keyName) => {
+              switch (keyName) {
+                case 'Next': this.playerController.next(); return;
+                case 'Previous': this.playerController.previous(); return;
+                case 'Play': this.playerController.toggle(); return;
+                case 'Stop': this.playerController.pause(); return;
+              }
+            });
+  
+            mediaKeys.GrabMediaPlayerKeys('org.gnome.SettingsDaemon.MediaKeys', 0);
+          } else {
+            this.addMediaGlobalShortcut();
+          }
         }
-      }
-    )
+      )
+    } catch (error) {
+      this.addMediaGlobalShortcut();
+    }
   }
 
   addMediaGlobalShortcut() {
