@@ -23,7 +23,7 @@
   "author": "Howard Ju <howard.ju@outlook.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron": "~1.7.10",
+    "electron": "~1.8.2",
     "electron-builder": "^19.8.0"
   },
   "dependencies": {
