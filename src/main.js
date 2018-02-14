@@ -1,4 +1,4 @@
-const {app} = require('electron');
+const {app, globalShortcut} = require('electron');
 const fs = require('fs-extra')
 const dbus = require('dbus-native');
 const PlayerController = require('./controller/player-controller');
@@ -105,9 +105,18 @@ class ElectronXiami {
           });
 
           mediaKeys.GrabMediaPlayerKeys('org.gnome.SettingsDaemon.MediaKeys', 0);
+        } else {
+          this.addMediaGlobalShortcut();
         }
       }
     )
+  }
+
+  addMediaGlobalShortcut() {
+    globalShortcut.register('MediaPlayPause', () => this.playerController.toggle());
+    globalShortcut.register('MediaNextTrack', () => this.playerController.next());
+    globalShortcut.register('MediaPreviousTrack', () => this.playerController.previous());
+    globalShortcut.register('MediaStop', () => this.playerController.pause());
   }
 
 }
