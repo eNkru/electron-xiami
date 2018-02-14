@@ -1,5 +1,6 @@
 const {app} = require('electron');
 const fs = require('fs-extra')
+const dbus = require('dbus-native');
 const PlayerController = require('./controller/player-controller');
 const SettingsController = require('./controller/settings-controller');
 const AppTray = require('./controller/app-tray-controller');
@@ -40,6 +41,9 @@ class ElectronXiami {
       this.createSettings();
       this.createPlayer(this.lyricsController);
       this.createTray(this.settingsController, this.lyricsController, this.playerController);
+
+      this.registerMediaKeys('gnome');
+      this.registerMediaKeys('mate');
     });
 
     // Quit when all windows are closed.
@@ -84,6 +88,28 @@ class ElectronXiami {
   createTray(settingController, lyricsController, playerController) {
     this.tray = new AppTray(playerController, settingController, lyricsController);
   }
+
+  registerMediaKeys(desktopEnvironment) {
+    const sessionBus = dbus.sessionBus();
+    sessionBus.getService(`org.${desktopEnvironment}.SettingsDaemon.MediaKeys`).getInterface(
+      `/org/${desktopEnvironment}/SettingsDaemon/MediaKeys`, 
+      `org.${desktopEnvironment}.SettingsDaemon.MediaKeys`, (error, mediaKeys) => {
+        if(!error) {
+          mediaKeys.on('MediaPlayerKeyPressed', (n, keyName) => {
+            switch (keyName) {
+              case 'Next': this.playerController.next(); return;
+              case 'Previous': this.playerController.previous(); return;
+              case 'Play': this.playerController.toggle(); return;
+              case 'Stop': this.playerController.pause(); return;
+            }
+          });
+
+          mediaKeys.GrabMediaPlayerKeys('org.gnome.SettingsDaemon.MediaKeys', 0);
+        }
+      }
+    )
+  }
+
 }
 
 new ElectronXiami().init();

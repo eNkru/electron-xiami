@@ -160,6 +160,12 @@ class XiamiPlayer {
     this.window.webContents.executeJavaScript("document.querySelector('.play-btn').dispatchEvent(new MouseEvent('click'));");
   }
 
+  toggle() {
+    this.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
+      result ? this.pause() : this.play();
+    });
+  }
+
   next() {
     this.window.webContents.executeJavaScript("document.querySelector('.next-btn').dispatchEvent(new MouseEvent('click'));");
   }

@@ -27,6 +27,7 @@
     "electron-builder": "^19.8.0"
   },
   "dependencies": {
+    "dbus-native": "^0.2.5",
     "electron-dl": "^1.10.0",
     "electron-json-storage": "^4.0.2",
     "electron-settings": "^3.1.1",
