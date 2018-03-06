@@ -21,6 +21,7 @@ const Locale = language === 'en' ? require('../locale/locale_en') : require('../
 
 class XiamiPlayer {
   constructor(lyricsController) {
+    this.notification = null;
     this.lyricsController = lyricsController;
     this.init();
   }
@@ -235,15 +236,16 @@ class XiamiPlayer {
     requestUrl.startsWith(playlistUrl) && this.updatePlaylist(requestUrl);
 
     if (requestUrl.startsWith(getLyricUrl)) {
+      // Load Lyrics.
       this.loadLyrics(requestUrl).then(() => {
-
+        // Load track change notification.
         const showNotification = settings.get('showNotification', 'check');
         if ('check' === showNotification) {
           const lyricPath = urlLib.parse(requestUrl).pathname;
           const songId = lyricPath.match(/\/(\d*)_/)[1];
-          this.changeTrack(songId);
+          this.notifyTrackChange(songId);
         }
-      }).catch(console.error);
+      });
     }
   }
 
@@ -292,7 +294,7 @@ class XiamiPlayer {
    * Handle the track changed.
    * @param {*} songId the changed song ID
    */
-  changeTrack(songId) {
+  notifyTrackChange(songId) {
     storage.get(songId, (error, trackInfo) => {
 
       if (error) throw error;
@@ -307,7 +309,8 @@ class XiamiPlayer {
         // download the covers
         return download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
             .then(dl => {
-              const notification = new Notification({
+              this.notification && this.notification.close();
+              this.notification = new Notification({
                 title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
                 body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
 ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
@@ -315,11 +318,12 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
                 icon: dl.getSavePath()
               });
 
-              notification.on("click", () => this.show());
-              notification.show();
-            });
+              // this.notification.on("click", () => this.show());
+              this.notification.show();
+            })
+            .catch(console.error);
       } else {
-        setTimeout(() => this.changeTrack(songId), 1000);
+        setTimeout(() => this.notifyTrackChange(songId), 1000);
       }
     });
   }
@@ -330,7 +334,8 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
           fs.readFile(dl.getSavePath(), 'utf8', (error, data) => {
             this.lyrics.load(data);
           });
-        });
+        })
+        .catch(console.error);
   }
 }
 
