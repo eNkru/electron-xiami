@@ -3,7 +3,7 @@ const { app, Menu, nativeImage, Tray, ipcMain } = require('electron');
 const storage = require('electron-json-storage');
 const fs = require('fs-extra');
 const settings = require('electron-settings');
-const SettingsController = require('./controller/settings-controller');
+const SettingsController = require('./settings-controller');
 
 const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');

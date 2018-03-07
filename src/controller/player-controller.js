@@ -6,7 +6,7 @@ const path = require('path');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
 const CssInjector = require('../js/css-injector');
-const {download} = require('electron-dl');
+const download = require('download');
 const Lyrics = require('../js/lib/lyrics');
 const fs = require('fs-extra');
 const timeFormat = require('hh-mm-ss');
@@ -237,15 +237,15 @@ class XiamiPlayer {
 
     if (requestUrl.startsWith(getLyricUrl)) {
       // Load Lyrics.
-      this.loadLyrics(requestUrl).then(() => {
-        // Load track change notification.
-        const showNotification = settings.get('showNotification', 'check');
-        if ('check' === showNotification) {
-          const lyricPath = urlLib.parse(requestUrl).pathname;
-          const songId = lyricPath.match(/\/(\d*)_/)[1];
-          this.notifyTrackChange(songId);
-        }
-      });
+      this.loadLyrics(requestUrl);
+
+      // Load track change notification.
+      const showNotification = settings.get('showNotification', 'check');
+      if ('check' === showNotification) {
+        const lyricPath = urlLib.parse(requestUrl).pathname;
+        const songId = lyricPath.match(/\/(\d*)_/)[1];
+        this.notifyTrackChange(songId);
+      }
     }
   }
 
@@ -317,13 +317,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
   }
 
   loadLyrics(url) {
-    return download(this.window, url, {directory: `${app.getPath('userData')}/lyrics`})
-        .then(dl => {
-          fs.readFile(dl.getSavePath(), 'utf8', (error, data) => {
-            this.lyrics.load(data);
-          });
-        })
-        .catch(console.error);
+    download(url).then(buffer => this.lyrics.load(buffer));
   }
 }
 
