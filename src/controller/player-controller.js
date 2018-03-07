@@ -1,5 +1,5 @@
 const {app, BrowserWindow, Notification, ipcMain, TouchBar, nativeImage} = require('electron');
-const {TouchBarLabel, TouchBarButton} = TouchBar
+const {TouchBarButton} = TouchBar
 const urlLib = require('url');
 const http = require('http');
 const path = require('path');
@@ -20,8 +20,8 @@ const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class XiamiPlayer {
-  constructor(lyricsController) {
-    this.notification = null;
+  constructor(lyricsController, notificationController) {
+    this.notificationController = notificationController;
     this.lyricsController = lyricsController;
     this.init();
   }
@@ -304,24 +304,12 @@ class XiamiPlayer {
         // update the current playing track
         storage.set('currentTrackInfo', trackInfo, (error) => {
           if (error) console.log(error);
-        })
+        });
 
-        // download the covers
-        return download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
-            .then(dl => {
-              this.notification && this.notification.close();
-              this.notification = new Notification({
-                title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-                body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
-${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
-                silent: true,
-                icon: dl.getSavePath()
-              });
-
-              // this.notification.on("click", () => this.show());
-              this.notification.show();
-            })
-            .catch(console.error);
+        const title = `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`;
+        const body = `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
+        this.notificationController.notify(trackInfo.pic, title, body);
       } else {
         setTimeout(() => this.notifyTrackChange(songId), 1000);
       }

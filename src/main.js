@@ -5,12 +5,14 @@ const PlayerController = require('./controller/player-controller');
 const SettingsController = require('./controller/settings-controller');
 const AppTray = require('./controller/app-tray-controller');
 const LyricsController = require('./controller/lyrics-controller');
+const NotificationController = require('./controller/notification-controller');
 
 class ElectronXiami {
   constructor() {
     app.disableHardwareAcceleration();
     this.lyricsController = null;
     this.settingsController = null;
+    this.notificationController = null;
     this.playerController = null;
     this.tray = null;
   }
@@ -37,10 +39,11 @@ class ElectronXiami {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', () => {
-      this.createLyrics();
-      this.createSettings();
-      this.createPlayer(this.lyricsController);
-      this.createTray(this.settingsController, this.lyricsController, this.playerController);
+      this.settingsController = new SettingsController();
+      this.lyricsController = new LyricsController();
+      this.notificationController = new NotificationController();
+      this.playerController = new PlayerController(this.lyricsController, this.notificationController);
+      this.tray = new AppTray(this.playerController, this.settingsController, this.lyricsController, this.notificationController);
 
       this.registerMediaKeys('gnome');
       this.registerMediaKeys('mate');
@@ -70,27 +73,11 @@ class ElectronXiami {
       // On OS X it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (this.playerController === null) {
-        this.createPlayer();
+        this.playerController = new PlayerController(this.lyricsController);
       } else {
         this.playerController.show();
       }
     });
-  }
-
-  createSettings() {
-    this.settingsController = new SettingsController();
-  }
-
-  createLyrics() {
-    this.lyricsController = new LyricsController();
-  }
-
-  createPlayer(lyricsController) {
-    this.playerController = new PlayerController(lyricsController);
-  }
-
-  createTray(settingController, lyricsController, playerController) {
-    this.tray = new AppTray(playerController, settingController, lyricsController);
   }
 
   registerMediaKeys(desktopEnvironment) {

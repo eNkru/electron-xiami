@@ -3,17 +3,18 @@ const { app, Menu, nativeImage, Tray, ipcMain, Notification } = require('electro
 const storage = require('electron-json-storage');
 const fs = require('fs-extra');
 const settings = require('electron-settings');
-const { download } = require('electron-dl');
+const download = require('download');
 
 const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 const macOS = process.platform === 'darwin' ? true : false;
 
 class AppTray {
-  constructor(playerController, settingsController, lyricsController) {
+  constructor(playerController, settingsController, lyricsController, notificationController) {
     this.playerController = playerController;
     this.settingsController = settingsController;
     this.lyricsController = lyricsController;
+    this.notificationController = notificationController;
     this.init();
   }
 
@@ -87,17 +88,11 @@ class AppTray {
 
       // notify the current playing track
       if (Object.keys(trackInfo).length > 0) {
-          // download the covers
-          download(this.playerController.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
-          .then(dl => {
-            new Notification({
-              title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-              body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
-${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
-              silent: true,
-              icon: dl.getSavePath()
-            }).show();
-          }).catch(console.error);
+        const title = `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`;
+        const body = `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
+
+        this.notificationController.notify(trackInfo.pic, title, body);
       }
     });
   }
