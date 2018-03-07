@@ -1,20 +1,20 @@
 const path = require('path');
-const { app, Menu, nativeImage, Tray, ipcMain, Notification } = require('electron');
+const { app, Menu, nativeImage, Tray, ipcMain } = require('electron');
 const storage = require('electron-json-storage');
 const fs = require('fs-extra');
 const settings = require('electron-settings');
-const download = require('download');
+const SettingsController = require('./controller/settings-controller');
 
 const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 const macOS = process.platform === 'darwin' ? true : false;
 
 class AppTray {
-  constructor(playerController, settingsController, lyricsController, notificationController) {
+  constructor(playerController, lyricsController, notificationController) {
     this.playerController = playerController;
-    this.settingsController = settingsController;
     this.lyricsController = lyricsController;
     this.notificationController = notificationController;
+    this.settingController = new SettingsController();
     this.init();
   }
 
@@ -78,7 +78,7 @@ class AppTray {
     } else if (option === 'nextTrack') {
       this.playerController.next();
     } else {
-      this.togglePlay();
+      this.playerController.toggle();
     }
   }
 
@@ -113,7 +113,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
   }
 
   openSettings() {
-    this.settingsController.show();
+    this.settingController.show();
   }
 
   cleanupAndExit() {

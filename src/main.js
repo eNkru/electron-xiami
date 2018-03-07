@@ -2,7 +2,6 @@ const {app, globalShortcut} = require('electron');
 const fs = require('fs-extra')
 const dbus = require('dbus-native');
 const PlayerController = require('./controller/player-controller');
-const SettingsController = require('./controller/settings-controller');
 const AppTray = require('./controller/app-tray-controller');
 const LyricsController = require('./controller/lyrics-controller');
 const NotificationController = require('./controller/notification-controller');
@@ -11,7 +10,6 @@ class ElectronXiami {
   constructor() {
     app.disableHardwareAcceleration();
     this.lyricsController = null;
-    this.settingsController = null;
     this.notificationController = null;
     this.playerController = null;
     this.tray = null;
@@ -39,11 +37,10 @@ class ElectronXiami {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', () => {
-      this.settingsController = new SettingsController();
       this.lyricsController = new LyricsController();
       this.notificationController = new NotificationController();
       this.playerController = new PlayerController(this.lyricsController, this.notificationController);
-      this.tray = new AppTray(this.playerController, this.settingsController, this.lyricsController, this.notificationController);
+      this.tray = new AppTray(this.playerController, this.lyricsController, this.notificationController);
 
       this.registerMediaKeys('gnome');
       this.registerMediaKeys('mate');
