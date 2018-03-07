@@ -1,12 +1,12 @@
 const {app, BrowserWindow, Notification, ipcMain, TouchBar, nativeImage} = require('electron');
-const {TouchBarLabel, TouchBarButton} = TouchBar
+const {TouchBarButton} = TouchBar
 const urlLib = require('url');
 const http = require('http');
 const path = require('path');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
 const CssInjector = require('../js/css-injector');
-const {download} = require('electron-dl');
+const download = require('download');
 const Lyrics = require('../js/lib/lyrics');
 const fs = require('fs-extra');
 const timeFormat = require('hh-mm-ss');
@@ -20,8 +20,8 @@ const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class XiamiPlayer {
-  constructor(lyricsController) {
-    this.notification = null;
+  constructor(lyricsController, notificationController) {
+    this.notificationController = notificationController;
     this.lyricsController = lyricsController;
     this.init();
   }
@@ -237,15 +237,15 @@ class XiamiPlayer {
 
     if (requestUrl.startsWith(getLyricUrl)) {
       // Load Lyrics.
-      this.loadLyrics(requestUrl).then(() => {
-        // Load track change notification.
-        const showNotification = settings.get('showNotification', 'check');
-        if ('check' === showNotification) {
-          const lyricPath = urlLib.parse(requestUrl).pathname;
-          const songId = lyricPath.match(/\/(\d*)_/)[1];
-          this.notifyTrackChange(songId);
-        }
-      });
+      this.loadLyrics(requestUrl);
+
+      // Load track change notification.
+      const showNotification = settings.get('showNotification', 'check');
+      if ('check' === showNotification) {
+        const lyricPath = urlLib.parse(requestUrl).pathname;
+        const songId = lyricPath.match(/\/(\d*)_/)[1];
+        this.notifyTrackChange(songId);
+      }
     }
   }
 
@@ -304,24 +304,12 @@ class XiamiPlayer {
         // update the current playing track
         storage.set('currentTrackInfo', trackInfo, (error) => {
           if (error) console.log(error);
-        })
+        });
 
-        // download the covers
-        return download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
-            .then(dl => {
-              this.notification && this.notification.close();
-              this.notification = new Notification({
-                title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-                body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
-${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
-                silent: true,
-                icon: dl.getSavePath()
-              });
-
-              // this.notification.on("click", () => this.show());
-              this.notification.show();
-            })
-            .catch(console.error);
+        const title = `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`;
+        const body = `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
+        this.notificationController.notify(trackInfo.pic, title, body);
       } else {
         setTimeout(() => this.notifyTrackChange(songId), 1000);
       }
@@ -329,13 +317,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
   }
 
   loadLyrics(url) {
-    return download(this.window, url, {directory: `${app.getPath('userData')}/lyrics`})
-        .then(dl => {
-          fs.readFile(dl.getSavePath(), 'utf8', (error, data) => {
-            this.lyrics.load(data);
-          });
-        })
-        .catch(console.error);
+    download(url).then(buffer => this.lyrics.load(buffer));
   }
 }
 
