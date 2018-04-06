@@ -37,6 +37,7 @@ class AppTray {
         {label: Locale.TRAY_PLAYER_MODE_MINI, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
       ]},
       {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},
+      {label: Locale.TRAY_SWITCH_TO_RADIO, click: () => this.switchToRadioMode()},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
       {label: `${Locale.TRAY_EXIT} (Version: ${app.getVersion()})`, click: () => this.cleanupAndExit()},
@@ -103,6 +104,12 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
     } else {
       this.playerController.show();
     }
+  }
+
+  switchToRadioMode() {
+    settings.set('radio', true);
+    app.relaunch();
+    app.exit();
   }
 
   changePlayerMode(mode) {

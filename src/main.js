@@ -1,18 +1,26 @@
 const {app, globalShortcut} = require('electron');
+const path = require('path');
 const fs = require('fs-extra')
 const dbus = require('dbus-native');
 const PlayerController = require('./controller/player-controller');
 const AppTray = require('./controller/app-tray-controller');
 const LyricsController = require('./controller/lyrics-controller');
 const NotificationController = require('./controller/notification-controller');
+const settings = require('electron-settings');
+const RadioController = require('./controller/radio-controller');
+const RadioTrayController = require('./controller/radio-tray-controller');
 
 class ElectronXiami {
   constructor() {
-    app.disableHardwareAcceleration();
     this.lyricsController = null;
     this.notificationController = null;
     this.playerController = null;
     this.tray = null;
+    this.radioMode = settings.get('radio', false);
+    if (this.radioMode) {
+      app.commandLine.appendSwitch('ppapi-flash-path', path.join(__dirname, 'plugin/pepperflash/libpepflashplayer.so'));
+      app.commandLine.appendSwitch('ppapi-flash-version', '29.0.0.113-1');
+    }
   }
 
   // init method, the entry point of the app.
@@ -37,13 +45,19 @@ class ElectronXiami {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', () => {
-      this.lyricsController = new LyricsController();
-      this.notificationController = new NotificationController();
-      this.playerController = new PlayerController(this.lyricsController, this.notificationController);
-      this.tray = new AppTray(this.playerController, this.lyricsController, this.notificationController);
 
-      this.registerMediaKeys('gnome');
-      this.registerMediaKeys('mate');
+      if (this.radioMode) {
+        this.playerController = new RadioController();
+        this.tray = new RadioTrayController(this.playerController);
+      } else {
+        this.lyricsController = new LyricsController();
+        this.notificationController = new NotificationController();
+        this.playerController = new PlayerController(this.lyricsController, this.notificationController);
+        this.tray = new AppTray(this.playerController, this.lyricsController, this.notificationController);
+
+        this.registerMediaKeys('gnome');
+        this.registerMediaKeys('mate');
+      }
     });
 
     // Quit when all windows are closed.
