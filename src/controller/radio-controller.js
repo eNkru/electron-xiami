@@ -1,4 +1,6 @@
 const {BrowserWindow} = require('electron')
+const CssInjector = require('../js/css-injector');
+
 class RadioController {
 
   constructor() {
@@ -8,7 +10,7 @@ class RadioController {
   init() {
     this.window = new BrowserWindow({
       width: 1000,
-      height: 400,
+      height: 470,
       webPreferences: {
         plugins: true
       },
@@ -22,6 +24,10 @@ class RadioController {
     });
 
     this.window.loadURL('http://www.xiami.com/radio');
+
+    this.window.webContents.on('dom-ready', () => {
+      this.window.webContents.insertCSS(CssInjector.radio);
+    });
   }
 
   show() {

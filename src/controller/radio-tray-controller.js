@@ -5,6 +5,7 @@ const settings = require('electron-settings');
 
 const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+const macOS = process.platform === 'darwin' ? true : false;
 
 class RadioTray {
   constructor(radioController) {
@@ -13,7 +14,8 @@ class RadioTray {
   }
 
   init() {
-    this.tray = new Tray(nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_radio_white.png')));
+    const trayIconPath = macOS ? '../../assets/icon_radio_black.png' : '../../assets/icon_radio_white.png';
+    this.tray = new Tray(nativeImage.createFromPath(path.join(__dirname, trayIconPath)));
     this.tray.setToolTip(Locale.TRAY_TOOLTIP_RADIO);
 
     const content = Menu.buildFromTemplate([
