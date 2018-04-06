@@ -13,7 +13,7 @@ class RadioTray {
   }
 
   init() {
-    this.tray = new Tray(nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_white.png')));
+    this.tray = new Tray(nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_radio_white.png')));
     this.tray.setToolTip(Locale.TRAY_TOOLTIP_RADIO);
 
     const content = Menu.buildFromTemplate([
