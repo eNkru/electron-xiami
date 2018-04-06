@@ -39,7 +39,7 @@
   "build": {
     "appId": "nz.co.enkru.${name}",
     "linux": {
-      "category": "Audio";"AudioVideo",
+      "category": "AudioVideo;Audio",
       "target": [
         "AppImage",
         "deb"

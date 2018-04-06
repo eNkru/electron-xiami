@@ -4,3 +4,4 @@ yarn\.lock
 dist/
 electron-xiami\.iml
 /package-lock.json
+/yarn-error.log
