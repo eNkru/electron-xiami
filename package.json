@@ -43,7 +43,14 @@
       "target": [
         "AppImage",
         "deb"
-      ]
+      ],
+      "extraResources": "extraResources/pepperflash/libpepflashplayer.so"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "extraResources": "extraResources/pepperflash/PepperFlashPlayer.plugin/**/*"
     }
   }
 }

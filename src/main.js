@@ -16,7 +16,6 @@ class ElectronXiami {
     this.notificationController = null;
     this.playerController = null;
     this.tray = null;
-    console.log(`${app.getPath('userData')}/Settings`)
     this.radioMode = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('radio', false) : false;
     if (this.radioMode) {
       // Specify flash path, supposing it is placed in the same directory with main.js.
@@ -32,7 +31,9 @@ class ElectronXiami {
           pluginName = 'libpepflashplayer.so'
           break
       }
-      app.commandLine.appendSwitch('ppapi-flash-path', path.join(__dirname, `plugin/pepperflash/${pluginName}`));
+
+      console.log(__dirname)
+      app.commandLine.appendSwitch('ppapi-flash-path', path.join(__dirname, `../../extraResources/pepperflash/${pluginName}`));
       app.commandLine.appendSwitch('ppapi-flash-version', '29.0.0.113-1');
     }
   }
