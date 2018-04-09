@@ -108,7 +108,12 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
 
   switchToRadioMode() {
     settings.set('radio', true);
-    app.relaunch();
+    const appImagePath = process.env.APPIMAGE;
+    if (appImagePath) {
+      app.relaunch({execPath: appImagePath});
+    } else {
+      app.relaunch();
+    }
     app.exit();
   }
 

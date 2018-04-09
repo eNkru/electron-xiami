@@ -30,7 +30,12 @@ class RadioTray {
 
   switchToPlayerMode() {
     settings.set('radio', false);
-    app.relaunch();
+    const appImagePath = process.env.APPIMAGE;
+    if (appImagePath) {
+      app.relaunch({execPath: appImagePath});
+    } else {
+      app.relaunch();
+    }
     app.exit();
   }
 

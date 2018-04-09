@@ -24,7 +24,7 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "~1.8.2",
-    "electron-builder": "^19.8.0"
+    "electron-builder": "^20.8.1"
   },
   "dependencies": {
     "dbus-native": "^0.2.5",
