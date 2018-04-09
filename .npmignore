@@ -1,0 +1,7 @@
+node_modules/
+\.idea/
+yarn\.lock
+dist/
+electron-xiami\.iml
+/yarn-error.log
+extraResources/
