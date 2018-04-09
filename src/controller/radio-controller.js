@@ -11,6 +11,9 @@ class RadioController {
     this.window = new BrowserWindow({
       width: 1000,
       height: 470,
+      show: false,
+      frame: true,
+      autoHideMenuBar: true,
       webPreferences: {
         plugins: true
       },
@@ -27,6 +30,7 @@ class RadioController {
 
     this.window.webContents.on('dom-ready', () => {
       this.window.webContents.insertCSS(CssInjector.radio);
+      this.show();
     });
   }
 

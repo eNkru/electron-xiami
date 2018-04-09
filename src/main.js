@@ -32,8 +32,8 @@ class ElectronXiami {
           break
       }
 
-      console.log(__dirname)
-      app.commandLine.appendSwitch('ppapi-flash-path', path.join(__dirname, `../../extraResources/pepperflash/${pluginName}`));
+      const pluginPath = this.isDev() ? `../extraResources/pepperflash/${pluginName}` : `../../extraResources/pepperflash/${pluginName}`;
+      app.commandLine.appendSwitch('ppapi-flash-path', path.join(__dirname, pluginPath));
       app.commandLine.appendSwitch('ppapi-flash-version', '29.0.0.113-1');
     }
   }
@@ -138,6 +138,10 @@ class ElectronXiami {
     globalShortcut.register('MediaNextTrack', () => this.playerController.next());
     globalShortcut.register('MediaPreviousTrack', () => this.playerController.previous());
     globalShortcut.register('MediaStop', () => this.playerController.pause());
+  }
+
+  isDev() {
+    return process.mainModule.filename.indexOf('app.asar') === -1;
   }
 
 }
