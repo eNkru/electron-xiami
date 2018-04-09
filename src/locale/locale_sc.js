@@ -6,10 +6,14 @@ Locale.UPDATE_TITLE = '版本更新';
 Locale.UPDATE_MESSAGE = '更新内容';
 
 Locale.TRAY_TOOLTIP = '虾米播放器';
+Locale.TRAY_TOOLTIP_RADIO = '虾米电台';
 Locale.TRAY_SHOW_MAIN = '切换播放器窗口';
 Locale.TRAY_PLAY_PAUSE = '播放 | 暂停';
 Locale.TRAY_NEXT = '下一首';
 Locale.TRAY_PREVIOUS = '上一首';
+
+Locale.TRAY_SWITCH_TO_RADIO = '切换到电台模式（超前体验版）';
+Locale.TRAY_SWITCH_TO_PLAYER = '切换到播放器模式';
 
 Locale.TRAY_PLAYER_MODE = '播放器模式';
 Locale.TRAY_PLAYER_MODE_DEFAULT = '默认';

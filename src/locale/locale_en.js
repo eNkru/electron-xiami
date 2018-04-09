@@ -6,10 +6,14 @@ Locale.UPDATE_TITLE = 'Version Upgrade';
 Locale.UPDATE_MESSAGE = 'Upgrade Information';
 
 Locale.TRAY_TOOLTIP = 'Xiami Player';
+Locale.TRAY_TOOLTIP_RADIO = 'Xiami Radio';
 Locale.TRAY_SHOW_MAIN = 'Toggle Player Window';
 Locale.TRAY_PLAY_PAUSE = 'Play | Pause';
 Locale.TRAY_NEXT = 'Next';
 Locale.TRAY_PREVIOUS = 'Previous';
+
+Locale.TRAY_SWITCH_TO_RADIO = 'Switch to Radio Mode (ALPHA)';
+Locale.TRAY_SWITCH_TO_PLAYER = 'Switch to Player Mode';
 
 Locale.TRAY_PLAYER_MODE = 'Player Mode';
 Locale.TRAY_PLAYER_MODE_DEFAULT = 'Default';
