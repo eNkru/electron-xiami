@@ -1,5 +1,6 @@
 {
   "name": "electron-xiami",
+  "productName": "Xiami Music",
   "version": "1.4.1",
   "description": "Xiami Electron desktop application",
   "main": "src/main.js",
