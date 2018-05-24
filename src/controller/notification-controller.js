@@ -8,7 +8,10 @@ class NotificationController {
   }
 
   notify(iconUrl, title, body) {
-    download(iconUrl).then(buffer => {
+    // console.log(iconUrl)
+    // console.log(title)
+    // console.log(body)
+    download(`https:${iconUrl}`).then(buffer => {
       this.notification && this.notification.close();
       this.notification = new Notification({
         title: title,

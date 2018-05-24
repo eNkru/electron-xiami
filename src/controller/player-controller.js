@@ -1,7 +1,7 @@
 const {app, BrowserWindow, Notification, ipcMain, TouchBar, nativeImage} = require('electron');
 const {TouchBarButton} = TouchBar
 const urlLib = require('url');
-const http = require('http');
+const https = require('https');
 const path = require('path');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
@@ -12,9 +12,9 @@ const fs = require('fs-extra');
 const timeFormat = require('hh-mm-ss');
 const UpdateController = require('./update-controller');
 
-const playerUrl = 'http://www.xiami.com/play';
-const playlistUrl = 'http://www.xiami.com/song/playlist';
-const getLyricUrl = 'http://img.xiami.net/lyric/';
+const playerUrl = 'https://www.xiami.com/play';
+const playlistUrl = 'https://www.xiami.com/song/playlist';
+const getLyricUrl = 'https://img.xiami.net/lyric/';
 
 const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
@@ -260,10 +260,10 @@ class XiamiPlayer {
 
     // get the cookie, make call with the cookie
     let session = this.window.webContents.session;
-    session.cookies.get({url: 'http://www.xiami.com'}, (error, cookies) => {
+    session.cookies.get({url: 'https://www.xiami.com'}, (error, cookies) => {
       let cookieString = cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
 
-      http.get({
+      https.get({
         hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
           'Referer': playerUrl,
           'Cookie': cookieString,
@@ -280,7 +280,6 @@ class XiamiPlayer {
           let tracks = JSON.parse(playlistData).data.trackList;
           // refresh the local storage.
           tracks.forEach(track => {
-            // console.log(track);
             storage.set(track.songId, track, (error) => {
               if (error) console.log(error);
             });
@@ -295,6 +294,7 @@ class XiamiPlayer {
    * @param {*} songId the changed song ID
    */
   notifyTrackChange(songId) {
+    // console.log(songId)
     storage.get(songId, (error, trackInfo) => {
 
       if (error) throw error;
