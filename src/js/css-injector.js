@@ -169,4 +169,22 @@ CssInjector.mini = `
   }
 `;
 
+CssInjector.radio = `
+  .radioID_grid {
+    display: none;
+  }
+  .footer_copyright {
+    display: none;
+  }
+  div#sidebutton {
+    display: none;
+  }
+  .radio_rec_tips {
+    display: none;
+  }
+  a#feedback {
+    display: none;
+  }
+`;
+
 module.exports = CssInjector;

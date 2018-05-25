@@ -1,14 +1,16 @@
 {
   "name": "electron-xiami",
-  "version": "1.1.0",
+  "productName": "Xiami Music",
+  "version": "1.5.0",
   "description": "Xiami Electron desktop application",
   "main": "src/main.js",
   "scripts": {
     "start": "electron src/main.js",
     "pack": "electron-builder --dir",
-    "dist:linux": "electron-builder --linux deb tar.xz",
+    "dist:linux": "electron-builder --linux AppImage",
     "dist:macOS": "electron-builder --mac",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "publish": "build -p always"
   },
   "repository": "https://github.com/eNkru/electron-xiami",
   "keywords": [
@@ -22,13 +24,15 @@
   "author": "Howard Ju <howard.ju@outlook.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron": "~1.7.10",
-    "electron-builder": "^19.8.0"
+    "electron": "~1.8.2",
+    "electron-builder": "^20.8.1"
   },
   "dependencies": {
-    "electron-dl": "^1.10.0",
+    "dbus-native": "^0.2.5",
+    "download": "^6.2.5",
     "electron-json-storage": "^4.0.2",
     "electron-settings": "^3.1.1",
+    "electron-updater": "^2.20.1",
     "fs-extra": "^5.0.0",
     "hh-mm-ss": "^1.2.0",
     "lyrics.js": "^0.3.5"
@@ -36,7 +40,18 @@
   "build": {
     "appId": "nz.co.enkru.${name}",
     "linux": {
-      "category": "Audio"
+      "category": "AudioVideo;Audio",
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "extraResources": "extraResources/pepperflash/libpepflashplayer.so"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "extraResources": "extraResources/pepperflash/PepperFlashPlayer.plugin/**/*"
     }
   }
 }

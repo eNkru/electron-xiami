@@ -28,7 +28,7 @@ class LyricsWindow {
         }
       });
 
-      setInterval(() => {this.window.setAlwaysOnTop(true, "floating");}, 1000);
+      setInterval(() => {this.window.setAlwaysOnTop(true);}, 1000);
     })
   }
 

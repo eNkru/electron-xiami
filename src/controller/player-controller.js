@@ -1,24 +1,27 @@
-const {app, BrowserWindow, Notification, ipcMain} = require('electron');
+const {app, BrowserWindow, Notification, ipcMain, TouchBar, nativeImage} = require('electron');
+const {TouchBarButton} = TouchBar
 const urlLib = require('url');
-const http = require('http');
+const https = require('https');
 const path = require('path');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
 const CssInjector = require('../js/css-injector');
-const {download} = require('electron-dl');
+const download = require('download');
 const Lyrics = require('../js/lib/lyrics');
 const fs = require('fs-extra');
 const timeFormat = require('hh-mm-ss');
+const UpdateController = require('./update-controller');
 
-const playerUrl = 'http://www.xiami.com/play';
-const playlistUrl = 'http://www.xiami.com/song/playlist';
-const getLyricUrl = 'http://img.xiami.net/lyric/';
+const playerUrl = 'https://www.xiami.com/play';
+const playlistUrl = 'https://www.xiami.com/song/playlist';
+const getLyricUrl = 'https://img.xiami.net/lyric/';
 
-const language = settings.get('language', 'en');
+const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
 
 class XiamiPlayer {
-  constructor(lyricsController) {
+  constructor(lyricsController, notificationController) {
+    this.notificationController = notificationController;
     this.lyricsController = lyricsController;
     this.init();
   }
@@ -73,6 +76,9 @@ class XiamiPlayer {
     // load xiami player page.
     this.window.loadURL(playerUrl);
 
+    // set the touch bar.
+    this.window.setTouchBar(this.createTouchBar());
+
     // inject the custom layout.
     this.window.webContents.on('dom-ready', () => {
 
@@ -101,6 +107,9 @@ class XiamiPlayer {
       }
 
       this.window.show();
+
+      // check update
+      new UpdateController().checkUpdate();
     });
 
     // triggering when user try to close the play window.
@@ -156,12 +165,38 @@ class XiamiPlayer {
     this.window.webContents.executeJavaScript("document.querySelector('.play-btn').dispatchEvent(new MouseEvent('click'));");
   }
 
+  toggle() {
+    this.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
+      result ? this.pause() : this.play();
+    });
+  }
+
   next() {
     this.window.webContents.executeJavaScript("document.querySelector('.next-btn').dispatchEvent(new MouseEvent('click'));");
   }
 
   previous() {
     this.window.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
+  }
+
+  /**
+   * Create the touch bar for macOS
+   */
+  createTouchBar() {
+    return new TouchBar([
+      new TouchBarButton({
+        icon: nativeImage.createFromNamedImage('NSTouchBarRewindTemplate', [-1, 0, 1]),
+        click: () => this.previous()
+      }),
+      new TouchBarButton({
+        icon: nativeImage.createFromNamedImage('NSTouchBarPlayPauseTemplate', [-1, 0, 1]),
+        click: () => this.toggle()
+      }),
+      new TouchBarButton({
+        icon: nativeImage.createFromNamedImage('NSTouchBarFastForwardTemplate', [-1, 0, 1]),
+        click: () => this.next()
+      })
+    ]);
   }
 
   /**
@@ -198,18 +233,18 @@ class XiamiPlayer {
    * @param {*} requestUrl the request URL for the event
    */
   handleResponse(requestUrl) {
-    const showNotification = settings.get('showNotification', 'check');
+    requestUrl.startsWith(playlistUrl) && this.updatePlaylist(requestUrl);
 
-    if ('check' === showNotification) {
-      requestUrl.startsWith(playlistUrl) && this.updatePlaylist(requestUrl);
+    if (requestUrl.startsWith(getLyricUrl)) {
+      // Load Lyrics.
+      this.loadLyrics(requestUrl);
 
-      if (requestUrl.startsWith(getLyricUrl)) {
-
-        this.loadLyrics(requestUrl).then(() => {
-          const lyricPath = urlLib.parse(requestUrl).pathname;
-          const songId = lyricPath.match(/\/(\d*)_/)[1];
-          this.changeTrack(songId);
-        }).catch(console.error);
+      // Load track change notification.
+      const showNotification = settings.get('showNotification', 'check');
+      if ('check' === showNotification) {
+        const lyricPath = urlLib.parse(requestUrl).pathname;
+        const songId = lyricPath.match(/\/(\d*)_/)[1];
+        this.notifyTrackChange(songId);
       }
     }
   }
@@ -225,10 +260,10 @@ class XiamiPlayer {
 
     // get the cookie, make call with the cookie
     let session = this.window.webContents.session;
-    session.cookies.get({url: 'http://www.xiami.com'}, (error, cookies) => {
+    session.cookies.get({url: 'https://www.xiami.com'}, (error, cookies) => {
       let cookieString = cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
 
-      http.get({
+      https.get({
         hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
           'Referer': playerUrl,
           'Cookie': cookieString,
@@ -245,7 +280,6 @@ class XiamiPlayer {
           let tracks = JSON.parse(playlistData).data.trackList;
           // refresh the local storage.
           tracks.forEach(track => {
-            // console.log(track);
             storage.set(track.songId, track, (error) => {
               if (error) console.log(error);
             });
@@ -259,7 +293,8 @@ class XiamiPlayer {
    * Handle the track changed.
    * @param {*} songId the changed song ID
    */
-  changeTrack(songId) {
+  notifyTrackChange(songId) {
+    // console.log(songId)
     storage.get(songId, (error, trackInfo) => {
 
       if (error) throw error;
@@ -269,35 +304,20 @@ class XiamiPlayer {
         // update the current playing track
         storage.set('currentTrackInfo', trackInfo, (error) => {
           if (error) console.log(error);
-        })
+        });
 
-        // download the covers
-        return download(this.window, trackInfo.pic, {directory: `${app.getPath('userData')}/covers`})
-            .then(dl => {
-              const notification = new Notification({
-                title: `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`,
-                body: `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
-${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`,
-                silent: true,
-                icon: dl.getSavePath()
-              });
-
-              notification.on("click", () => this.show());
-              notification.show();
-            });
+        const title = `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`;
+        const body = `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
+${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
+        this.notificationController.notify(trackInfo.pic, title, body);
       } else {
-        setTimeout(() => this.changeTrack(songId), 1000);
+        setTimeout(() => this.notifyTrackChange(songId), 1000);
       }
     });
   }
 
   loadLyrics(url) {
-    return download(this.window, url, {directory: `${app.getPath('userData')}/lyrics`})
-        .then(dl => {
-          fs.readFile(dl.getSavePath(), 'utf8', (error, data) => {
-            this.lyrics.load(data);
-          });
-        });
+    download(url).then(buffer => this.lyrics.load(buffer));
   }
 }
 

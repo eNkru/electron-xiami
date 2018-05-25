@@ -1,12 +1,19 @@
-class Locale {
+class Locale {}
 
-}
+Locale.UPDATE_CANCEL_BUTTON = 'Later';
+Locale.UPDATE_OK_BUTTON = 'Upgrade';
+Locale.UPDATE_TITLE = 'Version Upgrade';
+Locale.UPDATE_MESSAGE = 'Upgrade Information';
 
 Locale.TRAY_TOOLTIP = 'Xiami Player';
-Locale.TRAY_SHOW_MAIN = 'Show Player';
+Locale.TRAY_TOOLTIP_RADIO = 'Xiami Radio';
+Locale.TRAY_SHOW_MAIN = 'Toggle Player Window';
 Locale.TRAY_PLAY_PAUSE = 'Play | Pause';
 Locale.TRAY_NEXT = 'Next';
 Locale.TRAY_PREVIOUS = 'Previous';
+
+Locale.TRAY_SWITCH_TO_RADIO = 'Switch to Radio Mode (ALPHA)';
+Locale.TRAY_SWITCH_TO_PLAYER = 'Switch to Player Mode';
 
 Locale.TRAY_PLAYER_MODE = 'Player Mode';
 Locale.TRAY_PLAYER_MODE_DEFAULT = 'Default';
@@ -36,7 +43,12 @@ Locale.SETTINGS_LANGUAGE_OPTIONS = [{value: 'en', text: 'English', name: 'Englis
 
 Locale.SETTINGS_TRAY = 'Tray';
 Locale.SETTINGS_TRAY_CLICK = 'Click Tray Icon';
-Locale.SETTINGS_TRAY_CLICK_OPTIONS = [{value: 'showMain', text: 'Show Main Player', name: 'Show Main Player'}, {value: 'showTrackInfo', text: 'Show Track Info', name: 'Show Track Info'}];
+Locale.SETTINGS_TRAY_CLICK_OPTIONS = [
+    {value: 'showMain', text: 'Show Main Player', name: 'Show Main Player'}, 
+    {value: 'showTrackInfo', text: 'Show Track Info', name: 'Show Track Info'},
+    {value: 'playPause', text: 'Play | Pause the track', name: 'Play | Pause the track'},
+    {value: 'nextTrack', text: 'Play Next Track', name: 'Play Next Track'}
+];
 
 Locale.SETTINGS_NOTIFICATION = 'Show Notification';
 

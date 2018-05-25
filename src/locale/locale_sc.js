@@ -1,10 +1,19 @@
 class Locale {}
 
+Locale.UPDATE_CANCEL_BUTTON = '稍后再说';
+Locale.UPDATE_OK_BUTTON = '马上更新';
+Locale.UPDATE_TITLE = '版本更新';
+Locale.UPDATE_MESSAGE = '更新内容';
+
 Locale.TRAY_TOOLTIP = '虾米播放器';
-Locale.TRAY_SHOW_MAIN = '显示播放器';
+Locale.TRAY_TOOLTIP_RADIO = '虾米电台';
+Locale.TRAY_SHOW_MAIN = '切换播放器窗口';
 Locale.TRAY_PLAY_PAUSE = '播放 | 暂停';
 Locale.TRAY_NEXT = '下一首';
 Locale.TRAY_PREVIOUS = '上一首';
+
+Locale.TRAY_SWITCH_TO_RADIO = '切换到电台模式（超前体验版）';
+Locale.TRAY_SWITCH_TO_PLAYER = '切换到播放器模式';
 
 Locale.TRAY_PLAYER_MODE = '播放器模式';
 Locale.TRAY_PLAYER_MODE_DEFAULT = '默认';
@@ -34,7 +43,12 @@ Locale.SETTINGS_LANGUAGE_OPTIONS = [{value: 'en', text: '英文', name: '英文'
 
 Locale.SETTINGS_TRAY = '系统托盘';
 Locale.SETTINGS_TRAY_CLICK = '左键单击托盘图标';
-Locale.SETTINGS_TRAY_CLICK_OPTIONS = [{value: 'showMain', text: '显示播放器界面', name: '显示播放器界面'}, {value: 'showTrackInfo', text: '显示播放信息', name: '显示播放信息'}];
+Locale.SETTINGS_TRAY_CLICK_OPTIONS = [
+    {value: 'showMain', text: '显示播放器界面', name: '显示播放器界面'}, 
+    {value: 'showTrackInfo', text: '显示播放信息', name: '显示播放信息'},
+    {value: 'playPause', text: '播放 | 暂停 音乐', name: '播放 | 暂停 音乐'},
+    {value: 'nextTrack', text: '播放下一首音乐', name: '播放下一首音乐'}
+];
 
 Locale.SETTINGS_NOTIFICATION = '显示通知';
 
