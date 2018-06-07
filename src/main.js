@@ -86,6 +86,7 @@ class ElectronXiami {
 
     app.on('before-quit', () => {
       this.tray.tray.destroy();
+      this.lyricsController.hide();
     });
 
     app.on('quit', () => {

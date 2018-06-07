@@ -4,6 +4,7 @@ const { BrowserWindow, protocol } = require('electron');
 class LyricsWindow {
 
   constructor() {
+    this.timer = null
     this.init();
   }
 
@@ -27,13 +28,25 @@ class LyricsWindow {
           this.window.hide();
         }
       });
-
-      setInterval(() => {this.window.setAlwaysOnTop(true);}, 1000);
     })
   }
 
   toggle() {
-    this.window.isVisible() ? this.window.hide() : this.window.show();
+    if (this.window.isVisible()) {
+      this.hide()
+    } else {
+      this.show()
+    }
+  }
+
+  hide() {
+    clearInterval(this.timer)
+    this.window.hide()
+  }
+
+  show() {
+    this.timer = setInterval(() => {this.window.setAlwaysOnTop(true)}, 1000)
+    this.window.show()
   }
 }
 
