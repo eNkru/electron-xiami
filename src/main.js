@@ -85,16 +85,14 @@ class ElectronXiami {
     });
 
     app.on('before-quit', () => {
-      this.tray.tray.destroy();
-      this.lyricsController.hide();
+      this.tray.tray.destroy()
+      this.tray.cleanupAndExit()
+      // this will trigger on macOS when CMD + Q
     });
 
-    app.on('quit', () => {
-      // empty cover cache folder before exit.
-      fs.remove(`${app.getPath('userData')}/covers`);
-      // empty lyrics cache
-      fs.remove(`${app.getPath('userData')}/lyrics`);
-    });
+    // app.on('quit', () => {
+      
+    // });
 
     app.on('activate', () => {
       // On OS X it's common to re-create a window in the app when the
