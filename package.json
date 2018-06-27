@@ -41,6 +41,9 @@
     "appId": "nz.co.enkru.${name}",
     "linux": {
       "category": "AudioVideo;Audio",
+      "desktop": {
+	      "StartupWMClass": "xiami music"
+	    },
       "target": [
         "AppImage",
         "deb"
