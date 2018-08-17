@@ -32,7 +32,7 @@
     "download": "^6.2.5",
     "electron-json-storage": "^4.0.2",
     "electron-settings": "^3.1.1",
-    "electron-updater": "^2.20.1",
+    "electron-updater": "^3.0.3",
     "fs-extra": "^5.0.0",
     "hh-mm-ss": "^1.2.0",
     "lyrics.js": "^0.3.5"
