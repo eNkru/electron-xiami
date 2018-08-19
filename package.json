@@ -7,10 +7,10 @@
   "scripts": {
     "start": "electron src/main.js",
     "pack": "electron-builder --dir",
-    "dist:linux": "electron-builder --linux AppImage --ia32 --x64",
+    "dist:linux": "electron-builder --linux AppImage",
     "dist:macOS": "electron-builder --mac",
     "postinstall": "electron-builder install-app-deps",
-    "publish": "build -p always"
+    "publish": "build -p always --ia32 --x64"
   },
   "repository": "https://github.com/eNkru/electron-xiami",
   "keywords": [
