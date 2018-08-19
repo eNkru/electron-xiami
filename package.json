@@ -1,16 +1,16 @@
 {
   "name": "electron-xiami",
   "productName": "Xiami Music",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Xiami Electron desktop application",
   "main": "src/main.js",
   "scripts": {
     "start": "electron src/main.js",
     "pack": "electron-builder --dir",
-    "dist:linux": "electron-builder --linux AppImage --ia32 --x64",
+    "dist:linux": "electron-builder --linux AppImage",
     "dist:macOS": "electron-builder --mac",
     "postinstall": "electron-builder install-app-deps",
-    "publish": "build -p always"
+    "publish": "build -p always --ia32 --x64"
   },
   "repository": "https://github.com/eNkru/electron-xiami",
   "keywords": [
@@ -42,8 +42,8 @@
     "linux": {
       "category": "AudioVideo;Audio",
       "desktop": {
-	      "StartupWMClass": "xiami music"
-	    },
+        "StartupWMClass": "xiami music"
+      },
       "target": [
         "AppImage",
         "deb"
