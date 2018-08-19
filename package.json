@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron src/main.js",
     "pack": "electron-builder --dir",
-    "dist:linux": "electron-builder --linux AppImage",
+    "dist:linux": "electron-builder --linux AppImage deb --ia32 --x64",
     "dist:macOS": "electron-builder --mac",
     "postinstall": "electron-builder install-app-deps",
     "publish": "build -p always --ia32 --x64"
@@ -25,7 +25,7 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "~1.8.2",
-    "electron-builder": "^20.15.2"
+    "electron-builder": "20.14.7"
   },
   "dependencies": {
     "dbus-native": "^0.2.5",
