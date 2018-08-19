@@ -277,9 +277,9 @@ class XiamiPlayer {
         });
 
         response.on('end', () => {
-          let tracks = JSON.parse(playlistData).data.trackList;
+          const tracks = JSON.parse(playlistData).data.trackList;
           // refresh the local storage.
-          tracks.forEach(track => {
+          tracks && tracks.forEach(track => {
             storage.set(track.songId, track, (error) => {
               if (error) console.log(error);
             });
