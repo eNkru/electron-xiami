@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron src/main.js",
     "pack": "electron-builder --dir",
-    "dist:linux": "electron-builder --linux AppImage",
+    "dist:linux": "electron-builder --linux AppImage --ia32 --x64",
     "dist:macOS": "electron-builder --mac",
     "postinstall": "electron-builder install-app-deps",
     "publish": "build -p always"
