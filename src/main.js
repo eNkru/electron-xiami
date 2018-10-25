@@ -40,18 +40,16 @@ class ElectronXiami {
 
   // init method, the entry point of the app.
   init() {
-    if (this.isRunning()) {
-      app.quit();
+    const lock = app.requestSingleInstanceLock()
+    if (!lock) {
+      app.quit()
     } else {
-      this.initApp();
-    }
-  }
+      app.on('second-instance', (event, commandLine, workingDirectory) => {
+        if (this.playerController) this.playerController.show()
+      })
 
-  // check if the app is already running. return true if already launched, otherwise return false.
-  isRunning() {
-    return app.makeSingleInstance(() => {
-      if (this.playerController) this.playerController.show();
-    });
+      this.initApp()
+    }
   }
 
   // init the main app.
