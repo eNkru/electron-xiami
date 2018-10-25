@@ -35,8 +35,8 @@ class RadioController {
   }
 
   show() {
-    if (this.window.isMinimized()) this.window.restore()
-    this.window.focus()
+    this.window.show();
+    this.window.focus();
   }
 }
 
