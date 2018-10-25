@@ -24,8 +24,8 @@
   "author": "Howard Ju <howard.ju@outlook.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron": "~1.8.2",
-    "electron-builder": "20.14.7"
+    "electron": "^3.0.6",
+    "electron-builder": "^20.28.4"
   },
   "dependencies": {
     "dbus-native": "^0.2.5",
