@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Notification, ipcMain, TouchBar, nativeImage} = require('electron');
+const {app, BrowserWindow, session, ipcMain, TouchBar, nativeImage} = require('electron');
 const {TouchBarButton} = TouchBar
 const urlLib = require('url');
 const https = require('https');
@@ -13,8 +13,8 @@ const timeFormat = require('hh-mm-ss');
 const UpdateController = require('./update-controller');
 
 const playerUrl = 'https://www.xiami.com/play';
-const playlistUrl = 'https://www.xiami.com/song/playlist';
-const getLyricUrl = 'https://img.xiami.net/lyric/';
+const playlistUrlPrefix = 'https://www.xiami.com/song/playlist*';
+const getLyricUrlPrefix = 'https://img.xiami.net/lyric/*';
 
 const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
 const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
@@ -127,7 +127,7 @@ class XiamiPlayer {
     });
 
     // intercept the ajax call response
-    this.window.webContents.on('did-get-response-details', ((event, status, newURL, originalURL) => this.handleResponse(originalURL)));
+    session.defaultSession.webRequest.onCompleted({urls: [playlistUrlPrefix, getLyricUrlPrefix]}, (details) => this.handleResponse(details))
 
     ipcMain.on('playtime', (event, value) => {
       const timeline = this.lyrics.select(timeFormat.toS(value));
@@ -230,19 +230,20 @@ class XiamiPlayer {
 
   /**
    * Handle the received response after the web content make a request.
-   * @param {*} requestUrl the request URL for the event
+   * @param {*} details the response details
    */
-  handleResponse(requestUrl) {
-    requestUrl.startsWith(playlistUrl) && this.updatePlaylist(requestUrl);
+  handleResponse(details) {
+    const url = details.url
+    RegExp(playlistUrlPrefix).test(url) && this.updatePlaylist(url);
 
-    if (requestUrl.startsWith(getLyricUrl)) {
+    if (RegExp(getLyricUrlPrefix).test(url)) {
       // Load Lyrics.
-      this.loadLyrics(requestUrl);
+      this.loadLyrics(url);
 
       // Load track change notification.
       const showNotification = settings.get('showNotification', 'check');
       if ('check' === showNotification) {
-        const lyricPath = urlLib.parse(requestUrl).pathname;
+        const lyricPath = urlLib.parse(url).pathname;
         const songId = lyricPath.match(/\/(\d*)_/)[1];
         this.notifyTrackChange(songId);
       }
@@ -251,7 +252,7 @@ class XiamiPlayer {
 
   /**
    * Update the playlist if the request URL is for playlist update.
-   * @param {*} requestUrl the request URL for the event
+   * @param {string} requestUrl the request URL for the event
    */
   updatePlaylist(requestUrl) {
     let urlWithPath = urlLib.parse(requestUrl, false);
@@ -290,8 +291,26 @@ class XiamiPlayer {
   }
 
   /**
+   * Load the lyrics into the application
+   * @param {string} url the lyrics url
+   */
+  loadLyrics(url) {
+    https.get(url, (response) => {
+      let lyricContent = '';
+
+      response.on('data', (chunk) => {
+        lyricContent += chunk;
+      });
+
+      response.on('end', () => {
+        this.lyrics.load(lyricContent)
+      });
+    })
+  }
+
+  /**
    * Handle the track changed.
-   * @param {*} songId the changed song ID
+   * @param {string} songId the changed song ID
    */
   notifyTrackChange(songId) {
     // console.log(songId)
@@ -314,10 +333,6 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
         setTimeout(() => this.notifyTrackChange(songId), 1000);
       }
     });
-  }
-
-  loadLyrics(url) {
-    download(url).then(buffer => this.lyrics.load(buffer));
   }
 }
 
