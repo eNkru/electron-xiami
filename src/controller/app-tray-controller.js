@@ -31,10 +31,11 @@ class AppTray {
       {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_PLAYER_MODE, submenu: [
-        {label: Locale.TRAY_PLAYER_MODE_DEFAULT, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_DEFAULT_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_HIDE_LYRICS, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_HIDE_LYRICS_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_SUGGESTION, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SUGGESTION_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_BILLBOARD, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_BILLBOARD_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_COLLECTION, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_COLLECTION_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_ARTIST, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_ARTIST_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_ALBUM, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_ALBUM_VALUE)},
         {label: Locale.TRAY_PLAYER_MODE_MINI, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
       ]},
       {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},

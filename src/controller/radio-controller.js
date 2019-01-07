@@ -1,5 +1,5 @@
 const {BrowserWindow} = require('electron')
-const CssInjector = require('../js/css-injector');
+const CssInjector = require('../configuration/css-injector');
 
 class RadioController {
 

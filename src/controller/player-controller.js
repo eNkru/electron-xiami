@@ -1,18 +1,16 @@
-const {app, BrowserWindow, session, ipcMain, TouchBar, nativeImage} = require('electron');
-const {TouchBarButton} = TouchBar
+const {BrowserWindow, session, ipcMain, TouchBar, nativeImage} = require('electron');
+const {TouchBarButton} = TouchBar;
 const urlLib = require('url');
 const https = require('https');
 const path = require('path');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
-const CssInjector = require('../js/css-injector');
-const download = require('download');
+const CssInjector = require('../configuration/css-injector');
 const Lyrics = require('../js/lib/lyrics');
-const fs = require('fs-extra');
 const timeFormat = require('hh-mm-ss');
 const UpdateController = require('./update-controller');
+const URLS = require('../configuration/urls');
 
-const playerUrl = 'https://www.xiami.com';
 const playlistUrlPrefix = 'https://www.xiami.com/song/playlist*';
 const getLyricUrlPrefix = 'https://img.xiami.net/lyric/*';
 
@@ -29,7 +27,7 @@ class XiamiPlayer {
 
   init() {
     this.lyrics = new Lyrics('');
-    const customLayout = settings.get('customLayout', 'default');
+    const customLayout = settings.get('customLayout', 'suggestion');
 
     if (customLayout === 'mini') {
       this.window = new BrowserWindow({
@@ -75,7 +73,7 @@ class XiamiPlayer {
     }
 
     // load xiami player page.
-    this.window.loadURL(playerUrl);
+    this.window.loadURL(URLS.getUrl(customLayout));
 
     // set the touch bar.
     this.window.setTouchBar(this.createTouchBar());
@@ -267,7 +265,7 @@ class XiamiPlayer {
 
       https.get({
         hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
-          'Referer': playerUrl,
+          'Referer': URLS.home,
           'Cookie': cookieString,
           'User-Agent': this.window.webContents.getUserAgent()
         }
