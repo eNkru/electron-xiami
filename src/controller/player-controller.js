@@ -12,12 +12,13 @@ const fs = require('fs-extra');
 const timeFormat = require('hh-mm-ss');
 const UpdateController = require('./update-controller');
 
-const playerUrl = 'https://www.xiami.com/play';
+const playerUrl = 'https://www.xiami.com';
 const playlistUrlPrefix = 'https://www.xiami.com/song/playlist*';
 const getLyricUrlPrefix = 'https://img.xiami.net/lyric/*';
 
-const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
-const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+// const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'sc') : 'sc';
+// const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+const Locale = require('../locale/locale_sc');
 
 class XiamiPlayer {
   constructor(lyricsController, notificationController) {
@@ -50,7 +51,7 @@ class XiamiPlayer {
     } else {
       if (process.platform === 'darwin') {
         this.window = new BrowserWindow({
-          show: false, width: 1000, height: 670, titleBarStyle: 'hiddenInset',
+          show: false, width: 1440, height: 810, titleBarStyle: 'hiddenInset',
           webPreferences: {
             javascript: true,
             plugins: true,
@@ -61,7 +62,7 @@ class XiamiPlayer {
         });
       } else {
         this.window = new BrowserWindow({
-          show: false, width: 1000, height: 670, frame: true, autoHideMenuBar: true,
+          show: false, width: 1440, height: 810, frame: true, autoHideMenuBar: true,
           webPreferences: {
             javascript: true,
             plugins: true,
