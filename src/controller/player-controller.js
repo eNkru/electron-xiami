@@ -83,26 +83,10 @@ class XiamiPlayer {
 
       this.window.webContents.insertCSS(CssInjector.main);
 
+      this.addBackToHomeButton();
+
       // if (process.platform == 'darwin') {
       //   this.window.webContents.insertCSS(CssInjector.macos);
-      // }
-
-      // switch (customLayout) {
-      //   case 'hideSidebar':
-      //     this.window.webContents.insertCSS(CssInjector.hideSidebar);
-      //     break;
-      //   case 'hideLyrics':
-      //     this.window.webContents.insertCSS(CssInjector.hideLyrics);
-      //     break;
-      //   case 'songListOnly':
-      //     this.window.webContents.insertCSS(CssInjector.songListOnly);
-      //     break;
-      //   case 'mini':
-      //     this.window.webContents.insertCSS(CssInjector.mini);
-      //     break;
-      //   default:
-      //     // using the default layout from the xiami play
-      //     break;
       // }
 
       this.window.show();
@@ -126,7 +110,7 @@ class XiamiPlayer {
     });
 
     // intercept the ajax call response
-    session.defaultSession.webRequest.onCompleted({urls: [playlistUrlPrefix, getLyricUrlPrefix]}, (details) => this.handleResponse(details))
+    session.defaultSession.webRequest.onCompleted({urls: [playlistUrlPrefix, getLyricUrlPrefix]}, (details) => this.handleResponse(details));
 
     ipcMain.on('playtime', (event, value) => {
       const timeline = this.lyrics.select(timeFormat.toS(value));
@@ -142,6 +126,10 @@ class XiamiPlayer {
           this.lyricsController.window.webContents.send('lyricsChange', '这首没有歌词 (-_-!)');
         }
       }
+    });
+
+    ipcMain.on('navToHome', (event, value) => {
+      this.window.loadURL(URLS.getUrl(settings.get('customLayout', customLayout)));
     });
   }
 
@@ -196,6 +184,19 @@ class XiamiPlayer {
         click: () => this.next()
       })
     ]);
+  }
+
+  addBackToHomeButton() {
+    this.window.webContents.executeJavaScript(`
+      let homeButton = document.createElement('div');
+      homeButton.className = 'iconfont button-home';
+      homeButton.textContent = '';
+      homeButton.onclick = () => {
+        ipc.send('navToHome');
+      };
+      let pageContainer = document.querySelector('.page-container');
+      pageContainer.appendChild(homeButton);
+    `);
   }
 
   /**

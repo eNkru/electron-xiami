@@ -26,6 +26,27 @@ CssInjector.main = `
   .page-container {
     padding-bottom: 88px !important;
   }
+  .iconfont.button-home {
+    position: fixed;
+    right: 40px;
+    top: 40px;
+    font-size: 32px;
+    z-index: 9;
+    background: #4a4a4a;
+    color: white;
+    width: 36px;
+    border-radius: 50%;
+    height: 36px;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .iconfont.button-home:hover {
+    background: #ff410f;
+  }
+  .iconfont.button-home.hide {
+    display: none;
+    opacity: 0;
+  }
 `;
 
 CssInjector.macos = `
