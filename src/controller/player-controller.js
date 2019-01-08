@@ -144,26 +144,16 @@ class XiamiPlayer {
     return this.window.isVisible();
   }
 
-  pause() {
-    this.window.webContents.executeJavaScript("document.querySelector('.pause-btn').dispatchEvent(new MouseEvent('click'));");
-  }
-
-  play() {
-    this.window.webContents.executeJavaScript("document.querySelector('.play-btn').dispatchEvent(new MouseEvent('click'));");
-  }
-
-  toggle() {
-    this.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
-      result ? this.pause() : this.play();
-    });
+  pausePlay() {
+    this.window.webContents.executeJavaScript("document.querySelector('.main-control .play-btn').click();");
   }
 
   next() {
-    this.window.webContents.executeJavaScript("document.querySelector('.next-btn').dispatchEvent(new MouseEvent('click'));");
+    this.window.webContents.executeJavaScript("document.querySelector('.main-control .next').click();");
   }
 
   previous() {
-    this.window.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
+    this.window.webContents.executeJavaScript("document.querySelector('.main-control .prev').click();");
   }
 
   /**
