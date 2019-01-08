@@ -52,15 +52,15 @@ function loadSettings() {
   }
 
   // show notification
-  const showNotification = settings.get('showNotification', 'check');
-  const $showNotification = $('#show-notification');
-  $showNotification.checkbox(showNotification);
-  $showNotification.checkbox({
-    onChecked: () => {
-      settings.set('showNotification', 'check');
-    },
-    onUnchecked: () => {
-      settings.set('showNotification', 'uncheck');
-    }
-  });
+  // const showNotification = settings.get('showNotification', 'check');
+  // const $showNotification = $('#show-notification');
+  // $showNotification.checkbox(showNotification);
+  // $showNotification.checkbox({
+  //   onChecked: () => {
+  //     settings.set('showNotification', 'check');
+  //   },
+  //   onUnchecked: () => {
+  //     settings.set('showNotification', 'uncheck');
+  //   }
+  // });
 }

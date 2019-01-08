@@ -223,21 +223,21 @@ class XiamiPlayer {
    * @param {*} details the response details
    */
   handleResponse(details) {
-    const url = details.url
-    RegExp(playlistUrlPrefix).test(url) && this.updatePlaylist(url);
-
-    if (RegExp(getLyricUrlPrefix).test(url)) {
-      // Load Lyrics.
-      this.loadLyrics(url);
-
-      // Load track change notification.
-      const showNotification = settings.get('showNotification', 'check');
-      if ('check' === showNotification) {
-        const lyricPath = urlLib.parse(url).pathname;
-        const songId = lyricPath.match(/\/(\d*)_/)[1];
-        this.notifyTrackChange(songId);
-      }
-    }
+    // const url = details.url
+    // RegExp(playlistUrlPrefix).test(url) && this.updatePlaylist(url);
+    //
+    // if (RegExp(getLyricUrlPrefix).test(url)) {
+    //   // Load Lyrics.
+    //   this.loadLyrics(url);
+    //
+    //   // Load track change notification.
+    //   const showNotification = settings.get('showNotification', 'check');
+    //   if ('check' === showNotification) {
+    //     const lyricPath = urlLib.parse(url).pathname;
+    //     const songId = lyricPath.match(/\/(\d*)_/)[1];
+    //     this.notifyTrackChange(songId);
+    //   }
+    // }
   }
 
   /**
