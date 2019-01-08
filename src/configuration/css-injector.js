@@ -1,8 +1,30 @@
 class CssInjector {}
 
 CssInjector.main = `
-  #playInAppWrap, .tip-twitter {
+  .top-nav {
+    display: none;
+  }
+  div#banner-container {
+    top: 0;
+  }
+  .sticky-leftbar {
+    display: none;
+  }
+  .page-container .content-wrapper .view-body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .billboard-view {
+    padding-top: 1px !important;
+  }
+  .list-view.view-without-leftbar {
+    margin: 32px 0 0 32px !important;
+  }
+  .xm-footer {
     display: none !important;
+  }
+  .page-container {
+    padding-bottom: 88px !important;
   }
 `;
 
@@ -18,42 +40,6 @@ CssInjector.macos = `
   }
   .search-wrap {
     left: 300px !important;
-  }
-`;
-
-CssInjector.hideSidebar = `
-  .main-wrap {
-    padding-left: 0 !important;
-  }
-  .main-sidebar {
-    display:none;
-  }
-`;
-
-CssInjector.hideLyrics = `
-  .main-wrap {
-    padding-right: 0 !important;
-  }
-  .main-outher {
-    display:none;
-  }
-  .ui-track-all {
-    width: initial !important;
-  }
-`;
-
-CssInjector.songListOnly = `
-  .main-wrap {
-    padding: 0 !important;
-  }
-  .main-outher {
-    display:none;
-  }
-  .main-sidebar {
-    display:none;
-  }
-  .ui-track-all {
-    width: initial !important;
   }
 `;
 

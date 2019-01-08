@@ -49,7 +49,7 @@ class XiamiPlayer {
     } else {
       if (process.platform === 'darwin') {
         this.window = new BrowserWindow({
-          show: false, width: 1440, height: 810, titleBarStyle: 'hiddenInset',
+          show: false, width: 1150, height: 650, titleBarStyle: 'hiddenInset',
           webPreferences: {
             javascript: true,
             plugins: true,
@@ -60,7 +60,7 @@ class XiamiPlayer {
         });
       } else {
         this.window = new BrowserWindow({
-          show: false, width: 1440, height: 810, frame: true, autoHideMenuBar: true,
+          show: false, width: 1150, height: 650, frame: true, autoHideMenuBar: true,
           webPreferences: {
             javascript: true,
             plugins: true,
@@ -83,27 +83,27 @@ class XiamiPlayer {
 
       this.window.webContents.insertCSS(CssInjector.main);
 
-      if (process.platform == 'darwin') {
-        this.window.webContents.insertCSS(CssInjector.macos);
-      }
+      // if (process.platform == 'darwin') {
+      //   this.window.webContents.insertCSS(CssInjector.macos);
+      // }
 
-      switch (customLayout) {
-        case 'hideSidebar':
-          this.window.webContents.insertCSS(CssInjector.hideSidebar);
-          break;
-        case 'hideLyrics':
-          this.window.webContents.insertCSS(CssInjector.hideLyrics);
-          break;
-        case 'songListOnly':
-          this.window.webContents.insertCSS(CssInjector.songListOnly);
-          break;
-        case 'mini':
-          this.window.webContents.insertCSS(CssInjector.mini);
-          break;
-        default:
-          // using the default layout from the xiami play
-          break;
-      }
+      // switch (customLayout) {
+      //   case 'hideSidebar':
+      //     this.window.webContents.insertCSS(CssInjector.hideSidebar);
+      //     break;
+      //   case 'hideLyrics':
+      //     this.window.webContents.insertCSS(CssInjector.hideLyrics);
+      //     break;
+      //   case 'songListOnly':
+      //     this.window.webContents.insertCSS(CssInjector.songListOnly);
+      //     break;
+      //   case 'mini':
+      //     this.window.webContents.insertCSS(CssInjector.mini);
+      //     break;
+      //   default:
+      //     // using the default layout from the xiami play
+      //     break;
+      // }
 
       this.window.show();
 

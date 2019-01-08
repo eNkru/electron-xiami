@@ -4,6 +4,7 @@ const storage = require('electron-json-storage');
 const fs = require('fs-extra');
 const settings = require('electron-settings');
 const SettingsController = require('./settings-controller');
+const URLS = require('../configuration/urls');
 
 // const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'sc') : 'sc';
 // const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
@@ -121,9 +122,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
 
   changePlayerMode(mode) {
     settings.set('customLayout', mode);
-    this.lyricsController.window.isVisible() && this.lyricsController.window.hide();
-    this.playerController.window.destroy();
-    this.playerController.init();
+    this.playerController.window.loadURL(URLS.getUrl(mode));
   }
 
   openSettings() {
