@@ -1,18 +1,37 @@
 class CssInjector {}
 
 CssInjector.main = `
-  .top-nav {
+  .top-nav-wrapper .links a:nth-last-of-type(-n+4) {
     display: none;
   }
-  div#banner-container {
-    top: 0;
+  .discovery-view .sticky-leftbar {
+    position: absolute !important;
+    width: fit-content !important;
   }
-  .sticky-leftbar {
+  .download-panel {
     display: none;
   }
-  .page-container .content-wrapper .view-body {
+  .discovery-view .leftbar-content {
+    background-color: transparent !important;
+    width: fit-content !important;
+    height: fit-content !important;
+  }
+  .discovery-view .leftbar-content .links a {
+    background-color: #747474;
+    width: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 0 !important;
+    padding: 1px;
+    color: #FFF !important;
+    font-weight: bolder !important;
+  }
+  .discovery-view .leftbar-content .links a:hover {
+    background: #ff410f;
+  }
+  .page-container .content-wrapper .discovery-view .view-body {
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 125px 0 0 0 !important;
   }
   .billboard-view {
     padding-top: 1px !important;
