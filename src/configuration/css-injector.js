@@ -1,8 +1,96 @@
 class CssInjector {}
 
 CssInjector.main = `
-  #playInAppWrap, .tip-twitter {
+  .top-nav {
+    -webkit-app-region: drag;
+  }
+  .top-nav-wrapper > a {
+    margin-left: 16px;
+    -webkit-app-region: no-drag;
+  }
+  .top-nav-wrapper .links a:nth-last-of-type(-n+4) {
+    display: none;
+  }
+  .top-nav-wrapper a {
+    order: -1;
+    -webkit-app-region: no-drag;
+  }
+  .top-nav-wrapper .message-center {
+    -webkit-app-region: no-drag;
+  }
+  .top-nav-wrapper .user {
+    -webkit-app-region: no-drag;
+  }
+  .top-nav-wrapper .search {
+    order: -1;
+    margin-left: auto;
+    margin-right: 0;
+    -webkit-app-region: no-drag;
+  }
+  .top-nav-wrapper .links {
+    margin-right: 20px !important;
+  }
+  .discovery-view .sticky-leftbar {
+    position: absolute !important;
+    width: fit-content !important;
+  }
+  .download-panel {
+    display: none;
+  }
+  .discovery-view .leftbar-content {
+    background-color: transparent !important;
+    width: fit-content !important;
+    height: fit-content !important;
+  }
+  .discovery-view .leftbar-content .links a {
+    background-color: #747474;
+    width: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 0 !important;
+    padding: 1px;
+    color: #FFF !important;
+    font-weight: bolder !important;
+  }
+  .discovery-view .leftbar-content .links a:hover {
+    background: #ff410f;
+  }
+  .page-container .content-wrapper .discovery-view .view-body {
+    margin: 0 !important;
+    padding: 125px 0 0 0 !important;
+  }
+  .billboard-view {
+    padding-top: 1px !important;
+  }
+  .list-view.view-without-leftbar {
+    margin: 32px 0 0 32px !important;
+  }
+  .xm-footer {
     display: none !important;
+  }
+  .page-container {
+    padding-bottom: 88px !important;
+  }
+  .iconfont.button-home {
+    position: fixed;
+    right: 40px;
+    top: 40px;
+    font-size: 32px;
+    z-index: 9;
+    background: #4a4a4a;
+    color: white;
+    width: 36px;
+    border-radius: 50%;
+    height: 36px;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .iconfont.button-home:hover {
+    background: #ff410f;
+  }
+  .iconfont.button-home.hide {
+    display: none;
+    opacity: 0;
   }
 `;
 
@@ -18,42 +106,6 @@ CssInjector.macos = `
   }
   .search-wrap {
     left: 300px !important;
-  }
-`;
-
-CssInjector.hideSidebar = `
-  .main-wrap {
-    padding-left: 0 !important;
-  }
-  .main-sidebar {
-    display:none;
-  }
-`;
-
-CssInjector.hideLyrics = `
-  .main-wrap {
-    padding-right: 0 !important;
-  }
-  .main-outher {
-    display:none;
-  }
-  .ui-track-all {
-    width: initial !important;
-  }
-`;
-
-CssInjector.songListOnly = `
-  .main-wrap {
-    padding: 0 !important;
-  }
-  .main-outher {
-    display:none;
-  }
-  .main-sidebar {
-    display:none;
-  }
-  .ui-track-all {
-    width: initial !important;
   }
 `;
 

@@ -3,9 +3,10 @@ const path = require('path');
 const fs = require('fs-extra');
 const settings = require('electron-settings');
 
-const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
-const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
-const macOS = process.platform === 'darwin' ? true : false;
+// const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'sc') : 'sc';
+// const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+const Locale = require('../locale/locale_sc');
+const macOS = process.platform === 'darwin';
 
 class RadioTray {
   constructor(radioController) {

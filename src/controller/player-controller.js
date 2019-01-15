@@ -1,23 +1,22 @@
-const {app, BrowserWindow, session, ipcMain, TouchBar, nativeImage} = require('electron');
-const {TouchBarButton} = TouchBar
+const {BrowserWindow, session, ipcMain, TouchBar, nativeImage} = require('electron');
+const {TouchBarButton} = TouchBar;
 const urlLib = require('url');
 const https = require('https');
 const path = require('path');
 const storage = require('electron-json-storage');
 const settings = require('electron-settings');
-const CssInjector = require('../js/css-injector');
-const download = require('download');
+const CssInjector = require('../configuration/css-injector');
 const Lyrics = require('../js/lib/lyrics');
-const fs = require('fs-extra');
 const timeFormat = require('hh-mm-ss');
 const UpdateController = require('./update-controller');
+const URLS = require('../configuration/urls');
 
-const playerUrl = 'https://www.xiami.com/play';
 const playlistUrlPrefix = 'https://www.xiami.com/song/playlist*';
 const getLyricUrlPrefix = 'https://img.xiami.net/lyric/*';
 
-const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
-const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+// const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'sc') : 'sc';
+// const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+const Locale = require('../locale/locale_sc');
 
 class XiamiPlayer {
   constructor(lyricsController, notificationController) {
@@ -28,7 +27,7 @@ class XiamiPlayer {
 
   init() {
     this.lyrics = new Lyrics('');
-    const customLayout = settings.get('customLayout', 'default');
+    const customLayout = settings.get('customLayout', 'suggestion');
 
     if (customLayout === 'mini') {
       this.window = new BrowserWindow({
@@ -50,7 +49,7 @@ class XiamiPlayer {
     } else {
       if (process.platform === 'darwin') {
         this.window = new BrowserWindow({
-          show: false, width: 1000, height: 670, titleBarStyle: 'hiddenInset',
+          show: false, width: 1150, height: 650, titleBarStyle: 'hiddenInset',
           webPreferences: {
             javascript: true,
             plugins: true,
@@ -61,7 +60,7 @@ class XiamiPlayer {
         });
       } else {
         this.window = new BrowserWindow({
-          show: false, width: 1000, height: 670, frame: true, autoHideMenuBar: true,
+          show: false, width: 1150, height: 650, frame: settings.get('showWindowFrame', true), autoHideMenuBar: true,
           webPreferences: {
             javascript: true,
             plugins: true,
@@ -74,7 +73,7 @@ class XiamiPlayer {
     }
 
     // load xiami player page.
-    this.window.loadURL(playerUrl);
+    this.window.loadURL(URLS.getUrl(customLayout));
 
     // set the touch bar.
     this.window.setTouchBar(this.createTouchBar());
@@ -84,27 +83,9 @@ class XiamiPlayer {
 
       this.window.webContents.insertCSS(CssInjector.main);
 
-      if (process.platform == 'darwin') {
-        this.window.webContents.insertCSS(CssInjector.macos);
-      }
-
-      switch (customLayout) {
-        case 'hideSidebar':
-          this.window.webContents.insertCSS(CssInjector.hideSidebar);
-          break;
-        case 'hideLyrics':
-          this.window.webContents.insertCSS(CssInjector.hideLyrics);
-          break;
-        case 'songListOnly':
-          this.window.webContents.insertCSS(CssInjector.songListOnly);
-          break;
-        case 'mini':
-          this.window.webContents.insertCSS(CssInjector.mini);
-          break;
-        default:
-          // using the default layout from the xiami play
-          break;
-      }
+      // if (process.platform == 'darwin') {
+      //   this.window.webContents.insertCSS(CssInjector.macos);
+      // }
 
       this.window.show();
 
@@ -127,7 +108,7 @@ class XiamiPlayer {
     });
 
     // intercept the ajax call response
-    session.defaultSession.webRequest.onCompleted({urls: [playlistUrlPrefix, getLyricUrlPrefix]}, (details) => this.handleResponse(details))
+    session.defaultSession.webRequest.onCompleted({urls: [playlistUrlPrefix, getLyricUrlPrefix]}, (details) => this.handleResponse(details));
 
     ipcMain.on('playtime', (event, value) => {
       const timeline = this.lyrics.select(timeFormat.toS(value));
@@ -157,26 +138,16 @@ class XiamiPlayer {
     return this.window.isVisible();
   }
 
-  pause() {
-    this.window.webContents.executeJavaScript("document.querySelector('.pause-btn').dispatchEvent(new MouseEvent('click'));");
-  }
-
-  play() {
-    this.window.webContents.executeJavaScript("document.querySelector('.play-btn').dispatchEvent(new MouseEvent('click'));");
-  }
-
-  toggle() {
-    this.window.webContents.executeJavaScript("document.querySelector('.pause-btn')", (result) => {
-      result ? this.pause() : this.play();
-    });
+  pausePlay() {
+    this.window.webContents.executeJavaScript("document.querySelector('.main-control .play-btn').click();");
   }
 
   next() {
-    this.window.webContents.executeJavaScript("document.querySelector('.next-btn').dispatchEvent(new MouseEvent('click'));");
+    this.window.webContents.executeJavaScript("document.querySelector('.main-control .next').click();");
   }
 
   previous() {
-    this.window.webContents.executeJavaScript("document.querySelector('.prev-btn').dispatchEvent(new MouseEvent('click'));");
+    this.window.webContents.executeJavaScript("document.querySelector('.main-control .prev').click();");
   }
 
   /**
@@ -233,21 +204,21 @@ class XiamiPlayer {
    * @param {*} details the response details
    */
   handleResponse(details) {
-    const url = details.url
-    RegExp(playlistUrlPrefix).test(url) && this.updatePlaylist(url);
-
-    if (RegExp(getLyricUrlPrefix).test(url)) {
-      // Load Lyrics.
-      this.loadLyrics(url);
-
-      // Load track change notification.
-      const showNotification = settings.get('showNotification', 'check');
-      if ('check' === showNotification) {
-        const lyricPath = urlLib.parse(url).pathname;
-        const songId = lyricPath.match(/\/(\d*)_/)[1];
-        this.notifyTrackChange(songId);
-      }
-    }
+    // const url = details.url
+    // RegExp(playlistUrlPrefix).test(url) && this.updatePlaylist(url);
+    //
+    // if (RegExp(getLyricUrlPrefix).test(url)) {
+    //   // Load Lyrics.
+    //   this.loadLyrics(url);
+    //
+    //   // Load track change notification.
+    //   const showNotification = settings.get('showNotification', 'check');
+    //   if ('check' === showNotification) {
+    //     const lyricPath = urlLib.parse(url).pathname;
+    //     const songId = lyricPath.match(/\/(\d*)_/)[1];
+    //     this.notifyTrackChange(songId);
+    //   }
+    // }
   }
 
   /**
@@ -266,7 +237,7 @@ class XiamiPlayer {
 
       https.get({
         hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
-          'Referer': playerUrl,
+          'Referer': URLS.home,
           'Cookie': cookieString,
           'User-Agent': this.window.webContents.getUserAgent()
         }

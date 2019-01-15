@@ -4,10 +4,12 @@ const storage = require('electron-json-storage');
 const fs = require('fs-extra');
 const settings = require('electron-settings');
 const SettingsController = require('./settings-controller');
+const URLS = require('../configuration/urls');
 
-const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'en') : 'en';
-const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
-const macOS = process.platform === 'darwin' ? true : false;
+// const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'sc') : 'sc';
+// const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+const Locale = require('../locale/locale_sc');
+const macOS = process.platform === 'darwin';
 
 class AppTray {
   constructor(playerController, lyricsController, notificationController) {
@@ -25,18 +27,20 @@ class AppTray {
     //set the context menu
     const context = Menu.buildFromTemplate([
       {label: Locale.TRAY_SHOW_MAIN, click: () => this.togglePlayerWindow()},
-      {label: Locale.TRAY_PLAY_PAUSE, click: () => this.playerController.toggle()},
+      {label: Locale.TRAY_PLAY_PAUSE, click: () => this.playerController.pausePlay()},
       {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
       {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
       {label: 'Separator', type: 'separator'},
+      {label: Locale.TRAY_WINDOW_FRAME, type: 'checkbox', checked: settings.get('showWindowFrame', true), click: () => this.toggleWindowFrame()},
       {label: Locale.TRAY_PLAYER_MODE, submenu: [
-        {label: Locale.TRAY_PLAYER_MODE_DEFAULT, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_DEFAULT_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_HIDE_LYRICS, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_HIDE_LYRICS_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_MINI, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
+        {label: Locale.TRAY_PLAYER_MODE_SUGGESTION, type: 'radio', checked: 'suggestion' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SUGGESTION_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_BILLBOARD, type: 'radio', checked: 'billboard' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_BILLBOARD_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_COLLECTION, type: 'radio', checked: 'collection' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_COLLECTION_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_ARTIST, type: 'radio', checked: 'artist' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_ARTIST_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_ALBUM, type: 'radio', checked: 'album' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_ALBUM_VALUE)},
+        // {label: Locale.TRAY_PLAYER_MODE_MINI, type: 'radio', checked: 'mini' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
       ]},
-      {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},
+      // {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},
       {label: Locale.TRAY_SWITCH_TO_RADIO, click: () => this.switchToRadioMode()},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
@@ -61,6 +65,12 @@ class AppTray {
       default:
         return macOS ? nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_black_macos.png')) : nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_white.png'));
     }
+  }
+
+  toggleWindowFrame() {
+    settings.set('showWindowFrame', !settings.get('showWindowFrame'));
+    this.playerController.window.destroy();
+    this.playerController.init();
   }
 
   toggleLyrics() {
@@ -119,9 +129,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
 
   changePlayerMode(mode) {
     settings.set('customLayout', mode);
-    this.lyricsController.window.isVisible() && this.lyricsController.window.hide();
-    this.playerController.window.destroy();
-    this.playerController.init();
+    this.playerController.window.loadURL(URLS.getUrl(mode));
   }
 
   openSettings() {

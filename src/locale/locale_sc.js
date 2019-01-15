@@ -15,19 +15,23 @@ Locale.TRAY_PREVIOUS = '上一首';
 Locale.TRAY_SWITCH_TO_RADIO = '切换到电台模式（超前体验版）';
 Locale.TRAY_SWITCH_TO_PLAYER = '切换到播放器模式';
 
+Locale.TRAY_WINDOW_FRAME = '标题框';
+
 Locale.TRAY_PLAYER_MODE = '播放器模式';
-Locale.TRAY_PLAYER_MODE_DEFAULT = '默认';
-Locale.TRAY_PLAYER_MODE_DEFAULT_VALUE = 'default';
-Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR = '隐藏侧边栏';
-Locale.TRAY_PLAYER_MODE_HIDE_SIDEBAR_VALUE = 'hideSidebar';
-Locale.TRAY_PLAYER_MODE_HIDE_LYRICS = '隐藏歌词信息';
-Locale.TRAY_PLAYER_MODE_HIDE_LYRICS_VALUE = 'hideLyrics';
-Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY = '只显示播放列表';
-Locale.TRAY_PLAYER_MODE_SONG_LIST_ONLY_VALUE = 'songListOnly';
-Locale.TRAY_PLAYER_MODE_MINI = '迷你模式';
+Locale.TRAY_PLAYER_MODE_SUGGESTION = '推荐';
+Locale.TRAY_PLAYER_MODE_SUGGESTION_VALUE = 'suggestion';
+Locale.TRAY_PLAYER_MODE_BILLBOARD = '排行榜';
+Locale.TRAY_PLAYER_MODE_BILLBOARD_VALUE = 'billboard';
+Locale.TRAY_PLAYER_MODE_COLLECTION = '歌单';
+Locale.TRAY_PLAYER_MODE_COLLECTION_VALUE = 'collection';
+Locale.TRAY_PLAYER_MODE_ARTIST = '艺人';
+Locale.TRAY_PLAYER_MODE_ARTIST_VALUE = 'artist';
+Locale.TRAY_PLAYER_MODE_ALBUM = '专辑';
+Locale.TRAY_PLAYER_MODE_ALBUM_VALUE = 'album';
+Locale.TRAY_PLAYER_MODE_MINI = '迷你';
 Locale.TRAY_PLAYER_MODE_MINI_VALUE = 'mini';
 
-Locale.TRAY_LYRICS_TOGGLE = '切换歌词窗口（测试版）'
+Locale.TRAY_LYRICS_TOGGLE = '切换歌词窗口（测试版）';
 
 Locale.TRAY_SETTINGS = '设置';
 Locale.TRAY_EXIT = '退出';

@@ -7,8 +7,9 @@ class UpdateController {
   constructor() {
     autoUpdater.autoDownload = false;
 
-    const language = settings.get('language', 'en');
-    const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+    // const language = settings.get('language', 'sc');
+    // const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
+    const Locale = require('../locale/locale_sc');
 
     autoUpdater.on('update-available', (info) => {
       dialog.showMessageBox({
