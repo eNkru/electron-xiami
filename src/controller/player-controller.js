@@ -60,7 +60,7 @@ class XiamiPlayer {
         });
       } else {
         this.window = new BrowserWindow({
-          show: false, width: 1150, height: 650, frame: true, autoHideMenuBar: true,
+          show: false, width: 1150, height: 650, frame: false, autoHideMenuBar: true,
           webPreferences: {
             javascript: true,
             plugins: true,
@@ -82,8 +82,6 @@ class XiamiPlayer {
     this.window.webContents.on('dom-ready', () => {
 
       this.window.webContents.insertCSS(CssInjector.main);
-
-      this.addBackToHomeButton();
 
       // if (process.platform == 'darwin') {
       //   this.window.webContents.insertCSS(CssInjector.macos);
@@ -126,10 +124,6 @@ class XiamiPlayer {
           this.lyricsController.window.webContents.send('lyricsChange', '这首没有歌词 (-_-!)');
         }
       }
-    });
-
-    ipcMain.on('navToHome', (event, value) => {
-      this.window.loadURL(URLS.getUrl(settings.get('customLayout', customLayout)));
     });
   }
 
@@ -174,19 +168,6 @@ class XiamiPlayer {
         click: () => this.next()
       })
     ]);
-  }
-
-  addBackToHomeButton() {
-    this.window.webContents.executeJavaScript(`
-      let homeButton = document.createElement('div');
-      homeButton.className = 'iconfont button-home';
-      homeButton.textContent = '';
-      homeButton.onclick = () => {
-        ipc.send('navToHome');
-      };
-      let pageContainer = document.querySelector('.page-container');
-      pageContainer.appendChild(homeButton);
-    `);
   }
 
   /**

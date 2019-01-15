@@ -1,8 +1,31 @@
 class CssInjector {}
 
 CssInjector.main = `
+  .top-nav {
+    -webkit-app-region: drag;
+  }
+  .top-nav-wrapper > a {
+    margin-left: 16px;
+    -webkit-app-region: no-drag;
+  }
   .top-nav-wrapper .links a:nth-last-of-type(-n+4) {
     display: none;
+  }
+  .top-nav-wrapper a {
+    order: -1;
+    -webkit-app-region: no-drag;
+  }
+  .top-nav-wrapper .user {
+    -webkit-app-region: no-drag;
+  }
+  .top-nav-wrapper .search {
+    order: -1;
+    margin-left: auto;
+    margin-right: 0;
+    -webkit-app-region: no-drag;
+  }
+  .top-nav-wrapper .links {
+    margin-right: 20px !important;
   }
   .discovery-view .sticky-leftbar {
     position: absolute !important;
