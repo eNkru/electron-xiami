@@ -15,6 +15,8 @@ Locale.TRAY_PREVIOUS = '上一首';
 Locale.TRAY_SWITCH_TO_RADIO = '切换到电台模式（超前体验版）';
 Locale.TRAY_SWITCH_TO_PLAYER = '切换到播放器模式';
 
+Locale.TRAY_WINDOW_FRAME = '标题框';
+
 Locale.TRAY_PLAYER_MODE = '播放器模式';
 Locale.TRAY_PLAYER_MODE_SUGGESTION = '推荐';
 Locale.TRAY_PLAYER_MODE_SUGGESTION_VALUE = 'suggestion';

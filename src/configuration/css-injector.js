@@ -15,6 +15,9 @@ CssInjector.main = `
     order: -1;
     -webkit-app-region: no-drag;
   }
+  .top-nav-wrapper .message-center {
+    -webkit-app-region: no-drag;
+  }
   .top-nav-wrapper .user {
     -webkit-app-region: no-drag;
   }

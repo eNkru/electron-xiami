@@ -31,13 +31,14 @@ class AppTray {
       {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
       {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
       {label: 'Separator', type: 'separator'},
+      {label: Locale.TRAY_WINDOW_FRAME, type: 'checkbox', checked: settings.get('showWindowFrame', true), click: () => this.toggleWindowFrame()},
       {label: Locale.TRAY_PLAYER_MODE, submenu: [
-        {label: Locale.TRAY_PLAYER_MODE_SUGGESTION, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SUGGESTION_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_BILLBOARD, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_BILLBOARD_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_COLLECTION, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_COLLECTION_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_ARTIST, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_ARTIST_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_ALBUM, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_ALBUM_VALUE)},
-        {label: Locale.TRAY_PLAYER_MODE_MINI, click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
+        {label: Locale.TRAY_PLAYER_MODE_SUGGESTION, type: 'radio', checked: 'suggestion' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SUGGESTION_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_BILLBOARD, type: 'radio', checked: 'billboard' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_BILLBOARD_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_COLLECTION, type: 'radio', checked: 'collection' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_COLLECTION_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_ARTIST, type: 'radio', checked: 'artist' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_ARTIST_VALUE)},
+        {label: Locale.TRAY_PLAYER_MODE_ALBUM, type: 'radio', checked: 'album' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_ALBUM_VALUE)},
+        // {label: Locale.TRAY_PLAYER_MODE_MINI, type: 'radio', checked: 'mini' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
       ]},
       // {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},
       {label: Locale.TRAY_SWITCH_TO_RADIO, click: () => this.switchToRadioMode()},
@@ -64,6 +65,12 @@ class AppTray {
       default:
         return macOS ? nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_black_macos.png')) : nativeImage.createFromPath(path.join(__dirname, '../../assets/icon_white.png'));
     }
+  }
+
+  toggleWindowFrame() {
+    settings.set('showWindowFrame', !settings.get('showWindowFrame'));
+    this.playerController.window.destroy();
+    this.playerController.init();
   }
 
   toggleLyrics() {
