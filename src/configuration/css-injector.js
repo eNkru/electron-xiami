@@ -94,6 +94,82 @@ CssInjector.main = `
   }
 `;
 
+CssInjector.dark = `
+  .page-container {
+    background-color: #0c0c0c !important;
+    color: #d6d6d6 !important;
+  }
+  .page-container .button {
+    background: #4a4a4a;
+  }
+  .song-tags {
+    color: #ff410f !important;
+  }
+  .top-nav {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+  }
+  .play-bar {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+  }
+  .play-list {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+  }
+  .player .common-mode .play-bar .music .info .title {
+    color: #999 !important;
+  }
+  .table table tbody tr td .em {
+    color: #999 !important;
+  }
+  .table table tbody tr.odd {
+    background-color: #4a4a4a !important;
+  }
+  .page-container .billboard-view .title {
+    color: #4a4a4a !important;
+  }
+  .page-container .billboard-view .external {
+    color: #4a4a4a !important;
+  }
+  .back-to-top {
+    color: #4a4a4a !important;
+  }
+  .select {
+    color: #4a4a4a !important;
+  }
+  .button.unselectable {
+    color: #fff !important;
+  }
+  .button.remarkable {
+    color: #fff !important;
+  }
+  .leftbar-content {
+    background-color: #0c0c0c !important;
+  }
+  .related-songs .table {
+    background-color: #0c0c0c !important;
+  }
+  .text-area {
+    background-color: #4a4a4a !important;
+  }
+  .search input {
+    background: #4a4a4a !important;
+  }
+  .count-list {
+    background-color: #4a4a4a !important;
+  }
+  .search-content-wrapper {
+    background-color: rgba(0,0,0,.95) !important;
+  }
+  .search-content-wrapper .block.hot {
+    color: #fff !important;
+  }
+  .popular-songs .table {
+    background-color: #4a4a4a !important;
+  }
+  .table table tbody tr:hover, .table table tbody tr:hover+.extended-row {
+    background-color: #060606 !important;
+  }
+`;
+
 CssInjector.macos = `
   #top {
     -webkit-app-region: drag;

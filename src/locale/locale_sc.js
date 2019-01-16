@@ -16,6 +16,7 @@ Locale.TRAY_SWITCH_TO_RADIO = '切换到电台模式（超前体验版）';
 Locale.TRAY_SWITCH_TO_PLAYER = '切换到播放器模式';
 
 Locale.TRAY_WINDOW_FRAME = '标题框';
+Locale.TRAY_DARK_MODE = '黑夜模式';
 
 Locale.TRAY_PLAYER_MODE = '播放器模式';
 Locale.TRAY_PLAYER_MODE_SUGGESTION = '推荐';

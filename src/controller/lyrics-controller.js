@@ -4,7 +4,7 @@ const { BrowserWindow, protocol } = require('electron');
 class LyricsWindow {
 
   constructor() {
-    this.timer = null
+    this.timer = null;
     this.init();
   }
 
