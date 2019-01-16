@@ -89,6 +89,9 @@ class XiamiPlayer {
       if (settings.get('darkMode', false)) {
         this.window.webContents.insertCSS(CssInjector.dark);
       }
+      if (settings.get('hideScrollbar', false)) {
+        this.window.webContents.insertCSS(CssInjector.hideScrollbar);
+      }
 
       this.window.show();
 

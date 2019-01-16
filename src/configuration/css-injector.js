@@ -170,6 +170,13 @@ CssInjector.dark = `
   }
 `;
 
+CssInjector.hideScrollbar = `
+  ::-webkit-scrollbar {
+    width: 0 !important;
+    background: transparent !important;
+  }
+`;
+
 CssInjector.macos = `
   #top {
     -webkit-app-region: drag;

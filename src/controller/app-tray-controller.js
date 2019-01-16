@@ -33,6 +33,7 @@ class AppTray {
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_WINDOW_FRAME, type: 'checkbox', checked: settings.get('showWindowFrame', true), click: () => this.toggleWindowFrame()},
       {label: Locale.TRAY_DARK_MODE, type: 'checkbox', checked: settings.get('darkMode', false), click: () => this.toggleDarkMode()},
+      {label: Locale.TRAY_HIDE_SCROLLBAR, type: 'checkbox', checked: settings.get('hideScrollbar', false), click: () => this.togglescrollbar()},
       {label: Locale.TRAY_PLAYER_MODE, submenu: [
         {label: Locale.TRAY_PLAYER_MODE_SUGGESTION, type: 'radio', checked: 'suggestion' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_SUGGESTION_VALUE)},
         {label: Locale.TRAY_PLAYER_MODE_BILLBOARD, type: 'radio', checked: 'billboard' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_BILLBOARD_VALUE)},
@@ -76,6 +77,12 @@ class AppTray {
 
   toggleDarkMode() {
     settings.set('darkMode', !settings.get('darkMode'));
+    this.playerController.window.destroy();
+    this.playerController.init();
+  }
+
+  togglescrollbar() {
+    settings.set('hideScrollbar', !settings.get('hideScrollbar'));
     this.playerController.window.destroy();
     this.playerController.init();
   }
