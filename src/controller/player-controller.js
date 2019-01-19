@@ -167,7 +167,7 @@ class XiamiPlayer {
       }),
       new TouchBarButton({
         icon: nativeImage.createFromNamedImage('NSTouchBarPlayPauseTemplate', [-1, 0, 1]),
-        click: () => this.toggle()
+        click: () => this.pausePlay()
       }),
       new TouchBarButton({
         icon: nativeImage.createFromNamedImage('NSTouchBarFastForwardTemplate', [-1, 0, 1]),
