@@ -83,9 +83,9 @@ class XiamiPlayer {
 
       this.window.webContents.insertCSS(CssInjector.main);
 
-      // if (process.platform == 'darwin') {
-      //   this.window.webContents.insertCSS(CssInjector.macos);
-      // }
+      if (process.platform == 'darwin') {
+        this.window.webContents.insertCSS(CssInjector.macos);
+      }
       if (settings.get('darkMode', false)) {
         this.window.webContents.insertCSS(CssInjector.dark);
       }

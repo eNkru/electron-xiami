@@ -178,17 +178,8 @@ CssInjector.hideScrollbar = `
 `;
 
 CssInjector.macos = `
-  #top {
-    -webkit-app-region: drag;
-  }
-  #J_header .logo {
-    padding-left: 100px !important;
-  }
-  .search-result {
-    left: 300px !important;
-  }
-  .search-wrap {
-    left: 300px !important;
+  .top-nav {
+    padding-top: 16px;
   }
 `;
 
