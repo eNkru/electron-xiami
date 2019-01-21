@@ -42,7 +42,7 @@ class AppTray {
         {label: Locale.TRAY_PLAYER_MODE_ALBUM, type: 'radio', checked: 'album' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_ALBUM_VALUE)},
         // {label: Locale.TRAY_PLAYER_MODE_MINI, type: 'radio', checked: 'mini' === settings.get('customLayout', 'suggestion'), click: () => this.changePlayerMode(Locale.TRAY_PLAYER_MODE_MINI_VALUE)}
       ]},
-      // {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},
+      {label: Locale.TRAY_LYRICS_TOGGLE, click: () => this.toggleLyrics()},
       {label: Locale.TRAY_SWITCH_TO_RADIO, click: () => this.switchToRadioMode()},
       {label: 'Separator', type: 'separator'},
       {label: Locale.TRAY_SETTINGS, click: () => this.openSettings()},
@@ -90,6 +90,8 @@ class AppTray {
   toggleLyrics() {
     if (!this.lyricsController.window.isVisible()) {
       this.playerController.addPlaytimeObserver();
+    } else {
+      this.playerController.removePlaytimeObserver();
     }
     this.lyricsController.toggle();
   }

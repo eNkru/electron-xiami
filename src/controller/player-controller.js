@@ -10,10 +10,10 @@ const Lyrics = require('../js/lib/lyrics');
 const timeFormat = require('hh-mm-ss');
 const UpdateController = require('./update-controller');
 const URLS = require('../configuration/urls');
+const download = require('download');
 
 const getPlayInfoUrlPrefix = 'https://www.xiami.com/api/song/getPlayInfo*';
 const getSongDetailsUrlPrefix = 'https://www.xiami.com/api/song/getSongDetails*';
-const getLyricUrlPrefix = 'https://img.xiami.net/lyric/*';
 
 // const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'sc') : 'sc';
 // const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
@@ -96,7 +96,7 @@ class XiamiPlayer {
       }
 
       this.window.show();
-      // this.window.webContents.openDevTools();
+      this.window.webContents.openDevTools();
 
       // check update
       new UpdateController().checkUpdate();
@@ -120,7 +120,8 @@ class XiamiPlayer {
     session.defaultSession.webRequest.onCompleted({urls: [getPlayInfoUrlPrefix, getSongDetailsUrlPrefix]}, (details) => this.handleResponse(details));
 
     ipcMain.on('playtime', (event, value) => {
-      const timeline = this.lyrics.select(timeFormat.toS(value));
+      let playingTime = value.match(/^(.*)\//)[1];
+      const timeline = this.lyrics.select(timeFormat.toS(playingTime));
       if (timeline !== this.previousTime) {
         this.previousTime = timeline;
         if (timeline >= 0) {
@@ -184,14 +185,14 @@ class XiamiPlayer {
    */
   addPlaytimeObserver() {
     this.window.webContents.executeJavaScript(`
-        let playtime = document.querySelector('.player-position');
-        let observer = new MutationObserver(mutations => {
+        var playtime = document.querySelector('.audio-progress .bar .handle');
+        var observer = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
-                ipc.send('playtime', playtime.innerHTML);
+                ipc.send('playtime', playtime.innerText);
             });
         });
     
-        observer.observe(playtime, {childList: true});
+        observer.observe(playtime, {attributes: true});
     `)
   }
 
@@ -271,8 +272,9 @@ class XiamiPlayer {
           const response = JSON.parse(playlistData);
           if (response.result) {
             const details = response.result.data.songDetails[0];
-            const {songName, singers, albumName, albumLogo} = details;
-            details && this.notify(songName, singers, albumName, albumLogo);
+            const {songName, singers, albumName, albumLogoS, lyric} = details;
+            details && this.notify(songName, singers, albumName, albumLogoS);
+            lyric && this.loadLyrics(lyric);
           }
         });
       });
@@ -297,17 +299,21 @@ ${Locale.NOTIFICATION_ALBUM}: ${albumName}`;
    * @param {string} url the lyrics url
    */
   loadLyrics(url) {
-    https.get(url, (response) => {
-      let lyricContent = '';
-
-      response.on('data', (chunk) => {
-        lyricContent += chunk;
-      });
-
-      response.on('end', () => {
-        this.lyrics.load(lyricContent)
-      });
-    })
+    // https.get(url, (response) => {
+    //   let lyricContent = '';
+    //
+    //   response.on('data', (chunk) => {
+    //     lyricContent += chunk;
+    //   });
+    //
+    //   response.on('end', () => {
+    //     this.lyrics.load(lyricContent)
+    //   });
+    // })
+    download(url).then(buffer => {
+      console.log(buffer);
+      this.lyrics.load(buffer);
+    });
   }
 
 
