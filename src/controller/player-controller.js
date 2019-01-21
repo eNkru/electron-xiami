@@ -11,7 +11,8 @@ const timeFormat = require('hh-mm-ss');
 const UpdateController = require('./update-controller');
 const URLS = require('../configuration/urls');
 
-const playlistUrlPrefix = 'https://www.xiami.com/song/playlist*';
+const getPlayInfoUrlPrefix = 'https://www.xiami.com/api/song/getPlayInfo*';
+const getSongDetailsUrlPrefix = 'https://www.xiami.com/api/song/getSongDetails*';
 const getLyricUrlPrefix = 'https://img.xiami.net/lyric/*';
 
 // const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'sc') : 'sc';
@@ -22,6 +23,7 @@ class XiamiPlayer {
   constructor(lyricsController, notificationController) {
     this.notificationController = notificationController;
     this.lyricsController = lyricsController;
+    this.getSongDetailsUrl = null;
     this.init();
   }
 
@@ -94,6 +96,7 @@ class XiamiPlayer {
       }
 
       this.window.show();
+      // this.window.webContents.openDevTools();
 
       // check update
       new UpdateController().checkUpdate();
@@ -114,7 +117,7 @@ class XiamiPlayer {
     });
 
     // intercept the ajax call response
-    session.defaultSession.webRequest.onCompleted({urls: [playlistUrlPrefix, getLyricUrlPrefix]}, (details) => this.handleResponse(details));
+    session.defaultSession.webRequest.onCompleted({urls: [getPlayInfoUrlPrefix, getSongDetailsUrlPrefix]}, (details) => this.handleResponse(details));
 
     ipcMain.on('playtime', (event, value) => {
       const timeline = this.lyrics.select(timeFormat.toS(value));
@@ -210,8 +213,11 @@ class XiamiPlayer {
    * @param {*} details the response details
    */
   handleResponse(details) {
-    // const url = details.url
-    // RegExp(playlistUrlPrefix).test(url) && this.updatePlaylist(url);
+    const url = details.url;
+
+    RegExp(getPlayInfoUrlPrefix).test(url) && this.getTrackInfo(url);
+
+    RegExp(getSongDetailsUrlPrefix).test(url) && (this.getSongDetailsUrl = url);
     //
     // if (RegExp(getLyricUrlPrefix).test(url)) {
     //   // Load Lyrics.
@@ -227,25 +233,32 @@ class XiamiPlayer {
     // }
   }
 
-  /**
-   * Update the playlist if the request URL is for playlist update.
-   * @param {string} requestUrl the request URL for the event
-   */
-  updatePlaylist(requestUrl) {
-    let urlWithPath = urlLib.parse(requestUrl, false);
-    delete urlWithPath.search;
-    // console.log('Retrieve the playlist from url ' + urlLib.format(urlWithPath));
+  getTrackInfo(url) {
+    const songId = url.match(/\[(.*)\]/)[1];
+    if (this.getSongDetailsUrl) {
+      this.getTrackDetails(songId);
+    } else {
+      setTimeout(() => this.getTrackInfo(url), 1000);
+    }
+  }
+
+  getTrackDetails(songId) {
+    let urlWithPath = urlLib.parse(this.getSongDetailsUrl);
 
     // get the cookie, make call with the cookie
     let session = this.window.webContents.session;
     session.cookies.get({url: 'https://www.xiami.com'}, (error, cookies) => {
       let cookieString = cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join(';');
 
-      https.get({
-        hostname: urlWithPath.host, path: urlWithPath.pathname, headers: {
+      const req = https.request({
+        hostname: urlWithPath.host,
+        path: urlWithPath.path,
+        method: 'POST',
+        headers: {
           'Referer': URLS.home,
           'Cookie': cookieString,
-          'User-Agent': this.window.webContents.getUserAgent()
+          'User-Agent': this.window.webContents.getUserAgent(),
+          'Content-Type': 'application/json'
         }
       }, (response) => {
         let playlistData = '';
@@ -255,16 +268,23 @@ class XiamiPlayer {
         });
 
         response.on('end', () => {
-          const tracks = JSON.parse(playlistData).data.trackList;
-          // refresh the local storage.
-          tracks && tracks.forEach(track => {
-            storage.set(track.songId, track, (error) => {
-              if (error) console.log(error);
-            });
-          });
+          const response = JSON.parse(playlistData);
+          const details = response.result.data.songDetails[0];
+          const {songName, singers, albumName, albumLogo} = details;
+          details && this.notify(songName, singers, albumName, albumLogo);
         });
       });
+
+      req.write(`{"songIds": [${songId}]}`);
+      req.end();
     });
+  }
+
+  notify(trackName, singers, albumName, albumLogo) {
+    const title = `${Locale.NOTIFICATION_TRACK}: ${trackName}`;
+    const body = `${Locale.NOTIFICATION_ARTIST}: ${singers}
+${Locale.NOTIFICATION_ALBUM}: ${albumName}`;
+    this.notificationController.notify(albumLogo, title, body);
   }
 
   /**
@@ -285,32 +305,7 @@ class XiamiPlayer {
     })
   }
 
-  /**
-   * Handle the track changed.
-   * @param {string} songId the changed song ID
-   */
-  notifyTrackChange(songId) {
-    // console.log(songId)
-    storage.get(songId, (error, trackInfo) => {
 
-      if (error) throw error;
-
-      // notify the current playing track
-      if (Object.keys(trackInfo).length > 0) {
-        // update the current playing track
-        storage.set('currentTrackInfo', trackInfo, (error) => {
-          if (error) console.log(error);
-        });
-
-        const title = `${Locale.NOTIFICATION_TRACK}: ${trackInfo.songName}`;
-        const body = `${Locale.NOTIFICATION_ARTIST}: ${trackInfo.artist_name}
-${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
-        this.notificationController.notify(trackInfo.pic, title, body);
-      } else {
-        setTimeout(() => this.notifyTrackChange(songId), 1000);
-      }
-    });
-  }
 }
 
 module.exports = XiamiPlayer;
