@@ -96,7 +96,7 @@ class XiamiPlayer {
       }
 
       this.window.show();
-      this.window.webContents.openDevTools();
+      // this.window.webContents.openDevTools();
 
       // check update
       new UpdateController().checkUpdate();
@@ -215,23 +215,8 @@ class XiamiPlayer {
    */
   handleResponse(details) {
     const url = details.url;
-
     RegExp(getPlayInfoUrlPrefix).test(url) && this.getTrackInfo(url);
-
     RegExp(getSongDetailsUrlPrefix).test(url) && (this.getSongDetailsUrl = url);
-    //
-    // if (RegExp(getLyricUrlPrefix).test(url)) {
-    //   // Load Lyrics.
-    //   this.loadLyrics(url);
-    //
-    //   // Load track change notification.
-    //   const showNotification = settings.get('showNotification', 'check');
-    //   if ('check' === showNotification) {
-    //     const lyricPath = urlLib.parse(url).pathname;
-    //     const songId = lyricPath.match(/\/(\d*)_/)[1];
-    //     this.notifyTrackChange(songId);
-    //   }
-    // }
   }
 
   getTrackInfo(url) {
@@ -299,17 +284,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${albumName}`;
    * @param {string} url the lyrics url
    */
   loadLyrics(url) {
-    // https.get(url, (response) => {
-    //   let lyricContent = '';
-    //
-    //   response.on('data', (chunk) => {
-    //     lyricContent += chunk;
-    //   });
-    //
-    //   response.on('end', () => {
-    //     this.lyrics.load(lyricContent)
-    //   });
-    // })
+    this.lyrics.load('');
     download(url).then(buffer => {
       console.log(buffer);
       this.lyrics.load(buffer);
