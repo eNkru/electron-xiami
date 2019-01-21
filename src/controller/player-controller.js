@@ -269,9 +269,11 @@ class XiamiPlayer {
 
         response.on('end', () => {
           const response = JSON.parse(playlistData);
-          const details = response.result.data.songDetails[0];
-          const {songName, singers, albumName, albumLogo} = details;
-          details && this.notify(songName, singers, albumName, albumLogo);
+          if (response.result) {
+            const details = response.result.data.songDetails[0];
+            const {songName, singers, albumName, albumLogo} = details;
+            details && this.notify(songName, singers, albumName, albumLogo);
+          }
         });
       });
 
@@ -281,10 +283,13 @@ class XiamiPlayer {
   }
 
   notify(trackName, singers, albumName, albumLogo) {
-    const title = `${Locale.NOTIFICATION_TRACK}: ${trackName}`;
-    const body = `${Locale.NOTIFICATION_ARTIST}: ${singers}
+    const showNotification = settings.get('showNotification', 'check');
+    if ('check' === showNotification) {
+      const title = `${Locale.NOTIFICATION_TRACK}: ${trackName}`;
+      const body = `${Locale.NOTIFICATION_ARTIST}: ${singers}
 ${Locale.NOTIFICATION_ALBUM}: ${albumName}`;
-    this.notificationController.notify(albumLogo, title, body);
+      this.notificationController.notify(albumLogo, title, body);
+    }
   }
 
   /**
