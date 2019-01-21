@@ -145,7 +145,7 @@ class XiamiPlayer {
 
   // return a boolean to indicate if the window is visible or not
   isVisible() {
-    return this.window.isVisible();
+    return this.window.isFocused();
   }
 
   pausePlay() {
