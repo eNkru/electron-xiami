@@ -6,7 +6,7 @@ body {
 body .lyrics-line {
     font-family: FZHei-B01, 'Hiragino Kaku Gothic Pro', 'WenQuanYi Zen Hei', '微軟正黑體', '蘋果儷中黑', Helvetica, Arial, sans-serif;
     background: rgba(0, 0, 0, 0);
-    margin: 0;
+    margin: 0 162px 0 50px;
     font-size: 24px;
     text-align: center;
     letter-spacing: 5px;

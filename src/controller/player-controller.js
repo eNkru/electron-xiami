@@ -51,7 +51,7 @@ class XiamiPlayer {
     } else {
       if (process.platform === 'darwin') {
         this.window = new BrowserWindow({
-          show: false, width: 1150, height: 650, titleBarStyle: 'hiddenInset',
+          show: false, width: 1150, height: 700, titleBarStyle: 'hiddenInset',
           webPreferences: {
             javascript: true,
             plugins: true,
@@ -62,7 +62,7 @@ class XiamiPlayer {
         });
       } else {
         this.window = new BrowserWindow({
-          show: false, width: 1150, height: 650, frame: settings.get('showWindowFrame', true), autoHideMenuBar: true,
+          show: false, width: 1150, height: 700, frame: settings.get('showWindowFrame', true), autoHideMenuBar: true,
           webPreferences: {
             javascript: true,
             plugins: true,
