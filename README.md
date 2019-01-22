@@ -14,11 +14,14 @@ Linux和macOS下的虾米客户端 (虾米播放器)，使用[Electron](https://
 * 虾米音乐在线
 * 虾米电台 （测试）
 * ~~迷你播放模式~~
-* ~~桌面歌词 （测试）~~
-* 最小化到托盘
-* ~~系统提示~~
+* 桌面歌词
+* 系统托盘
+* 系统提示
 * 播放控制
 * 用户配置
+* 隐藏标题框
+* 界面优化
+* 黑夜模式
 * ~~多语言支持~~
 
 ## 下载
@@ -29,15 +32,15 @@ Linux和macOS下的虾米客户端 (虾米播放器)，使用[Electron](https://
 ### 2.x
 ![screenshot from 2019-01-15 17-51-44](https://user-images.githubusercontent.com/13460738/51159621-031d1a00-18ef-11e9-8e3d-312041ecb002.png)
 
-![screenshot from 2019-01-15 17-52-12](https://user-images.githubusercontent.com/13460738/51159622-03b5b080-18ef-11e9-953a-aeaefd19fe74.png)
+![screenshot from 2019-01-22 15-38-16](https://user-images.githubusercontent.com/13460738/51508933-3a924600-1e5c-11e9-81de-f6b88c2a2cb6.png)
 
 ![screenshot from 2019-01-15 17-52-44](https://user-images.githubusercontent.com/13460738/51159623-03b5b080-18ef-11e9-8b5b-4b5e49eb55a6.png)
 
-![screenshot from 2019-01-15 17-52-59](https://user-images.githubusercontent.com/13460738/51159624-03b5b080-18ef-11e9-9195-99737efa0c39.png)
+![screenshot from 2019-01-22 15-38-34](https://user-images.githubusercontent.com/13460738/51508935-3c5c0980-1e5c-11e9-8d74-7e4d97de03a2.png)
 
-![screenshot from 2019-01-15 17-53-17](https://user-images.githubusercontent.com/13460738/51159625-03b5b080-18ef-11e9-8fb0-3a9fe30e6e31.png)
+![screenshot from 2019-01-22 15-40-24](https://user-images.githubusercontent.com/13460738/51508958-58f84180-1e5c-11e9-8cf9-e9a1b10da94b.png)
 
-![screenshot from 2019-01-15 17-54-23](https://user-images.githubusercontent.com/13460738/51159626-044e4700-18ef-11e9-808a-9a2a0fee6b85.png)
+![screenshot from 2019-01-22 15-38-48](https://user-images.githubusercontent.com/13460738/51508956-57c71480-1e5c-11e9-9137-25c709cd6bf7.png)
 
 ### 1.x
 ![screenshot_macos](https://user-images.githubusercontent.com/13460738/34644583-38a2a2b6-f39e-11e7-8831-e21475427ccb.jpg)
