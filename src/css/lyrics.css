@@ -12,14 +12,14 @@ body .lyrics-line {
     letter-spacing: 5px;
     height: 48px;
     line-height: 48px;
-    color: #fff;
+    color: #ffffff;
     text-shadow: #000 0px 0px 5px, #000 0px 0px 5px;
     -webkit-app-region: drag;
 }
 
 
 body .lyrics-window {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.92);
 }
 
 .control-container {
@@ -36,6 +36,7 @@ body .lyrics-window {
     height: 48px;
     width: 48px;
     -webkit-app-region: no-drag;
+    cursor: pointer;
 }
 
 .album-cover img {
@@ -44,5 +45,5 @@ body .lyrics-window {
 
 .button-close {
     background-color: transparent !important;
-    color: #000 !important;
+    color: #ffffff !important;
 }

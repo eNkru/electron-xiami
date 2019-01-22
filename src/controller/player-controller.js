@@ -140,7 +140,7 @@ class XiamiPlayer {
   }
 
   toggleWindow() {
-    if (this.isVisible()) {
+    if (this.window.isVisible()) {
       this.window.hide();
     } else {
       this.show();
