@@ -1,5 +1,5 @@
 const path = require('path');
-const { BrowserWindow, protocol } = require('electron');
+const { BrowserWindow, protocol, ipcMain } = require('electron');
 
 class LyricsWindow {
 
@@ -12,7 +12,7 @@ class LyricsWindow {
     protocol.unregisterProtocol('', () => {
       this.window = new BrowserWindow({
         width: 850,
-        height: 50,
+        height: 48,
         transparent: true,
         frame: false,
         autoHideMenuBar: true,
@@ -40,13 +40,16 @@ class LyricsWindow {
   }
 
   hide() {
-    clearInterval(this.timer)
-    this.window.hide()
+    clearInterval(this.timer);
+    this.window.hide();
   }
 
   show() {
-    this.timer = setInterval(() => {this.window.setAlwaysOnTop(true)}, 1000)
-    this.window.show()
+    this.timer = setInterval(() => {
+      this.window.setAlwaysOnTop(true)
+    }, 1000);
+    this.window.show();
+    // this.window.webContents.openDevTools();
   }
 }
 

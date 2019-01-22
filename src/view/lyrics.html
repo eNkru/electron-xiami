@@ -4,13 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Lyrics Window</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <link href="../css/lyrics.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="lyrics-window">
+        <div class="album-cover">
+            <img src="">
+        </div>
         <div class="lyrics-line">
             这首没有歌词 (-_-!)
+        </div>
+        <div class="control-container">
+            <div class="ui icon buttons">
+                <button class="ui icon secondary button button-control button-prev"><i class="step backward icon"></i></button>
+                <button class="ui icon secondary button button-control button-pause-play"><i class="headphones icon"></i></button>
+                <button class="ui icon secondary button button-control button-next"><i class="step forward icon"></i></button>
+            </div>
+            <button class="ui icon button button-control button-close"><i class="close icon"></i></button>
         </div>
     </div>
     <script>window.$ = window.jQuery = require('../../resources/jquery-3.2.1.min.js');</script>

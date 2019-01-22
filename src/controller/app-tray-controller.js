@@ -56,6 +56,11 @@ class AppTray {
     ipcMain.on('trayClickEvent', (event, value) => {
       this.tray.setImage(this.createTrayIcon(value));
     });
+
+    ipcMain.on('lyricsClose', () => this.toggleLyrics());
+    ipcMain.on('lyricsPrevious', () => this.playerController.previous());
+    ipcMain.on('lyricsNext', () => this.playerController.next());
+    ipcMain.on('lyricsPausePlay', () => this.playerController.pausePlay());
   }
 
   createTrayIcon(trayClickMode) {

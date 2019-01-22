@@ -257,9 +257,10 @@ class XiamiPlayer {
           const response = JSON.parse(playlistData);
           if (response.result) {
             const details = response.result.data.songDetails[0];
-            const {songName, singers, albumName, albumLogoS, lyric} = details;
-            details && this.notify(songName, singers, albumName, albumLogoS);
+            const {songName, singers, albumName, albumLogo, lyric} = details;
+            details && this.notify(songName, singers, albumName, albumLogo);
             lyric && this.loadLyrics(lyric);
+            albumLogo && this.lyricsController.window.webContents.send('albumUpdate', albumLogo);
           }
         });
       });
@@ -286,7 +287,6 @@ ${Locale.NOTIFICATION_ALBUM}: ${albumName}`;
   loadLyrics(url) {
     this.lyrics.load('');
     download(url).then(buffer => {
-      console.log(buffer);
       this.lyrics.load(buffer);
     });
   }

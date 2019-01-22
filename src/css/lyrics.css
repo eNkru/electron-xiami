@@ -1,22 +1,47 @@
 body {
-    -webkit-app-region: drag;
     margin: 0;
+    overflow-y: hidden;
 }
 
 body .lyrics-line {
     font-family: FZHei-B01, 'Hiragino Kaku Gothic Pro', 'WenQuanYi Zen Hei', '微軟正黑體', '蘋果儷中黑', Helvetica, Arial, sans-serif;
     background: rgba(0, 0, 0, 0);
     margin: 0;
-    font-size: 36px;
+    font-size: 24px;
     text-align: center;
     letter-spacing: 5px;
-    height: 50px;
-    line-height: 1.5;
+    height: 48px;
+    line-height: 48px;
     color: #fff;
     text-shadow: #000 0px 0px 5px, #000 0px 0px 5px;
+    -webkit-app-region: drag;
 }
 
 
 body .lyrics-window {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.control-container {
+    position: absolute;
+    right: 0;
+    top: 6px;
+    -webkit-app-region: no-drag;
+}
+
+.album-cover {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 48px;
+    width: 48px;
+}
+
+.album-cover img {
+    height: 100%;
+}
+
+.button-close {
+    background-color: transparent !important;
+    color: #000 !important;
 }
