@@ -35,6 +35,7 @@ body .lyrics-window {
     top: 0;
     height: 48px;
     width: 48px;
+    -webkit-app-region: no-drag;
 }
 
 .album-cover img {

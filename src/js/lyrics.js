@@ -21,6 +21,10 @@ $('.button-pause-play').click(() => {
   ipcRenderer.send('lyricsPausePlay');
 });
 
+$('.album-cover').click(() => {
+  ipcRenderer.send('lyricsOpenPlayer');
+});
+
 ipcRenderer.on('albumUpdate', (event, value) => {
   $('.album-cover img').attr('src', value);
 });

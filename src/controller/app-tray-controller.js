@@ -26,7 +26,7 @@ class AppTray {
 
     //set the context menu
     const context = Menu.buildFromTemplate([
-      {label: Locale.TRAY_SHOW_MAIN, click: () => this.togglePlayerWindow()},
+      {label: Locale.TRAY_SHOW_MAIN, click: () => this.playerController.toggleWindow()},
       {label: Locale.TRAY_PLAY_PAUSE, click: () => this.playerController.pausePlay()},
       {label: Locale.TRAY_NEXT, click: () => this.playerController.next()},
       {label: Locale.TRAY_PREVIOUS, click: () => this.playerController.previous()},
@@ -127,14 +127,6 @@ ${Locale.NOTIFICATION_ALBUM}: ${trackInfo.album_name}`;
         this.notificationController.notify(trackInfo.pic, title, body);
       }
     });
-  }
-
-  togglePlayerWindow() {
-    if (this.playerController.isVisible()) {
-      this.playerController.window.hide();
-    } else {
-      this.playerController.show();
-    }
   }
 
   switchToRadioMode() {

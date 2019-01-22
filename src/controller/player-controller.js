@@ -135,6 +135,16 @@ class XiamiPlayer {
         }
       }
     });
+
+    ipcMain.on('lyricsOpenPlayer', () => this.toggleWindow());
+  }
+
+  toggleWindow() {
+    if (this.isVisible()) {
+      this.window.hide();
+    } else {
+      this.show();
+    }
   }
 
   // display and focus the player window.
