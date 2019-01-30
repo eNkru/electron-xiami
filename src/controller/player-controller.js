@@ -96,7 +96,7 @@ class XiamiPlayer {
       }
 
       this.window.show();
-      this.window.webContents.openDevTools();
+      // this.window.webContents.openDevTools();
 
       // check update
       new UpdateController().checkUpdate();
