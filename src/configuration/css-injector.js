@@ -111,7 +111,7 @@ CssInjector.dark = `
   .play-bar {
     background-color: rgba(0, 0, 0, 0.95) !important;
   }
-  .play-list {
+  .play-list-container .play-list {
     background-color: rgba(0, 0, 0, 0.95) !important;
   }
   .player .common-mode .play-bar .music .info .title {
@@ -167,6 +167,12 @@ CssInjector.dark = `
   }
   .table table tbody tr:hover, .table table tbody tr:hover+.extended-row {
     background-color: #060606 !important;
+  }
+  .immersion .table table tbody tr:hover, .table table tbody tr:hover+.extended-row {
+    background-color: #f4f4f4 !important;
+  }
+  .immersion.night-mode .table table tbody tr:hover, .table table tbody tr:hover+.extended-row {
+    background-color: #444 !important;
   }
 `;
 
