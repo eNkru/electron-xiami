@@ -264,8 +264,9 @@ class XiamiPlayer {
         });
 
         response.on('end', () => {
-          const response = JSON.parse(playlistData);
-          if (response.result) {
+          const response = JSON.parse(playlistData)
+          console.log(response);
+          if (response.result && response.result.data && response.result.data.songDetails) {
             const details = response.result.data.songDetails[0];
             const {songName, singers, albumName, albumLogo, lyric} = details;
             details && this.notify(songName, singers, albumName, albumLogo);
