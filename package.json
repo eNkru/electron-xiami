@@ -9,6 +9,7 @@
     "pack": "electron-builder --dir",
     "dist:linux": "electron-builder --linux AppImage deb --ia32 --x64",
     "dist:macOS": "electron-builder --mac",
+    "dist:win": "electron-builder --win",
     "postinstall": "electron-builder install-app-deps",
     "publish": "build -p always --ia32 --x64"
   },
@@ -55,6 +56,9 @@
         "dmg"
       ],
       "extraResources": "extraResources/pepperflash/PepperFlashPlayer.plugin/**/*"
+    },
+    "win": {
+      "target":"msi"
     }
   }
 }
