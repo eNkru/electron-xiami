@@ -272,6 +272,8 @@ class XiamiPlayer {
             details && this.notify(songName, singers, albumName, albumLogo);
             lyric && this.loadLyrics(lyric);
             albumLogo && this.lyricsController.window.webContents.send('albumUpdate', albumLogo);
+          } else {
+            this.lyrics.load('客官，小虾米找不到你要的歌词哦');
           }
         });
       });
@@ -298,7 +300,7 @@ ${Locale.NOTIFICATION_ALBUM}: ${albumName}`;
   loadLyrics(url) {
     this.lyrics.load('');
     download(url).then(buffer => {
-      this.lyrics.load(buffer);
+      buffer ? this.lyrics.load(buffer) : this.lyrics.load('客官，小虾米找不到你要的歌词哦');
     });
   }
 
