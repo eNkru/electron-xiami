@@ -131,7 +131,7 @@ class XiamiPlayer {
             this.lyricsController.window.webContents.send('lyricsChange', this.prettyLyric(text));
           }
         } else {
-          this.lyricsController.window.webContents.send('lyricsChange', '这首没有歌词 (-_-!)');
+          this.lyricsController.window.webContents.send('lyricsChange', '客官，小虾米找不到你要的歌词哦');
         }
       }
     });
