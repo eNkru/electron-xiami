@@ -104,13 +104,13 @@ class AppTray {
   fireClickTrayEvent() {
     const option = settings.get('trayClickEvent', 'showMain');
     if( option === 'showMain') {
-      this.togglePlayerWindow();
+      this.playerController.toggleWindow();
     } else if (option === 'showTrackInfo') {
       this.notifyTrackInfo();
     } else if (option === 'nextTrack') {
       this.playerController.next();
     } else {
-      this.playerController.toggle();
+      this.playerController.toggleWindow();
     }
   }
 
