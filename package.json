@@ -25,13 +25,13 @@
   "author": "Howard Ju <howard.ju@outlook.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^4.0.1",
-    "electron-builder": "^20.38.5"
+    "electron": "^5.0.4",
+    "electron-builder": "^20.44.4"
   },
   "dependencies": {
     "dbus-native": "^0.2.5",
     "download": "^6.2.5",
-    "electron-json-storage": "^4.0.2",
+    "electron-json-storage": "^4.1.6",
     "electron-settings": "^3.1.1",
     "electron-updater": "^4.0.6",
     "fs-extra": "^5.0.0",
@@ -58,7 +58,7 @@
       "extraResources": "extraResources/pepperflash/PepperFlashPlayer.plugin/**/*"
     },
     "win": {
-      "target":"msi"
+      "target": "msi"
     }
   }
 }
