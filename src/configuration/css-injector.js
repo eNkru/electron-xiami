@@ -8,7 +8,10 @@ CssInjector.main = `
     margin-left: 16px;
     -webkit-app-region: no-drag;
   }
-  .top-nav-wrapper .links a:nth-last-of-type(-n+4) {
+  .top-nav-wrapper .links a:nth-last-of-type(2) {
+    display: none;
+  }
+  .top-nav-wrapper .links a:nth-last-of-type(3) {
     display: none;
   }
   .top-nav-wrapper a {
