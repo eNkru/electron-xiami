@@ -11,7 +11,10 @@ class SettingsWindow {
       this.window = new BrowserWindow({
         width: 500,
         autoHideMenuBar: true,
-        show: false
+        show: false,
+        webPreferences: {
+          nodeIntegration: true
+        }
       });
       this.window.loadURL(`file://${path.join(__dirname, '../view/setting.html')}`);
       this.window.on('close', (e) => {

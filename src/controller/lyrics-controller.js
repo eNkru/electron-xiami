@@ -18,7 +18,10 @@ class LyricsWindow {
         autoHideMenuBar: true,
         x: 300,
         y: 800,
-        show: false
+        show: false,
+        webPreferences: {
+          nodeIntegration: true
+        }
       });
 
       this.window.loadURL(`file://${path.join(__dirname, '../view/lyrics.html')}`);

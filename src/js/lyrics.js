@@ -5,6 +5,7 @@ ipcRenderer.on('lyricsChange', (event, value) => {
 });
 
 $('.button-close').click(() => {
+  // console.log('click close lyrics button');
   ipcRenderer.send('lyricsClose');
 });
 
@@ -18,6 +19,7 @@ $('.button-next').click(() => {
 
 $('.button-pause-play').click(() => {
   // $('.button-pause-play i').toggleClass('pause').toggleClass('play');
+  // console.log('click play | pause lyrics button');
   ipcRenderer.send('lyricsPausePlay');
 });
 
