@@ -12,8 +12,8 @@ const UpdateController = require('./update-controller');
 const URLS = require('../configuration/urls');
 const download = require('download');
 
-const getPlayInfoUrlPrefix = 'https://www.xiami.com/api/song/getPlayInfo*';
-const getSongDetailsUrlPrefix = 'https://www.xiami.com/api/song/getSongDetails*';
+const getPlayInfoPrefix = 'https://www.xiami.com/api/song/getPlayInfo*';
+const getSongLyricsPrefix = 'https://www.xiami.com/api/lyric/getSongLyrics*';
 
 // const language = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('language', 'sc') : 'sc';
 // const Locale = language === 'en' ? require('../locale/locale_en') : require('../locale/locale_sc');
@@ -23,7 +23,6 @@ class XiamiPlayer {
   constructor(lyricsController, notificationController) {
     this.notificationController = notificationController;
     this.lyricsController = lyricsController;
-    this.getSongDetailsUrl = null;
     this.init();
   }
 
@@ -95,6 +94,8 @@ class XiamiPlayer {
         this.window.webContents.insertCSS(CssInjector.hideScrollbar);
       }
 
+      this.addCoverChangeObserver();
+
       this.window.show();
       // this.window.webContents.openDevTools();
 
@@ -113,11 +114,12 @@ class XiamiPlayer {
     // triggering after the play window closed.
     this.window.on('closed', () => {
       ipcMain.removeAllListeners('playtime');
+      ipcMain.removeAllListeners('coverchange');
       this.window = null;
     });
 
     // intercept the ajax call response
-    session.defaultSession.webRequest.onCompleted({urls: [getPlayInfoUrlPrefix, getSongDetailsUrlPrefix]}, (details) => this.handleResponse(details));
+    session.defaultSession.webRequest.onCompleted({urls: [getSongLyricsPrefix, getPlayInfoPrefix]}, (details) => this.handleResponse(details));
 
     ipcMain.on('playtime', (event, value) => {
       let playingTime = value.match(/^(.*)\//)[1];
@@ -135,6 +137,8 @@ class XiamiPlayer {
         }
       }
     });
+
+    ipcMain.on('coverchange', (event, value) => value && this.lyricsController.window.webContents.send('albumUpdate', value));
 
     ipcMain.on('lyricsOpenPlayer', () => this.toggleWindow());
   }
@@ -190,19 +194,34 @@ class XiamiPlayer {
     ]);
   }
 
+  addCoverChangeObserver() {
+    this.window.webContents.executeJavaScript(`
+      var activeImg = document.querySelectorAll('.play-bar .music .cover-link img');
+      var coverObserver = new MutationObserver(mutations => {
+          mutations.forEach(mutation => {
+              activeImg[0].classList.length && ipc.send('coverchange', activeImg[0].src);
+              activeImg[1].classList.length && ipc.send('coverchange', activeImg[1].src);
+          });
+      });
+
+      coverObserver.observe(activeImg[0], {attributes: true});
+      coverObserver.observe(activeImg[1], {attributes: true});
+    `)
+  }
+
   /**
    * Add the listener to monitor the play time.
    */
   addPlaytimeObserver() {
     this.window.webContents.executeJavaScript(`
         var playtime = document.querySelector('.audio-progress .bar .handle');
-        var observer = new MutationObserver(mutations => {
+        var playtimeObserver = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
                 ipc.send('playtime', playtime.innerText);
             });
         });
     
-        observer.observe(playtime, {attributes: true});
+        playtimeObserver.observe(playtime, {attributes: true});
     `)
   }
 
@@ -211,7 +230,7 @@ class XiamiPlayer {
    */
   removePlaytimeObserver() {
     this.window.webContents.executeJavaScript(`
-      observer.disconnect();
+      playtimeObserver.disconnect();
     `)
   }
 
@@ -224,22 +243,18 @@ class XiamiPlayer {
    * @param {*} details the response details
    */
   handleResponse(details) {
+    // console.log('Get the request details', details);
     const url = details.url;
-    RegExp(getPlayInfoUrlPrefix).test(url) && this.getTrackInfo(url);
-    RegExp(getSongDetailsUrlPrefix).test(url) && (this.getSongDetailsUrl = url);
+    RegExp(getSongLyricsPrefix).test(url) && this.getLyrics(url);
+    RegExp(getPlayInfoPrefix).test(url) && this.resetPlayInfo();
   }
 
-  getTrackInfo(url) {
-    const songId = url.match(/\[(.*)\]/)[1];
-    if (this.getSongDetailsUrl) {
-      this.getTrackDetails(songId);
-    } else {
-      setTimeout(() => this.getTrackInfo(url), 1000);
-    }
+  resetPlayInfo() {
+    this.lyrics.load('客官，小虾米找不到你要的歌词哦');
   }
 
-  getTrackDetails(songId) {
-    let urlWithPath = urlLib.parse(this.getSongDetailsUrl);
+  getLyrics(url) {
+    let urlWithPath = urlLib.parse(url);
 
     // get the cookie, make call with the cookie
     let session = this.window.webContents.session;
@@ -249,7 +264,7 @@ class XiamiPlayer {
       const req = https.request({
         hostname: urlWithPath.host,
         path: urlWithPath.path,
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Referer': URLS.home,
           'Cookie': cookieString,
@@ -257,28 +272,38 @@ class XiamiPlayer {
           'Content-Type': 'application/json'
         }
       }, (response) => {
-        let playlistData = '';
+        let lyricsData = '';
 
         response.on('data', (chunk) => {
-          playlistData += chunk;
+          lyricsData += chunk;
         });
 
         response.on('end', () => {
-          const response = JSON.parse(playlistData)
-          console.log(response);
-          if (response.result && response.result.data && response.result.data.songDetails) {
-            const details = response.result.data.songDetails[0];
-            const {songName, singers, albumName, albumLogo, lyric} = details;
-            details && this.notify(songName, singers, albumName, albumLogo);
-            lyric && this.loadLyrics(lyric);
-            albumLogo && this.lyricsController.window.webContents.send('albumUpdate', albumLogo);
+          if (lyricsData) {
+            const response = JSON.parse(lyricsData)
+            // console.log(response);
+            if (response.code === 'SUCCESS' && response.result.status === 'SUCCESS') {
+              const firstMatch = response.result.data.lyrics[0];
+              this.loadLyrics(firstMatch.content);
+            } else {
+              this.loadLyrics();
+            }
           } else {
-            this.lyrics.load('客官，小虾米找不到你要的歌词哦');
+            this.loadLyrics();
           }
+          
+          // if (response.result && response.result.data && response.result.data.songDetails) {
+          //   const details = response.result.data.songDetails[0];
+          //   const {songName, singers, albumName, albumLogo, lyric} = details;
+          //   details && this.notify(songName, singers, albumName, albumLogo);
+          //   lyric && this.loadLyrics(lyric);
+          //   albumLogo && this.lyricsController.window.webContents.send('albumUpdate', albumLogo);
+          // } else {
+          //   this.lyrics.load('客官，小虾米找不到你要的歌词哦');
+          // }
         });
       });
 
-      req.write(`{"songIds": [${songId}]}`);
       req.end();
     });
   }
@@ -297,11 +322,9 @@ ${Locale.NOTIFICATION_ALBUM}: ${albumName}`;
    * Load the lyrics into the application
    * @param {string} url the lyrics url
    */
-  loadLyrics(url) {
+  loadLyrics(buffer) {
     this.lyrics.load('');
-    download(url).then(buffer => {
-      buffer ? this.lyrics.load(buffer) : this.lyrics.load('客官，小虾米找不到你要的歌词哦');
-    });
+    buffer ? this.lyrics.load(buffer) : this.lyrics.load('客官，小虾米找不到你要的歌词哦');
   }
 
 
