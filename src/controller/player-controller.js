@@ -174,6 +174,10 @@ class XiamiPlayer {
     this.window.webContents.executeJavaScript("document.querySelector('.main-control .prev').click();");
   }
 
+  showHideLyricsWindow() {
+    this.window.webContents.executeJavaScript("document.querySelector('.tunings .lyric-control').click();");
+  }
+
   /**
    * Create the touch bar for macOS
    */
@@ -280,13 +284,17 @@ class XiamiPlayer {
 
         response.on('end', () => {
           if (lyricsData) {
-            const response = JSON.parse(lyricsData)
-            // console.log(response);
-            if (response.code === 'SUCCESS' && response.result.status === 'SUCCESS') {
-              const firstMatch = response.result.data.lyrics[0];
-              this.loadLyrics(firstMatch.content);
-            } else {
-              this.loadLyrics();
+            try {
+              const response = JSON.parse(lyricsData)
+              // console.log(response);
+              if (response.code === 'SUCCESS' && response.result.status === 'SUCCESS') {
+                const firstMatch = response.result.data.lyrics[0];
+                this.loadLyrics(firstMatch.content);
+              } else {
+                this.loadLyrics();
+              }
+            } catch (ex) {
+              this.loadLyrics('客官，小虾米被验证欺负了呜~ 请您手动解除验证。');
             }
           } else {
             this.loadLyrics();

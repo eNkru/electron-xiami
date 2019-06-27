@@ -17,6 +17,10 @@ $('.button-next').click(() => {
   ipcRenderer.send('lyricsNext');
 });
 
+$('.button-lyrics').click(() => {
+  ipcRenderer.send('showHideLyrics');
+});
+
 $('.button-pause-play').click(() => {
   // $('.button-pause-play i').toggleClass('pause').toggleClass('play');
   // console.log('click play | pause lyrics button');

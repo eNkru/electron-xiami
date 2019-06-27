@@ -61,6 +61,7 @@ class AppTray {
     ipcMain.on('lyricsPrevious', () => this.playerController.previous());
     ipcMain.on('lyricsNext', () => this.playerController.next());
     ipcMain.on('lyricsPausePlay', () => this.playerController.pausePlay());
+    ipcMain.on('showHideLyrics', () => this.playerController.showHideLyricsWindow());
   }
 
   createTrayIcon(trayClickMode) {
