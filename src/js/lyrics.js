@@ -4,6 +4,20 @@ ipcRenderer.on('lyricsChange', (event, value) => {
   $('.lyrics-line').text(value).hide().fadeIn();
 });
 
+ipcRenderer.on('albumUpdate', (event, value) => {
+  $('.album-cover img').attr('src', value);
+});
+
+ipcRenderer.on('trackUpdate', (event, value) => {
+  console.log(value);
+  $('.track-title').text(value).hide().fadeIn();
+});
+
+ipcRenderer.on('singerUpdate', (event, value) => {
+  console.log(value);
+  $('.track-singer').text(value).hide().fadeIn();
+});
+
 $('.button-close').click(() => {
   // console.log('click close lyrics button');
   ipcRenderer.send('lyricsClose');
@@ -29,8 +43,4 @@ $('.button-pause-play').click(() => {
 
 $('.album-cover').click(() => {
   ipcRenderer.send('lyricsOpenPlayer');
-});
-
-ipcRenderer.on('albumUpdate', (event, value) => {
-  $('.album-cover img').attr('src', value);
 });

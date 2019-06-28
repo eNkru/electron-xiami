@@ -95,6 +95,8 @@ class XiamiPlayer {
       }
 
       this.addCoverChangeObserver();
+      this.addTrackNameObserver();
+      this.addSingerObserver();
 
       this.window.show();
       // this.window.webContents.openDevTools();
@@ -115,6 +117,8 @@ class XiamiPlayer {
     this.window.on('closed', () => {
       ipcMain.removeAllListeners('playtime');
       ipcMain.removeAllListeners('coverchange');
+      ipcMain.removeAllListeners('trackNameChange');
+      ipcMain.removeAllListeners('singerChange');
       this.window = null;
     });
 
@@ -139,6 +143,8 @@ class XiamiPlayer {
     });
 
     ipcMain.on('coverchange', (event, value) => value && this.lyricsController.window.webContents.send('albumUpdate', value));
+    ipcMain.on('trackNameChange', (event, value) => value && this.lyricsController.window.webContents.send('trackUpdate', value));
+    ipcMain.on('singerChange', (event, value) => value && this.lyricsController.window.webContents.send('singerUpdate', value));
 
     ipcMain.on('lyricsOpenPlayer', () => this.toggleWindow());
   }
@@ -210,6 +216,32 @@ class XiamiPlayer {
 
       coverObserver.observe(activeImg[0], {attributes: true});
       coverObserver.observe(activeImg[1], {attributes: true});
+    `)
+  }
+
+  addTrackNameObserver() {
+    this.window.webContents.executeJavaScript(`
+      var trackName = document.querySelector('.music .info .content');
+      var trackObserver = new MutationObserver(mutations => {
+          mutations.forEach(mutation => {
+            ipc.send('trackNameChange', trackName.innerText);
+          });
+      });
+
+      trackObserver.observe(trackName, {attributes: true, subtree: true});
+    `)
+  }
+
+  addSingerObserver() {
+    this.window.webContents.executeJavaScript(`
+      var singer = document.querySelector('.music .info .singers');
+      var singerObserver = new MutationObserver(mutations => {
+          mutations.forEach(mutation => {
+            ipc.send('singerChange', singer.innerText);
+          });
+      });
+
+      singerObserver.observe(singer, {attributes: true, subtree: true, childList: true});
     `)
   }
 
