@@ -35,7 +35,8 @@
     "electron-settings": "^3.1.1",
     "electron-updater": "^4.0.6",
     "fs-extra": "^5.0.0",
-    "hh-mm-ss": "^1.2.0"
+    "hh-mm-ss": "^1.2.0",
+    "is-online": "^8.2.0"
   },
   "build": {
     "appId": "nz.co.enkru.${name}",

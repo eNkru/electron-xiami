@@ -3,14 +3,12 @@ const {TouchBarButton} = TouchBar;
 const urlLib = require('url');
 const https = require('https');
 const path = require('path');
-const storage = require('electron-json-storage');
 const settings = require('electron-settings');
 const CssInjector = require('../configuration/css-injector');
 const Lyrics = require('../js/lib/lyrics');
 const timeFormat = require('hh-mm-ss');
 const UpdateController = require('./update-controller');
 const URLS = require('../configuration/urls');
-const download = require('download');
 
 const getPlayInfoPrefix = 'https://www.xiami.com/api/song/getPlayInfo*';
 const getSongLyricsPrefix = 'https://www.xiami.com/api/lyric/getSongLyrics*';

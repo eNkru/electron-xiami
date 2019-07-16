@@ -9,6 +9,7 @@ const NotificationController = require('./controller/notification-controller');
 const settings = require('electron-settings');
 const RadioController = require('./controller/radio-controller');
 const RadioTrayController = require('./controller/radio-tray-controller');
+const isOnline = require('is-online');
 
 class ElectronXiami {
   constructor() {
@@ -16,12 +17,10 @@ class ElectronXiami {
     this.notificationController = null;
     this.playerController = null;
     this.tray = null;
-    this.init();
   }
 
   // init method, the entry point of the app.
   init() {
-
     // register flash for radio mode
     this.radioMode = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('radio', false) : false;
     if (this.radioMode) {
@@ -63,7 +62,6 @@ class ElectronXiami {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', () => {
-
       if (this.radioMode) {
         this.playerController = new RadioController();
         this.tray = new RadioTrayController(this.playerController);
@@ -145,7 +143,6 @@ class ElectronXiami {
   isDev() {
     return process.mainModule.filename.indexOf('app.asar') === -1;
   }
-
 }
 
-new ElectronXiami();
+new ElectronXiami().init();
