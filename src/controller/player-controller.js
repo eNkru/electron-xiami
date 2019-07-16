@@ -10,8 +10,6 @@ const Lyrics = require('../js/lib/lyrics');
 const timeFormat = require('hh-mm-ss');
 const UpdateController = require('./update-controller');
 const URLS = require('../configuration/urls');
-const download = require('download');
-
 const getPlayInfoPrefix = 'https://www.xiami.com/api/song/getPlayInfo*';
 const getSongLyricsPrefix = 'https://www.xiami.com/api/lyric/getSongLyrics*';
 
