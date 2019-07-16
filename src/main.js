@@ -16,6 +16,13 @@ class ElectronXiami {
     this.notificationController = null;
     this.playerController = null;
     this.tray = null;
+    this.init();
+  }
+
+  // init method, the entry point of the app.
+  init() {
+
+    // register flash for radio mode
     this.radioMode = fs.existsSync(`${app.getPath('userData')}/Settings`) ? settings.get('radio', false) : false;
     if (this.radioMode) {
       // Specify flash path, supposing it is placed in the same directory with main.js.
@@ -36,10 +43,8 @@ class ElectronXiami {
       app.commandLine.appendSwitch('ppapi-flash-path', path.join(__dirname, pluginPath));
       app.commandLine.appendSwitch('ppapi-flash-version', '29.0.0.113-1');
     }
-  }
 
-  // init method, the entry point of the app.
-  init() {
+    // register single instance
     const lock = app.requestSingleInstanceLock()
     if (!lock) {
       app.quit()
@@ -143,4 +148,4 @@ class ElectronXiami {
 
 }
 
-new ElectronXiami().init();
+new ElectronXiami();
