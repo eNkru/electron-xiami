@@ -1,10 +1,13 @@
-const {BrowserWindow} = require('electron')
+const {BrowserWindow, ipcMain} = require('electron')
 const CssInjector = require('../configuration/css-injector');
+const path = require('path');
+const isOnline = require('is-online');
 
 class RadioController {
 
   constructor() {
-    this.init();
+    this.initSplash();
+    setTimeout(() => this.checkConnectionAndStart(), 500);
   }
 
   init() {
@@ -37,6 +40,33 @@ class RadioController {
   show() {
     this.window.show();
     this.window.focus();
+  }
+
+  initSplash() {
+    this.splashWin = new BrowserWindow({
+      width: 300,
+      height: 300,
+      frame: false,
+      autoHideMenuBar: true,
+      webPreferences: {
+        nodeIntegration: true
+      }
+    });
+    this.splashWin.loadURL(`file://${path.join(__dirname, '../view/splash.html')}`);
+
+    ipcMain.on('reconnect', () => {
+      this.checkConnectionAndStart();
+    });
+  }
+
+  checkConnectionAndStart() {
+    (async () => await isOnline({timeout: 15000}))().then(result => {
+      if (result) {
+        setTimeout(() => this.init(), 1000);
+      } else {
+        this.splashWin.webContents.send('connect-timeout');
+      }
+    });
   }
 }
 

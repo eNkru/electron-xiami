@@ -12,4 +12,6 @@
 #splashBtn {
     min-height: 50px;
     border-radius: 0;
+    background-color: #ff410f;
+    color: #ffffff;
 }

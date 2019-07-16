@@ -9,6 +9,7 @@ const Lyrics = require('../js/lib/lyrics');
 const timeFormat = require('hh-mm-ss');
 const UpdateController = require('./update-controller');
 const URLS = require('../configuration/urls');
+const isOnline = require('is-online');
 
 const getPlayInfoPrefix = 'https://www.xiami.com/api/song/getPlayInfo*';
 const getSongLyricsPrefix = 'https://www.xiami.com/api/lyric/getSongLyrics*';
@@ -19,9 +20,10 @@ const Locale = require('../locale/locale_sc');
 
 class XiamiPlayer {
   constructor(lyricsController, notificationController) {
+    this.initSplash();
     this.notificationController = notificationController;
     this.lyricsController = lyricsController;
-    this.init();
+    setTimeout(() => this.checkConnectionAndStart(), 500);
   }
 
   init() {
@@ -99,6 +101,9 @@ class XiamiPlayer {
       this.window.show();
       // this.window.webContents.openDevTools();
 
+      // hide splash window
+      this.splashWin.destroy();
+
       // check update
       new UpdateController().checkUpdate();
     });
@@ -148,10 +153,12 @@ class XiamiPlayer {
   }
 
   toggleWindow() {
-    if (this.window.isVisible()) {
-      this.window.hide();
-    } else {
-      this.show();
+    if (this.window) {
+      if (this.window.isVisible()) {
+        this.window.hide();
+      } else {
+        this.show();
+      }
     }
   }
 
@@ -365,7 +372,32 @@ ${Locale.NOTIFICATION_ALBUM}: ${albumName}`;
     buffer ? this.lyrics.load(buffer) : this.lyrics.load('客官，小虾米找不到你要的歌词哦');
   }
 
+  initSplash() {
+    this.splashWin = new BrowserWindow({
+      width: 300,
+      height: 300,
+      frame: false,
+      autoHideMenuBar: true,
+      webPreferences: {
+        nodeIntegration: true
+      }
+    });
+    this.splashWin.loadURL(`file://${path.join(__dirname, '../view/splash.html')}`);
 
+    ipcMain.on('reconnect', () => {
+      this.checkConnectionAndStart();
+    });
+  }
+
+  checkConnectionAndStart() {
+    (async () => await isOnline({timeout: 15000}))().then(result => {
+      if (result) {
+        setTimeout(() => this.init(), 1000);
+      } else {
+        this.splashWin.webContents.send('connect-timeout');
+      }
+    });
+  }
 }
 
 module.exports = XiamiPlayer;
