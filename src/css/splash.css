@@ -1,0 +1,15 @@
+.ui.card {
+    width: 300px;
+    height: 300px;
+    margin: 0;
+}
+
+.image.icon {
+    text-align: center;
+    line-height: 250px;
+}
+
+#splashBtn {
+    min-height: 50px;
+    border-radius: 0;
+}
